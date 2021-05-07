@@ -5,7 +5,7 @@ class Question {
   final String question;
   final String reply;
 
-  Question({
+  const Question({
     @required this.id,
     @required this.question,
     @required this.reply,
@@ -18,7 +18,7 @@ class Answer {
   final String answer;
   final String comment;
 
-  Answer({
+  const Answer({
     @required this.id,
     @required this.questionIds,
     @required this.answer,
@@ -36,7 +36,7 @@ class Quiz {
   final List<int> correctAnswerIds;
   final List<Answer> answers;
 
-  Quiz({
+  const Quiz({
     @required this.id,
     @required this.title,
     @required this.sentence,

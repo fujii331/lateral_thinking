@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'models/quiz.dart';
+import '../models/quiz.model.dart';
 
 class QuizItem extends StatelessWidget {
   const QuizItem({

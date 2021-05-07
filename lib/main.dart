@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import './title_screen.dart';
-import 'quiz_list.dart';
+import './widgets/title_screen.dart';
+import './widgets/quiz_list_screen.dart';
 
 void main() => runApp(MyApp());
 
