@@ -2,12 +2,12 @@ import 'package:flutter/foundation.dart';
 
 class Question {
   final int id;
-  final String question;
+  final String asking;
   final String reply;
 
   const Question({
     @required this.id,
-    @required this.question,
+    @required this.asking,
     @required this.reply,
   });
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/quiz.model.dart';
+import 'quiz_detail/quiz_detail_screen.widget.dart';
 
 class QuizItem extends StatelessWidget {
   const QuizItem({
@@ -8,6 +9,13 @@ class QuizItem extends StatelessWidget {
   }) : super(key: key);
 
   final Quiz quiz;
+
+  void toQuizDetail(BuildContext ctx) {
+    Navigator.of(ctx).pushNamed(
+      QuizDetailScreen.routeName,
+      arguments: quiz,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +33,7 @@ class QuizItem extends StatelessWidget {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,
-              color: Colors.purple,
+              color: Colors.purple[800],
             ),
           ),
         ),
@@ -35,6 +43,7 @@ class QuizItem extends StatelessWidget {
             fontSize: 20,
           ),
         ),
+        onTap: () => toQuizDetail(context),
       ),
     );
   }

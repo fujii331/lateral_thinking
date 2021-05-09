@@ -1,85 +1,96 @@
 import 'package:flutter/material.dart';
+import './quiz_list_screen.widget.dart';
+import './background.widget.dart';
 
 class TitleScreen extends StatelessWidget {
+  void toQuizList(BuildContext ctx) {
+    Navigator.of(ctx).pushNamed(
+      QuizListScreen.routeName,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade900,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        // crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: Stack(
         children: <Widget>[
-          Expanded(
-            flex: 5,
-            child: Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Center(
-                child: Text(
-                  'なぞなぞの館\n一人用水平思考ゲーム',
+          background(),
+          Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  '謎解きの館',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 25.0,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: 20,
-                horizontal: 15,
-              ),
-              child: ElevatedButton(
-                onPressed: () {},
-                child: Text('遊ぶ'),
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.teal,
-                  onPrimary: Colors.white,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 60,
-                    vertical: 5,
-                  ),
-                  textStyle: TextStyle(
-                    fontSize: 20.0,
+                    fontSize: 40.0,
                     fontWeight: FontWeight.bold,
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
                 ),
-              ),
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: 20,
-                horizontal: 15,
-              ),
-              child: ElevatedButton(
-                onPressed: () {},
-                child: Text('遊び方'),
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.teal,
-                  onPrimary: Colors.white,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 50,
-                    vertical: 5,
-                  ),
-                  textStyle: TextStyle(
+                Text(
+                  '一人用水平思考ゲーム',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
                     fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-              ),
+                Padding(
+                  padding: EdgeInsets.only(top: 100),
+                  child: Column(
+                    children: [
+                      _selectButton(
+                        context,
+                        '遊ぶ',
+                        Colors.green,
+                        Icon(Icons.account_balance),
+                        () => toQuizList(context),
+                      ),
+                      _selectButton(
+                        context,
+                        '遊び方',
+                        Colors.teal,
+                        Icon(Icons.auto_stories),
+                        () => toQuizList(context),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _selectButton(
+    BuildContext context,
+    String text,
+    MaterialColor color,
+    Icon icon,
+    Function navigation,
+  ) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        vertical: 20,
+      ),
+      child: ElevatedButton.icon(
+        icon: icon,
+        onPressed: navigation,
+        label: Text(text),
+        style: ElevatedButton.styleFrom(
+          elevation: 8, // 影をつける
+          shadowColor: Colors.white,
+          primary: color,
+          padding: EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 5,
+          ),
+          textStyle: Theme.of(context).textTheme.button,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
       ),
     );
   }
