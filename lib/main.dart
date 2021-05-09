@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'widgets/title_screen.widget.dart';
-import 'widgets/quiz_list_screen.widget.dart';
-import 'widgets/quiz_detail/quiz_detail_screen.widget.dart';
+import 'screens/title.screen.dart';
+import 'screens/quiz_list.screen.dart';
+import 'screens/quiz_detail.screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -42,6 +42,11 @@ class MyApp extends StatelessWidget {
         QuizListScreen.routeName: (BuildContext context) => QuizListScreen(),
         QuizDetailScreen.routeName: (BuildContext context) =>
             QuizDetailScreen(),
+      },
+      onUnknownRoute: (settings) {
+        return MaterialPageRoute(
+          builder: (ctx) => TitleScreen(),
+        );
       },
     );
   }

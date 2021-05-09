@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../models/quiz.model.dart';
-import '../background.widget.dart';
-import './quiz_sentence.widget.dart';
+import '../models/quiz.model.dart';
+import '../widgets/background.widget.dart';
+import '../widgets/quiz_detail/quiz_sentence.widget.dart';
 
 class QuizDetailScreen extends StatefulWidget {
   static const routeName = '/quiz-detail';
@@ -13,6 +13,9 @@ class QuizDetailScreen extends StatefulWidget {
 }
 
 class _QuizDetailScreenState extends State<QuizDetailScreen> {
+  // tab用
+  int _selectedIndex = 0;
+
   final subjectController = TextEditingController();
   final relatedWordController = TextEditingController();
 
@@ -25,7 +28,7 @@ class _QuizDetailScreenState extends State<QuizDetailScreen> {
   List<int> executedAnswerIds = []; // 回答削除用
 
   bool initiateFlg = true;
-  Question _selectedQuestion;
+  var _selectedQuestion;
   String _reply = '';
   String _beforeWord = ''; // 質問語にhintで表示用
   bool _displayReply = false;
@@ -51,7 +54,7 @@ class _QuizDetailScreenState extends State<QuizDetailScreen> {
     });
   }
 
-  void _setQuestion(Question targetQuestion) {
+  void _setQuestion(targetQuestion) {
     setState(
       () {
         _enableQuestionButton = true;
@@ -145,7 +148,7 @@ class _QuizDetailScreenState extends State<QuizDetailScreen> {
 
     List<int> currentQuestionIds = askedQuestions.map((askedQuestion) {
       return askedQuestion.id;
-    });
+    }).toList();
 
     allAnswers.forEach((Answer answer) {
       answer.questionIds.forEach((int questionId) {
@@ -170,7 +173,7 @@ class _QuizDetailScreenState extends State<QuizDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final quiz = ModalRoute.of(context).settings.arguments as Quiz;
+    final quiz = ModalRoute.of(context)?.settings.arguments as Quiz;
 
     if (initiateFlg) {
       setState(() {
@@ -185,7 +188,7 @@ class _QuizDetailScreenState extends State<QuizDetailScreen> {
       appBar: AppBar(
         title: Text(quiz.title),
         centerTitle: true,
-        backgroundColor: Colors.blueGrey[900].withOpacity(0.9),
+        backgroundColor: Colors.blueGrey[900]?.withOpacity(0.9),
       ),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
@@ -315,7 +318,7 @@ class _QuizDetailScreenState extends State<QuizDetailScreen> {
                       decoration: BoxDecoration(
                         color: Colors.black87,
                         border: Border.all(
-                          color: Colors.pink[800],
+                          color: Colors.pink.shade800,
                           width: 5,
                         ),
                       ),

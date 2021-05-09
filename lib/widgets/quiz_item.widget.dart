@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import '../models/quiz.model.dart';
-import 'quiz_detail/quiz_detail_screen.widget.dart';
+import '../screens/quiz_detail.screen.dart';
 
 class QuizItem extends StatelessWidget {
-  const QuizItem({
-    Key key,
-    @required this.quiz,
-  }) : super(key: key);
-
   final Quiz quiz;
+
+  QuizItem(this.quiz);
 
   void toQuizDetail(BuildContext ctx) {
     Navigator.of(ctx).pushNamed(

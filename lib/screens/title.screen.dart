@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import './quiz_list_screen.widget.dart';
-import './background.widget.dart';
+import 'quiz_list.screen.dart';
+import '../widgets/background.widget.dart';
 
 class TitleScreen extends StatelessWidget {
   void toQuizList(BuildContext ctx) {
@@ -43,14 +43,12 @@ class TitleScreen extends StatelessWidget {
                         '遊ぶ',
                         Colors.green,
                         Icon(Icons.account_balance),
-                        () => toQuizList(context),
                       ),
                       _selectButton(
                         context,
                         '遊び方',
                         Colors.teal,
                         Icon(Icons.auto_stories),
-                        () => toQuizList(context),
                       ),
                     ],
                   ),
@@ -68,7 +66,6 @@ class TitleScreen extends StatelessWidget {
     String text,
     MaterialColor color,
     Icon icon,
-    Function navigation,
   ) {
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -76,7 +73,7 @@ class TitleScreen extends StatelessWidget {
       ),
       child: ElevatedButton.icon(
         icon: icon,
-        onPressed: navigation,
+        onPressed: () => toQuizList(context),
         label: Text(text),
         style: ElevatedButton.styleFrom(
           elevation: 8, // 影をつける

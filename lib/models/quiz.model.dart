@@ -6,9 +6,9 @@ class Question {
   final String reply;
 
   const Question({
-    @required this.id,
-    @required this.asking,
-    @required this.reply,
+    required this.id,
+    required this.asking,
+    required this.reply,
   });
 }
 
@@ -19,10 +19,10 @@ class Answer {
   final String comment;
 
   const Answer({
-    @required this.id,
-    @required this.questionIds,
-    @required this.answer,
-    @required this.comment,
+    required this.id,
+    required this.questionIds,
+    required this.answer,
+    required this.comment,
   });
 }
 
@@ -37,13 +37,13 @@ class Quiz {
   final List<Answer> answers;
 
   const Quiz({
-    @required this.id,
-    @required this.title,
-    @required this.sentence,
-    @required this.subjects,
-    @required this.relatedWords,
-    @required this.questions,
-    @required this.correctAnswerIds,
-    @required this.answers,
+    required this.id,
+    required this.title,
+    required this.sentence,
+    required this.subjects,
+    required this.relatedWords,
+    required this.questions,
+    required this.correctAnswerIds,
+    required this.answers,
   });
 }
