@@ -8,7 +8,7 @@ class QuizSentence extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * .38,
+      height: MediaQuery.of(context).size.height * .35,
       margin: EdgeInsets.all(5),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -25,7 +25,7 @@ class QuizSentence extends StatelessWidget {
         ],
       ),
       child: SingleChildScrollView(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Text(
           sentence,
           style: Theme.of(context).textTheme.bodyText1,

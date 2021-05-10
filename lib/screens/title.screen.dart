@@ -35,7 +35,7 @@ class TitleScreen extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 100),
+                  padding: const EdgeInsets.only(top: 100),
                   child: Column(
                     children: [
                       _selectButton(
@@ -68,7 +68,7 @@ class TitleScreen extends StatelessWidget {
     Icon icon,
   ) {
     return Padding(
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         vertical: 20,
       ),
       child: ElevatedButton.icon(
@@ -79,7 +79,7 @@ class TitleScreen extends StatelessWidget {
           elevation: 8, // 影をつける
           shadowColor: Colors.white,
           primary: color,
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             horizontal: 20,
             vertical: 5,
           ),

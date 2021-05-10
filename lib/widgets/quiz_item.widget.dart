@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
 import '../models/quiz.model.dart';
-import '../screens/quiz_detail.screen.dart';
+import '../screens/quiz_detail_tab.screen.dart';
+import '../providers/quiz.provider.dart';
 
 class QuizItem extends StatelessWidget {
   final Quiz quiz;
@@ -8,8 +11,13 @@ class QuizItem extends StatelessWidget {
   QuizItem(this.quiz);
 
   void toQuizDetail(BuildContext ctx) {
+    ctx.read(remainingQuestionsProvider).state = quiz.questions;
+    ctx.read(askedQuestionsProvider).state = [];
+    ctx.read(allAnswersProvider).state = quiz.answers;
+    ctx.read(executedAnswerIdsProvider).state = [];
+
     Navigator.of(ctx).pushNamed(
-      QuizDetailScreen.routeName,
+      QuizDetailTabScreen.routeName,
       arguments: quiz,
     );
   }
@@ -24,7 +32,7 @@ class QuizItem extends StatelessWidget {
       ),
       child: ListTile(
         leading: Container(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           child: Text(
             '問' + quiz.id.toString(),
             style: TextStyle(

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'screens/title.screen.dart';
-import 'screens/quiz_list.screen.dart';
-import 'screens/quiz_detail.screen.dart';
+import './screens/title.screen.dart';
+import './screens/quiz_list.screen.dart';
+import './screens/quiz_detail_tab.screen.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(
+      ProviderScope(
+        child: MyApp(),
+      ),
+    );
 
 class MyApp extends StatelessWidget {
   @override
@@ -12,6 +17,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'LateralThinking',
       theme: ThemeData(
+        canvasColor: Colors.grey.shade200,
         fontFamily: 'KiwiMaru',
         pageTransitionsTheme: const PageTransitionsTheme(
           builders: <TargetPlatform, PageTransitionsBuilder>{
@@ -40,8 +46,8 @@ class MyApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         '/': (BuildContext context) => TitleScreen(),
         QuizListScreen.routeName: (BuildContext context) => QuizListScreen(),
-        QuizDetailScreen.routeName: (BuildContext context) =>
-            QuizDetailScreen(),
+        QuizDetailTabScreen.routeName: (BuildContext context) =>
+            QuizDetailTabScreen(),
       },
       onUnknownRoute: (settings) {
         return MaterialPageRoute(
