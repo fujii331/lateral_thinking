@@ -9,10 +9,10 @@ import './quiz_sentence.widget.dart';
 import './quiz_reply.widget.dart';
 import '../../providers/quiz.provider.dart';
 
-class QuizDetailScreen extends HookWidget {
+class QuizDetail extends HookWidget {
   final Quiz quiz;
 
-  QuizDetailScreen(this.quiz);
+  QuizDetail(this.quiz);
 
   final subjectController = TextEditingController();
   final relatedWordController = TextEditingController();

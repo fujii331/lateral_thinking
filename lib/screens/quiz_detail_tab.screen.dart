@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../widgets/quiz_detail/quiz_detail.widget.dart';
 import '../widgets/quiz_detail/quiz_questioned.widget.dart';
 import '../widgets/quiz_detail/quiz_answer.widget.dart';
 
-import '../providers/quiz.provider.dart';
-import '../models/enums.model.dart';
 import '../models/quiz.model.dart';
 
 class QuizDetailTabScreen extends HookWidget {
@@ -16,13 +13,10 @@ class QuizDetailTabScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final quiz = ModalRoute.of(context)?.settings.arguments as Quiz;
-    final _views = [
-      QuizDetailScreen(quiz),
-      QuizQuestioned(),
-      QuizAnswer(),
-    ];
 
-    final tabType = useProvider(tabTypeProvider).state;
+    final _screen = useState<int>(0);
+    final _pageController = usePageController(initialPage: 0);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(quiz.title),
@@ -49,14 +43,26 @@ class QuizDetailTabScreen extends HookWidget {
           ),
         ],
         onTap: (int selectIndex) {
-          context.read(tabTypeProvider).state = TabType.values[selectIndex];
+          _screen.value = selectIndex;
+          _pageController.animateToPage(selectIndex,
+              duration: Duration(milliseconds: 400), curve: Curves.easeOut);
         },
-        currentIndex: tabType.index,
+        currentIndex: _screen.value,
       ),
-      body: _views[tabType.index],
-      // body: ProviderScope(
-      //   child: _views[_selectIndex],
-      // ),
+      // body: _views[tabType.index],
+      body: PageView(
+        controller: _pageController,
+        // ページ切り替え時に実行する処理
+        // PageViewのonPageChangedはページインデックスを受け取る
+        onPageChanged: (index) {
+          _screen.value = index;
+        },
+        children: [
+          QuizDetail(quiz),
+          QuizQuestioned(),
+          QuizAnswer(),
+        ],
+      ),
     );
   }
 }
