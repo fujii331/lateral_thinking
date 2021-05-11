@@ -31,7 +31,7 @@ class QuizQuestioned extends HookWidget {
                 ? Container(
                     padding: const EdgeInsets.all(10),
                     child: Text(
-                      '質問をすることで、ここに聞いた質問と返答が追加されて行きます。',
+                      '質問をすることで、ここに聞いた質問と返答が追加されていきます。',
                       style: TextStyle(
                         fontSize: 20.0,
                         color: Colors.black54,

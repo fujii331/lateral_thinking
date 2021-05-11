@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'LateralThinking',
       theme: ThemeData(
-        canvasColor: Colors.grey.shade200,
+        canvasColor: Colors.grey.shade100,
         fontFamily: 'KiwiMaru',
         pageTransitionsTheme: const PageTransitionsTheme(
           builders: <TargetPlatform, PageTransitionsBuilder>{

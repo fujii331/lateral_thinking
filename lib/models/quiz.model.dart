@@ -33,6 +33,7 @@ class Quiz {
   final List<Question> questions;
   final List<int> correctAnswerIds;
   final List<Answer> answers;
+  final List<int> availableSubjectIds;
 
   const Quiz({
     required this.id,
@@ -43,5 +44,6 @@ class Quiz {
     required this.questions,
     required this.correctAnswerIds,
     required this.answers,
+    required this.availableSubjectIds,
   });
 }

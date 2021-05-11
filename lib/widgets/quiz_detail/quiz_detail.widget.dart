@@ -28,7 +28,7 @@ class QuizDetail extends HookWidget {
   ) {
     enableQuestionButtonFlg.value = false;
     reply.value = selectedQuestion.value!.reply;
-    displayReplyFlg.value = !displayReplyFlg.value;
+    displayReplyFlg.value = true;
     context.read(askedQuestionsProvider).state.add(selectedQuestion.value!);
     context.read(remainingQuestionsProvider).state = context
         .read(remainingQuestionsProvider)
@@ -142,6 +142,8 @@ class QuizDetail extends HookWidget {
     final List<Question> remainingQuestions =
         useProvider(remainingQuestionsProvider).state;
 
+    final bool finishFlg = useProvider(finishFlgProvider).state;
+
     final selectedQuestion = useState<Question?>(null);
 
     final reply = useState<String>('');
@@ -237,18 +239,18 @@ class QuizDetail extends HookWidget {
                         ),
                         child: DropdownButton(
                           isExpanded: true,
-                          hint: dummyDisplayFlg.value
-                              ? Text(
-                                  'それらの言葉は関係ないようです。',
-                                  style: TextStyle(
-                                    // fontSize: 20,
-                                    color: Colors.black87,
-                                  ),
-                                )
-                              : beforeWord.value.isEmpty
-                                  ? null
-                                  : Text(beforeWord.value),
-                          // 下線をなくすため
+                          hint: Text(
+                            finishFlg
+                                ? 'この問題は終わりです。'
+                                : dummyDisplayFlg.value
+                                    ? 'それらの言葉は関係ないようです。'
+                                    : beforeWord.value.isEmpty
+                                        ? ''
+                                        : beforeWord.value,
+                            style: TextStyle(
+                              color: Colors.black54,
+                            ),
+                          ),
                           underline: Container(
                             color: Colors.white,
                           ),

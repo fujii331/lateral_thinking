@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../background.widget.dart';
 import '../../providers/quiz.provider.dart';
 import '../../models/quiz.model.dart';
+import 'correct_answer_modal.widget.dart';
 
 class QuizAnswer extends HookWidget {
   void getAnswerChoices(
@@ -41,17 +42,16 @@ class QuizAnswer extends HookWidget {
   }
 
   void executeAnswer(
-    BuildContext context,
-    ValueNotifier<bool> enableAnswerButtonFlg,
-    ValueNotifier<String> comment,
-    ValueNotifier<bool> displayCommentFlg,
-    ValueNotifier<String> beforeAnswer,
-    ValueNotifier<Answer?> selectedAnswer,
-    ValueNotifier<List<Answer>> availableAnswers,
-  ) {
+      BuildContext context,
+      ValueNotifier<bool> enableAnswerButtonFlg,
+      ValueNotifier<String> comment,
+      ValueNotifier<bool> displayCommentFlg,
+      ValueNotifier<String> beforeAnswer,
+      ValueNotifier<Answer?> selectedAnswer,
+      ValueNotifier<List<Answer>> availableAnswers) {
     enableAnswerButtonFlg.value = false;
     comment.value = selectedAnswer.value!.comment;
-    displayCommentFlg.value = !displayCommentFlg.value;
+    displayCommentFlg.value = true;
     context.read(executedAnswerIdsProvider).state.add(selectedAnswer.value!.id);
     availableAnswers.value = availableAnswers.value
         .where((answer) => answer.id != selectedAnswer.value!.id)
@@ -70,6 +70,11 @@ class QuizAnswer extends HookWidget {
 
     final List<int> executedAnswerIds =
         useProvider(executedAnswerIdsProvider).state;
+
+    final List<int> correctAnswerIds =
+        useProvider(correctAnswerIdsProvider).state;
+
+    final bool finishFlg = useProvider(finishFlgProvider).state;
 
     final availableAnswers = useState<List<Answer>>([]);
     final selectedAnswer = useState<Answer?>(null);
@@ -123,11 +128,13 @@ class QuizAnswer extends HookWidget {
                     itemHeight: MediaQuery.of(context).size.height * .15,
                     isExpanded: true,
                     hint: Text(
-                      beforeAnswer.value.isEmpty
-                          ? availableAnswers.value.isEmpty
-                              ? '質問して回答を導きだせ'
-                              : '回答を選択'
-                          : beforeAnswer.value,
+                      finishFlg
+                          ? 'この問題は終わりです。'
+                          : beforeAnswer.value.isEmpty
+                              ? availableAnswers.value.isEmpty
+                                  ? 'もっと質問しましょう！'
+                                  : '回答を選択'
+                              : beforeAnswer.value,
                       style: TextStyle(
                         color: Colors.black87,
                       ),
@@ -152,17 +159,36 @@ class QuizAnswer extends HookWidget {
               Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: ElevatedButton(
-                  onPressed: () => enableAnswerButtonFlg.value
-                      ? executeAnswer(
-                          context,
-                          enableAnswerButtonFlg,
-                          comment,
-                          displayCommentFlg,
-                          beforeAnswer,
-                          selectedAnswer,
-                          availableAnswers,
-                        )
-                      : {},
+                  onPressed: enableAnswerButtonFlg.value
+                      ? correctAnswerIds.contains(selectedAnswer.value!.id)
+                          ? () async {
+                              String correctComment =
+                                  selectedAnswer.value!.comment;
+                              enableAnswerButtonFlg.value = false;
+                              selectedAnswer.value = null;
+                              context.read(finishFlgProvider).state = true;
+                              context.read(allAnswersProvider).state = [];
+                              context.read(remainingQuestionsProvider).state =
+                                  [];
+
+                              await showDialog<int>(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context) {
+                                  return CorrectAnswerModal(correctComment);
+                                },
+                              );
+                            }
+                          : () => executeAnswer(
+                                context,
+                                enableAnswerButtonFlg,
+                                comment,
+                                displayCommentFlg,
+                                beforeAnswer,
+                                selectedAnswer,
+                                availableAnswers,
+                              )
+                      : () => {},
                   child: const Text('回答！'),
                   style: ElevatedButton.styleFrom(
                     primary: enableAnswerButtonFlg.value
@@ -202,7 +228,6 @@ class QuizAnswer extends HookWidget {
                       style: TextStyle(
                         fontSize: 20.0,
                         color: Colors.black,
-                        // fontFamily: 'NotoSerifJP',
                       ),
                     ),
                   ),

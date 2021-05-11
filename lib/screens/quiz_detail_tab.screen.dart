@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import '../widgets/quiz_detail/quiz_detail.widget.dart';
 import '../widgets/quiz_detail/quiz_questioned.widget.dart';
 import '../widgets/quiz_detail/quiz_answer.widget.dart';
+import '../widgets/hint_modal.widget.dart';
 
 import '../models/quiz.model.dart';
 
@@ -22,6 +23,23 @@ class QuizDetailTabScreen extends HookWidget {
         title: Text(quiz.title),
         centerTitle: true,
         backgroundColor: Colors.blueGrey[900]?.withOpacity(0.9),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.lightbulb,
+              color: Colors.yellow,
+            ),
+            onPressed: () async {
+              await showDialog<int>(
+                context: context,
+                barrierDismissible: true,
+                builder: (BuildContext context) {
+                  return HintModal();
+                },
+              );
+            },
+          ),
+        ],
       ),
       resizeToAvoidBottomInset: false,
       bottomNavigationBar: BottomNavigationBar(
