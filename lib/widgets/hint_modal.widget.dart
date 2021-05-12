@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../providers/quiz.provider.dart';
 
@@ -99,6 +100,9 @@ class HintModal extends HookWidget {
                   onPressed: () async => hint < 4
                       ? {
                           Navigator.pop(context),
+                          Fluttertoast.showToast(
+                            msg: 'ヒント' + (hint + 1).toString() + 'を開放しました。',
+                          ),
                           context.read(hintProvider).state++,
                         }
                       : {},

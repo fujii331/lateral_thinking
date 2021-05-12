@@ -16,7 +16,7 @@ class QuizDetailTabScreen extends HookWidget {
     final quiz = ModalRoute.of(context)?.settings.arguments as Quiz;
 
     final _screen = useState<int>(0);
-    final _pageController = usePageController(initialPage: 0);
+    final _pageController = usePageController(initialPage: 0, keepPage: true);
 
     return Scaffold(
       appBar: AppBar(

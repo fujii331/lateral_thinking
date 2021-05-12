@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'dart:math';
 
 import '../../models/quiz.model.dart';
 import '../background.widget.dart';
@@ -14,19 +15,17 @@ class QuizDetail extends HookWidget {
 
   QuizDetail(this.quiz);
 
-  final subjectController = TextEditingController();
-  final relatedWordController = TextEditingController();
+  final subjectController = useTextEditingController();
+  final relatedWordController = useTextEditingController();
 
   void _executeQuestion(
     BuildContext context,
-    ValueNotifier<bool> enableQuestionButtonFlg,
     ValueNotifier<String> reply,
     ValueNotifier<bool> displayReplyFlg,
     ValueNotifier<List<Question>> askQuestions,
     ValueNotifier<String> beforeWord,
     ValueNotifier<Question?> selectedQuestion,
   ) {
-    enableQuestionButtonFlg.value = false;
     reply.value = selectedQuestion.value!.reply;
     displayReplyFlg.value = true;
     context.read(askedQuestionsProvider).state.add(selectedQuestion.value!);
@@ -50,7 +49,6 @@ class QuizDetail extends HookWidget {
     List<String> allSubjects,
     List<String> allRelatedWords,
     ValueNotifier<List<Question>> askQuestions,
-    ValueNotifier<bool> enableQuestionButtonFlg,
     ValueNotifier<bool> displayReplyFlg,
     ValueNotifier<bool> dummyDisplayFlg,
     ValueNotifier<Question?> selectedQuestion,
@@ -85,11 +83,9 @@ class QuizDetail extends HookWidget {
         : [];
 
     if (askQuestions.value.isEmpty) {
-      enableQuestionButtonFlg.value = false;
       displayReplyFlg.value = false;
       dummyDisplayFlg.value = true;
     } else {
-      enableQuestionButtonFlg.value = true;
       displayReplyFlg.value = false;
       selectedQuestion.value = null;
       beforeWord.value = '↓質問を選択';
@@ -101,7 +97,6 @@ class QuizDetail extends HookWidget {
     Quiz quiz,
     List<Question> remainingQuestions,
     ValueNotifier<String> beforeWord,
-    ValueNotifier<bool> enableQuestionButtonFlg,
     ValueNotifier<bool> displayReplyFlg,
     ValueNotifier<Question?> selectedQuestion,
     ValueNotifier<bool> dummyDisplayFlg,
@@ -113,7 +108,6 @@ class QuizDetail extends HookWidget {
     beforeWord.value = '';
 
     if (enteredSubject.isEmpty || enteredRelatedWord.isEmpty) {
-      enableQuestionButtonFlg.value = false;
       displayReplyFlg.value = false;
       selectedQuestion.value = null;
       dummyDisplayFlg.value = false;
@@ -129,7 +123,6 @@ class QuizDetail extends HookWidget {
       quiz.subjects,
       quiz.relatedWords,
       askQuestions,
-      enableQuestionButtonFlg,
       displayReplyFlg,
       dummyDisplayFlg,
       selectedQuestion,
@@ -143,7 +136,8 @@ class QuizDetail extends HookWidget {
         useProvider(remainingQuestionsProvider).state;
 
     final bool finishFlg = useProvider(finishFlgProvider).state;
-
+    final int hint = useProvider(hintProvider).state;
+    // ヒント開放時の質問などの考慮が必要！
     final selectedQuestion = useState<Question?>(null);
 
     final reply = useState<String>('');
@@ -151,10 +145,35 @@ class QuizDetail extends HookWidget {
     final beforeWord = useState<String>('');
 
     final displayReplyFlg = useState<bool>(false);
-    final enableQuestionButtonFlg = useState<bool>(false);
     final dummyDisplayFlg = useState<bool>(false);
 
     final askQuestions = useState<List<Question>>([]);
+
+    final selectedSubject = useState<String?>(null);
+    final selectedRelatedWord = useState<String?>(null);
+
+    useEffect(() {
+      if (hint > 2) {
+        selectedQuestion.value = null;
+        displayReplyFlg.value = false;
+        dummyDisplayFlg.value = false;
+        if (hint == 3) {
+          askQuestions.value =
+              _shuffle(quiz.questions.take(quiz.hintDisplayQuestionId).toList())
+                  as List<Question>;
+        } else if (hint == 4) {
+          askQuestions.value =
+              quiz.questions.take(quiz.correctAnswerQuestionId).toList();
+        }
+      } else if (hint > 0) {
+        selectedQuestion.value = null;
+        displayReplyFlg.value = false;
+        dummyDisplayFlg.value = false;
+        askQuestions.value = [];
+        beforeWord.value = '↓質問を選択';
+      }
+      return () => {};
+    }, [hint]);
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -168,44 +187,72 @@ class QuizDetail extends HookWidget {
               children: <Widget>[
                 QuizSentence(quiz.sentence),
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 15,
+                  padding: const EdgeInsets.only(
+                    top: 18,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
                       // 主語の入力
-                      _wordForQuestion(
-                        context,
-                        '主語',
-                        subjectController,
-                        quiz,
-                        remainingQuestions,
-                        beforeWord,
-                        enableQuestionButtonFlg,
-                        displayReplyFlg,
-                        selectedQuestion,
-                        dummyDisplayFlg,
-                        askQuestions,
-                      ),
+                      hint < 1
+                          ? _wordForQuestion(
+                              context,
+                              '主語',
+                              subjectController,
+                              remainingQuestions,
+                              beforeWord,
+                              displayReplyFlg,
+                              selectedQuestion,
+                              dummyDisplayFlg,
+                              askQuestions,
+                            )
+                          : _wordSelectForQuestion(
+                              context,
+                              selectedRelatedWord,
+                              '主語',
+                              hint,
+                              quiz.subjects,
+                              subjectController,
+                              remainingQuestions,
+                              beforeWord,
+                              displayReplyFlg,
+                              selectedQuestion,
+                              dummyDisplayFlg,
+                              askQuestions,
+                            ),
                       Text(
                         'は',
                         style: Theme.of(context).textTheme.bodyText2,
                       ),
                       // 関連語の入力
-                      _wordForQuestion(
-                        context,
-                        '関連語',
-                        relatedWordController,
-                        quiz,
-                        remainingQuestions,
-                        beforeWord,
-                        enableQuestionButtonFlg,
-                        displayReplyFlg,
-                        selectedQuestion,
-                        dummyDisplayFlg,
-                        askQuestions,
-                      ),
+                      hint < 2
+                          ? _wordForQuestion(
+                              context,
+                              '関連語',
+                              relatedWordController,
+                              remainingQuestions,
+                              beforeWord,
+                              displayReplyFlg,
+                              selectedQuestion,
+                              dummyDisplayFlg,
+                              askQuestions,
+                            )
+                          : _wordSelectForQuestion(
+                              context,
+                              selectedSubject,
+                              '関連語',
+                              hint,
+                              quiz.relatedWords
+                                  .take(quiz.hintDisplayWordId)
+                                  .toList(),
+                              relatedWordController,
+                              remainingQuestions,
+                              beforeWord,
+                              displayReplyFlg,
+                              selectedQuestion,
+                              dummyDisplayFlg,
+                              askQuestions,
+                            ),
                       Text(
                         '...？',
                         style: Theme.of(context).textTheme.bodyText2,
@@ -215,8 +262,9 @@ class QuizDetail extends HookWidget {
                 ),
                 // 質問入力
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 15,
+                  padding: const EdgeInsets.only(
+                    top: 23,
+                    bottom: 8,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -242,11 +290,15 @@ class QuizDetail extends HookWidget {
                           hint: Text(
                             finishFlg
                                 ? 'この問題は終わりです。'
-                                : dummyDisplayFlg.value
-                                    ? 'それらの言葉は関係ないようです。'
-                                    : beforeWord.value.isEmpty
-                                        ? ''
-                                        : beforeWord.value,
+                                : hint > 2 &&
+                                        askQuestions.value.isEmpty &&
+                                        beforeWord.value.isEmpty
+                                    ? 'もう質問はありません。'
+                                    : dummyDisplayFlg.value
+                                        ? 'それらの言葉は関係ないようです。'
+                                        : beforeWord.value.isEmpty
+                                            ? ''
+                                            : beforeWord.value,
                             style: TextStyle(
                               color: Colors.black54,
                             ),
@@ -262,17 +314,15 @@ class QuizDetail extends HookWidget {
                             );
                           }).toList(),
                           onChanged: (targetQuestion) {
-                            enableQuestionButtonFlg.value = true;
                             displayReplyFlg.value = false;
                             selectedQuestion.value = targetQuestion as Question;
                           },
                         ),
                       ),
                       ElevatedButton(
-                        onPressed: () => enableQuestionButtonFlg.value
+                        onPressed: () => selectedQuestion.value != null
                             ? _executeQuestion(
                                 context,
-                                enableQuestionButtonFlg,
                                 reply,
                                 displayReplyFlg,
                                 askQuestions,
@@ -282,7 +332,7 @@ class QuizDetail extends HookWidget {
                             : {},
                         child: const Text('質問！'),
                         style: ElevatedButton.styleFrom(
-                          primary: enableQuestionButtonFlg.value
+                          primary: selectedQuestion.value != null
                               ? Colors.blue
                               : Colors.blue[200],
                           textStyle: Theme.of(context).textTheme.button,
@@ -310,10 +360,8 @@ class QuizDetail extends HookWidget {
     BuildContext context,
     String text,
     TextEditingController controller,
-    Quiz quiz,
     List<Question> remainingQuestions,
     ValueNotifier<String> beforeWord,
-    ValueNotifier<bool> enableQuestionButtonFlg,
     ValueNotifier<bool> displayReplyFlg,
     ValueNotifier<Question?> selectedQuestion,
     ValueNotifier<bool> dummyDisplayFlg,
@@ -348,7 +396,6 @@ class QuizDetail extends HookWidget {
           quiz,
           remainingQuestions,
           beforeWord,
-          enableQuestionButtonFlg,
           displayReplyFlg,
           selectedQuestion,
           dummyDisplayFlg,
@@ -357,4 +404,79 @@ class QuizDetail extends HookWidget {
       ),
     );
   }
+
+  Widget _wordSelectForQuestion(
+    BuildContext context,
+    ValueNotifier<String?> selectedWord,
+    String displayHint,
+    int hint,
+    List<String> wordList,
+    TextEditingController controller,
+    List<Question> remainingQuestions,
+    ValueNotifier<String> beforeWord,
+    ValueNotifier<bool> displayReplyFlg,
+    ValueNotifier<Question?> selectedQuestion,
+    ValueNotifier<bool> dummyDisplayFlg,
+    ValueNotifier<List<Question>> askQuestions,
+  ) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        vertical: 7,
+        horizontal: 10,
+      ),
+      width: MediaQuery.of(context).size.width * .305,
+      height: MediaQuery.of(context).size.height * .083,
+      decoration: BoxDecoration(
+        color: hint < 3 ? Colors.white : Colors.grey[400],
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.black,
+        ),
+      ),
+      child: DropdownButton(
+        isExpanded: true,
+        hint: Text(
+          displayHint,
+          style: TextStyle(
+            color: Colors.black54,
+          ),
+        ),
+        underline: Container(
+          color: Colors.white,
+        ),
+        value: selectedWord.value,
+        items: hint < 3
+            ? wordList.map((String subject) {
+                return DropdownMenuItem(
+                  value: subject,
+                  child: Text(subject),
+                );
+              }).toList()
+            : null,
+        onChanged: (targetSubject) {
+          controller.text = selectedWord.value = targetSubject as String;
+          submitData(
+            quiz,
+            remainingQuestions,
+            beforeWord,
+            displayReplyFlg,
+            selectedQuestion,
+            dummyDisplayFlg,
+            askQuestions,
+          );
+        },
+      ),
+    );
+  }
+}
+
+List _shuffle(List items) {
+  var random = new Random();
+  for (var i = items.length - 1; i > 0; i--) {
+    var n = random.nextInt(i + 1);
+    var temp = items[i];
+    items[i] = items[n];
+    items[n] = temp;
+  }
+  return items;
 }
