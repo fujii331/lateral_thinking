@@ -16,7 +16,6 @@ class QuizItem extends StatelessWidget {
     ctx.read(allAnswersProvider).state = quiz.answers;
     ctx.read(executedAnswerIdsProvider).state = [];
     ctx.read(correctAnswerIdsProvider).state = quiz.correctAnswerIds;
-    ctx.read(finishFlgProvider).state = false;
     ctx.read(hintProvider).state = 0;
 
     ctx.read(replyProvider).state = '';

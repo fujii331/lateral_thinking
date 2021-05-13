@@ -74,8 +74,6 @@ class QuizAnswer extends HookWidget {
     final List<int> correctAnswerIds =
         useProvider(correctAnswerIdsProvider).state;
 
-    final bool finishFlg = useProvider(finishFlgProvider).state;
-
     final availableAnswers = useState<List<Answer>>([]);
     final selectedAnswer = useState<Answer?>(null);
     final enableAnswerButtonFlg = useState<bool>(false);
@@ -128,7 +126,7 @@ class QuizAnswer extends HookWidget {
                     itemHeight: MediaQuery.of(context).size.height * .15,
                     isExpanded: true,
                     hint: Text(
-                      finishFlg
+                      allAnswers.isEmpty
                           ? 'この問題は終わりです。'
                           : beforeAnswer.value.isEmpty
                               ? availableAnswers.value.isEmpty
@@ -166,8 +164,11 @@ class QuizAnswer extends HookWidget {
                                   selectedAnswer.value!.comment;
                               enableAnswerButtonFlg.value = false;
                               selectedAnswer.value = null;
-                              context.read(finishFlgProvider).state = true;
+                              context.read(beforeWordProvider).state =
+                                  'この問題は終わりです。';
                               context.read(allAnswersProvider).state = [];
+                              context.read(displayReplyFlgProvider).state =
+                                  false;
                               context.read(remainingQuestionsProvider).state =
                                   [];
 

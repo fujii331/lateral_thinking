@@ -118,7 +118,6 @@ class QuizDetail extends HookWidget {
     final List<Question> remainingQuestions =
         useProvider(remainingQuestionsProvider).state;
 
-    final bool finishFlg = useProvider(finishFlgProvider).state;
     final int hint = useProvider(hintProvider).state;
 
     final selectedQuestion = useProvider(selectedQuestionProvider).state;
@@ -236,15 +235,7 @@ class QuizDetail extends HookWidget {
                         child: DropdownButton(
                           isExpanded: true,
                           hint: Text(
-                            finishFlg
-                                ? 'この問題は終わりです。'
-                                : hint > 2 &&
-                                        askQuestions.isEmpty &&
-                                        beforeWord.isEmpty
-                                    ? 'もう質問はありません。'
-                                    : beforeWord.isEmpty
-                                        ? ''
-                                        : beforeWord,
+                            beforeWord.isEmpty ? '' : beforeWord,
                             style: TextStyle(
                               color: Colors.black54,
                             ),

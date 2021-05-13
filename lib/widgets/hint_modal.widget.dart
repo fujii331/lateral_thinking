@@ -16,6 +16,12 @@ class HintModal extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final int hint = useProvider(hintProvider).state;
+    final List<Question> askedQuestions =
+        useProvider(askedQuestionsProvider).state;
+
+    List<int> currentQuestionIds = askedQuestions.map((askedQuestion) {
+      return askedQuestion.id;
+    }).toList();
 
     return AlertDialog(
       content: Column(
@@ -107,9 +113,9 @@ class HintModal extends HookWidget {
                   onPressed: () async => hint < 4
                       ? {
                           Navigator.pop(context),
-                          // Fluttertoast.showToast(
-                          //   msg: 'ヒント' + (hint + 1).toString() + 'を開放しました。',
-                          // ),
+                          Fluttertoast.showToast(
+                            msg: 'ヒント' + (hint + 1).toString() + 'を開放しました。',
+                          ),
                           context.read(selectedQuestionProvider).state =
                               dummyQuestion,
                           context.read(displayReplyFlgProvider).state = false,
@@ -121,6 +127,9 @@ class HintModal extends HookWidget {
                                   context.read(askQuestionsProvider).state =
                                       _shuffle(quiz.questions
                                           .take(quiz.hintDisplayQuestionId)
+                                          .where((question) =>
+                                              !currentQuestionIds
+                                                  .contains(question.id))
                                           .toList()) as List<Question>,
                                 }
                               else if (hint == 3)
@@ -128,12 +137,22 @@ class HintModal extends HookWidget {
                                   context.read(askQuestionsProvider).state =
                                       quiz.questions
                                           .take(quiz.correctAnswerQuestionId)
+                                          .where((question) =>
+                                              !currentQuestionIds
+                                                  .contains(question.id))
                                           .toList(),
-                                }
+                                },
+                              if (context
+                                  .read(askQuestionsProvider)
+                                  .state
+                                  .isEmpty)
+                                {
+                                  context.read(beforeWordProvider).state =
+                                      'もう質問はありません。',
+                                },
                             }
                           else if (hint >= 0)
                             {
-                              print('aa'),
                               context.read(beforeWordProvider).state = '',
                               context.read(askQuestionsProvider).state = [],
                             },
