@@ -2,10 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'dart:math';
 
 import '../providers/quiz.provider.dart';
 
+import '../models/quiz.model.dart';
+
 class HintModal extends HookWidget {
+  final Quiz quiz;
+
+  HintModal(this.quiz);
+
   @override
   Widget build(BuildContext context) {
     final int hint = useProvider(hintProvider).state;
@@ -100,9 +107,36 @@ class HintModal extends HookWidget {
                   onPressed: () async => hint < 4
                       ? {
                           Navigator.pop(context),
-                          Fluttertoast.showToast(
-                            msg: 'ヒント' + (hint + 1).toString() + 'を開放しました。',
-                          ),
+                          // Fluttertoast.showToast(
+                          //   msg: 'ヒント' + (hint + 1).toString() + 'を開放しました。',
+                          // ),
+                          context.read(selectedQuestionProvider).state =
+                              dummyQuestion,
+                          context.read(displayReplyFlgProvider).state = false,
+                          if (hint >= 2)
+                            {
+                              context.read(beforeWordProvider).state = '↓質問を選択',
+                              if (hint == 2)
+                                {
+                                  context.read(askQuestionsProvider).state =
+                                      _shuffle(quiz.questions
+                                          .take(quiz.hintDisplayQuestionId)
+                                          .toList()) as List<Question>,
+                                }
+                              else if (hint == 3)
+                                {
+                                  context.read(askQuestionsProvider).state =
+                                      quiz.questions
+                                          .take(quiz.correctAnswerQuestionId)
+                                          .toList(),
+                                }
+                            }
+                          else if (hint >= 0)
+                            {
+                              print('aa'),
+                              context.read(beforeWordProvider).state = '',
+                              context.read(askQuestionsProvider).state = [],
+                            },
                           context.read(hintProvider).state++,
                         }
                       : {},
@@ -122,4 +156,15 @@ class HintModal extends HookWidget {
       ),
     );
   }
+}
+
+List _shuffle(List items) {
+  var random = new Random();
+  for (var i = items.length - 1; i > 0; i--) {
+    var n = random.nextInt(i + 1);
+    var temp = items[i];
+    items[i] = items[n];
+    items[n] = temp;
+  }
+  return items;
 }

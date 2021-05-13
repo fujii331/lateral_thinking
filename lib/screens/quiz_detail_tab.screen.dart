@@ -34,7 +34,7 @@ class QuizDetailTabScreen extends HookWidget {
                 context: context,
                 barrierDismissible: true,
                 builder: (BuildContext context) {
-                  return HintModal();
+                  return HintModal(quiz);
                 },
               );
             },
@@ -67,11 +67,9 @@ class QuizDetailTabScreen extends HookWidget {
         },
         currentIndex: _screen.value,
       ),
-      // body: _views[tabType.index],
       body: PageView(
         controller: _pageController,
         // ページ切り替え時に実行する処理
-        // PageViewのonPageChangedはページインデックスを受け取る
         onPageChanged: (index) {
           _screen.value = index;
         },

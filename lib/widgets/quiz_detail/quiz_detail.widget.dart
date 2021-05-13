@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'dart:math';
 
 import '../../models/quiz.model.dart';
 import '../background.widget.dart';
@@ -18,41 +17,32 @@ class QuizDetail extends HookWidget {
   final subjectController = useTextEditingController();
   final relatedWordController = useTextEditingController();
 
-  void _executeQuestion(
-    BuildContext context,
-    ValueNotifier<String> reply,
-    ValueNotifier<bool> displayReplyFlg,
-    ValueNotifier<List<Question>> askQuestions,
-    ValueNotifier<String> beforeWord,
-    ValueNotifier<Question?> selectedQuestion,
-  ) {
-    reply.value = selectedQuestion.value!.reply;
-    displayReplyFlg.value = true;
-    context.read(askedQuestionsProvider).state.add(selectedQuestion.value!);
+  void _executeQuestion(BuildContext context, List<Question> askQuestions,
+      Question selectedQuestion) {
+    context.read(replyProvider).state = selectedQuestion.reply;
+    context.read(displayReplyFlgProvider).state = true;
+    context.read(askedQuestionsProvider).state.add(selectedQuestion);
     context.read(remainingQuestionsProvider).state = context
         .read(remainingQuestionsProvider)
         .state
-        .where((question) => question.id != selectedQuestion.value!.id)
+        .where((question) => question.id != selectedQuestion.id)
         .toList();
 
-    askQuestions.value = askQuestions.value
-        .where((question) => question.id != selectedQuestion.value!.id)
+    context.read(askQuestionsProvider).state = askQuestions
+        .where((question) => question.id != selectedQuestion.id)
         .toList();
-    beforeWord.value = selectedQuestion.value!.asking;
-    selectedQuestion.value = null;
+    context.read(beforeWordProvider).state = selectedQuestion.asking;
+    context.read(selectedQuestionProvider).state = dummyQuestion;
   }
 
   void _checkQuestions(
+    BuildContext context,
     String subject,
     String relatedWord,
-    List<Question> questions,
+    List<Question> remainingQuestions,
     List<String> allSubjects,
     List<String> allRelatedWords,
-    ValueNotifier<List<Question>> askQuestions,
-    ValueNotifier<bool> displayReplyFlg,
-    ValueNotifier<bool> dummyDisplayFlg,
-    ValueNotifier<Question?> selectedQuestion,
-    ValueNotifier<String> beforeWord,
+    List<Question> askQuestions,
   ) {
     bool existFlg = false;
 
@@ -73,8 +63,8 @@ class QuizDetail extends HookWidget {
       }
     }
 
-    askQuestions.value = existFlg
-        ? questions
+    context.read(askQuestionsProvider).state = existFlg
+        ? remainingQuestions
             .where((question) =>
                 question.asking.startsWith(subject) &&
                 (!question.asking.startsWith(relatedWord) &&
@@ -82,51 +72,44 @@ class QuizDetail extends HookWidget {
             .toList()
         : [];
 
-    if (askQuestions.value.isEmpty) {
-      displayReplyFlg.value = false;
-      dummyDisplayFlg.value = true;
+    context.read(displayReplyFlgProvider).state = false;
+
+    if (context.read(askQuestionsProvider).state.isEmpty) {
+      context.read(beforeWordProvider).state = 'それらの言葉は関係ないようです。';
     } else {
-      displayReplyFlg.value = false;
-      selectedQuestion.value = null;
-      beforeWord.value = '↓質問を選択';
-      dummyDisplayFlg.value = false;
+      context.read(selectedQuestionProvider).state = dummyQuestion;
+      context.read(beforeWordProvider).state = '↓質問を選択';
     }
   }
 
   void submitData(
+    BuildContext context,
     Quiz quiz,
     List<Question> remainingQuestions,
-    ValueNotifier<String> beforeWord,
-    ValueNotifier<bool> displayReplyFlg,
-    ValueNotifier<Question?> selectedQuestion,
-    ValueNotifier<bool> dummyDisplayFlg,
-    ValueNotifier<List<Question>> askQuestions,
+    Question selectedQuestion,
+    List<Question> askQuestions,
   ) {
     final enteredSubject = subjectController.text;
     final enteredRelatedWord = relatedWordController.text;
 
-    beforeWord.value = '';
+    context.read(beforeWordProvider).state = '';
 
     if (enteredSubject.isEmpty || enteredRelatedWord.isEmpty) {
-      displayReplyFlg.value = false;
-      selectedQuestion.value = null;
-      dummyDisplayFlg.value = false;
-      askQuestions.value = [];
+      context.read(displayReplyFlgProvider).state = false;
+      context.read(selectedQuestionProvider).state = dummyQuestion;
+      context.read(askQuestionsProvider).state = [];
 
       return;
     }
 
     _checkQuestions(
+      context,
       enteredSubject,
       enteredRelatedWord,
       remainingQuestions,
       quiz.subjects,
       quiz.relatedWords,
       askQuestions,
-      displayReplyFlg,
-      dummyDisplayFlg,
-      selectedQuestion,
-      beforeWord,
     );
   }
 
@@ -137,43 +120,18 @@ class QuizDetail extends HookWidget {
 
     final bool finishFlg = useProvider(finishFlgProvider).state;
     final int hint = useProvider(hintProvider).state;
-    // ヒント開放時の質問などの考慮が必要！
-    final selectedQuestion = useState<Question?>(null);
 
-    final reply = useState<String>('');
-    // 質問語にhintで表示用
-    final beforeWord = useState<String>('');
+    final selectedQuestion = useProvider(selectedQuestionProvider).state;
 
-    final displayReplyFlg = useState<bool>(false);
-    final dummyDisplayFlg = useState<bool>(false);
+    final String reply = useProvider(replyProvider).state;
+    final String beforeWord = useProvider(beforeWordProvider).state;
 
-    final askQuestions = useState<List<Question>>([]);
+    final bool displayReplyFlg = useProvider(displayReplyFlgProvider).state;
 
-    final selectedSubject = useState<String?>(null);
-    final selectedRelatedWord = useState<String?>(null);
-
-    useEffect(() {
-      if (hint > 2) {
-        selectedQuestion.value = null;
-        displayReplyFlg.value = false;
-        dummyDisplayFlg.value = false;
-        if (hint == 3) {
-          askQuestions.value =
-              _shuffle(quiz.questions.take(quiz.hintDisplayQuestionId).toList())
-                  as List<Question>;
-        } else if (hint == 4) {
-          askQuestions.value =
-              quiz.questions.take(quiz.correctAnswerQuestionId).toList();
-        }
-      } else if (hint > 0) {
-        selectedQuestion.value = null;
-        displayReplyFlg.value = false;
-        dummyDisplayFlg.value = false;
-        askQuestions.value = [];
-        beforeWord.value = '↓質問を選択';
-      }
-      return () => {};
-    }, [hint]);
+    final String? selectedSubject = useProvider(selectedSubjectProvider).state;
+    final String? selectedRelatedWord =
+        useProvider(selectedRelatedWordProvider).state;
+    final List<Question> askQuestions = useProvider(askQuestionsProvider).state;
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -200,24 +158,19 @@ class QuizDetail extends HookWidget {
                               '主語',
                               subjectController,
                               remainingQuestions,
-                              beforeWord,
-                              displayReplyFlg,
                               selectedQuestion,
-                              dummyDisplayFlg,
                               askQuestions,
                             )
                           : _wordSelectForQuestion(
                               context,
-                              selectedRelatedWord,
+                              selectedSubject,
+                              selectedSubjectProvider,
                               '主語',
                               hint,
                               quiz.subjects,
                               subjectController,
                               remainingQuestions,
-                              beforeWord,
-                              displayReplyFlg,
                               selectedQuestion,
-                              dummyDisplayFlg,
                               askQuestions,
                             ),
                       Text(
@@ -231,15 +184,13 @@ class QuizDetail extends HookWidget {
                               '関連語',
                               relatedWordController,
                               remainingQuestions,
-                              beforeWord,
-                              displayReplyFlg,
                               selectedQuestion,
-                              dummyDisplayFlg,
                               askQuestions,
                             )
                           : _wordSelectForQuestion(
                               context,
-                              selectedSubject,
+                              selectedRelatedWord,
+                              selectedRelatedWordProvider,
                               '関連語',
                               hint,
                               quiz.relatedWords
@@ -247,10 +198,7 @@ class QuizDetail extends HookWidget {
                                   .toList(),
                               relatedWordController,
                               remainingQuestions,
-                              beforeWord,
-                              displayReplyFlg,
                               selectedQuestion,
-                              dummyDisplayFlg,
                               askQuestions,
                             ),
                       Text(
@@ -277,7 +225,7 @@ class QuizDetail extends HookWidget {
                         width: MediaQuery.of(context).size.width * .60,
                         height: MediaQuery.of(context).size.height * .09,
                         decoration: BoxDecoration(
-                          color: askQuestions.value.isEmpty
+                          color: askQuestions.isEmpty
                               ? Colors.grey[400]
                               : Colors.white,
                           borderRadius: BorderRadius.circular(10),
@@ -291,14 +239,12 @@ class QuizDetail extends HookWidget {
                             finishFlg
                                 ? 'この問題は終わりです。'
                                 : hint > 2 &&
-                                        askQuestions.value.isEmpty &&
-                                        beforeWord.value.isEmpty
+                                        askQuestions.isEmpty &&
+                                        beforeWord.isEmpty
                                     ? 'もう質問はありません。'
-                                    : dummyDisplayFlg.value
-                                        ? 'それらの言葉は関係ないようです。'
-                                        : beforeWord.value.isEmpty
-                                            ? ''
-                                            : beforeWord.value,
+                                    : beforeWord.isEmpty
+                                        ? ''
+                                        : beforeWord,
                             style: TextStyle(
                               color: Colors.black54,
                             ),
@@ -306,33 +252,33 @@ class QuizDetail extends HookWidget {
                           underline: Container(
                             color: Colors.white,
                           ),
-                          value: selectedQuestion.value,
-                          items: askQuestions.value.map((Question question) {
+                          value: selectedQuestion.id != 0
+                              ? selectedQuestion
+                              : null,
+                          items: askQuestions.map((Question question) {
                             return DropdownMenuItem(
                               value: question,
                               child: Text(question.asking),
                             );
                           }).toList(),
                           onChanged: (targetQuestion) {
-                            displayReplyFlg.value = false;
-                            selectedQuestion.value = targetQuestion as Question;
+                            context.read(displayReplyFlgProvider).state = false;
+                            context.read(selectedQuestionProvider).state =
+                                targetQuestion as Question;
                           },
                         ),
                       ),
                       ElevatedButton(
-                        onPressed: () => selectedQuestion.value != null
+                        onPressed: () => selectedQuestion.id != 0
                             ? _executeQuestion(
                                 context,
-                                reply,
-                                displayReplyFlg,
                                 askQuestions,
-                                beforeWord,
                                 selectedQuestion,
                               )
                             : {},
                         child: const Text('質問！'),
                         style: ElevatedButton.styleFrom(
-                          primary: selectedQuestion.value != null
+                          primary: selectedQuestion.id != 0
                               ? Colors.blue
                               : Colors.blue[200],
                           textStyle: Theme.of(context).textTheme.button,
@@ -345,8 +291,8 @@ class QuizDetail extends HookWidget {
                   ),
                 ),
                 QuizReply(
-                  displayReplyFlg.value,
-                  reply.value,
+                  displayReplyFlg,
+                  reply,
                 )
               ],
             ),
@@ -361,11 +307,8 @@ class QuizDetail extends HookWidget {
     String text,
     TextEditingController controller,
     List<Question> remainingQuestions,
-    ValueNotifier<String> beforeWord,
-    ValueNotifier<bool> displayReplyFlg,
-    ValueNotifier<Question?> selectedQuestion,
-    ValueNotifier<bool> dummyDisplayFlg,
-    ValueNotifier<List<Question>> askQuestions,
+    Question selectedQuestion,
+    List<Question> askQuestions,
   ) {
     return Container(
       width: MediaQuery.of(context).size.width * .30,
@@ -393,12 +336,10 @@ class QuizDetail extends HookWidget {
         ],
         controller: controller,
         onSubmitted: (_) => submitData(
+          context,
           quiz,
           remainingQuestions,
-          beforeWord,
-          displayReplyFlg,
           selectedQuestion,
-          dummyDisplayFlg,
           askQuestions,
         ),
       ),
@@ -407,17 +348,15 @@ class QuizDetail extends HookWidget {
 
   Widget _wordSelectForQuestion(
     BuildContext context,
-    ValueNotifier<String?> selectedWord,
+    String? selectedWord,
+    StateProvider<String> selectedWordProvider,
     String displayHint,
     int hint,
     List<String> wordList,
     TextEditingController controller,
     List<Question> remainingQuestions,
-    ValueNotifier<String> beforeWord,
-    ValueNotifier<bool> displayReplyFlg,
-    ValueNotifier<Question?> selectedQuestion,
-    ValueNotifier<bool> dummyDisplayFlg,
-    ValueNotifier<List<Question>> askQuestions,
+    Question selectedQuestion,
+    List<Question> askQuestions,
   ) {
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -444,39 +383,27 @@ class QuizDetail extends HookWidget {
         underline: Container(
           color: Colors.white,
         ),
-        value: selectedWord.value,
+        value: selectedWord != '' ? selectedWord : null,
         items: hint < 3
-            ? wordList.map((String subject) {
+            ? wordList.map((String word) {
                 return DropdownMenuItem(
-                  value: subject,
-                  child: Text(subject),
+                  value: word,
+                  child: Text(word),
                 );
               }).toList()
             : null,
         onChanged: (targetSubject) {
-          controller.text = selectedWord.value = targetSubject as String;
+          controller.text = context.read(selectedWordProvider).state =
+              targetSubject as String;
           submitData(
+            context,
             quiz,
             remainingQuestions,
-            beforeWord,
-            displayReplyFlg,
             selectedQuestion,
-            dummyDisplayFlg,
             askQuestions,
           );
         },
       ),
     );
   }
-}
-
-List _shuffle(List items) {
-  var random = new Random();
-  for (var i = items.length - 1; i > 0; i--) {
-    var n = random.nextInt(i + 1);
-    var temp = items[i];
-    items[i] = items[n];
-    items[n] = temp;
-  }
-  return items;
 }

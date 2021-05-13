@@ -22,7 +22,7 @@ class QuizReply extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.black87,
           border: Border.all(
-            color: Colors.pink.shade800,
+            color: Colors.blue.shade500,
             width: 5,
           ),
         ),
