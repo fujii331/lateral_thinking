@@ -23,7 +23,7 @@ class QuizItem extends StatelessWidget {
     ctx.read(displayReplyFlgProvider).state = false;
     ctx.read(selectedSubjectProvider).state = '';
     ctx.read(selectedRelatedWordProvider).state = '';
-    ctx.read(askQuestionsProvider).state = [];
+    ctx.read(askingQuestionsProvider).state = [];
 
     Navigator.of(ctx).pushNamed(
       QuizDetailTabScreen.routeName,

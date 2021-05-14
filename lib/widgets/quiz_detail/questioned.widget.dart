@@ -6,7 +6,7 @@ import '../background.widget.dart';
 import '../../providers/quiz.provider.dart';
 import '../../models/quiz.model.dart';
 
-class QuizQuestioned extends HookWidget {
+class Questioned extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final List<Question> askedQuestions =

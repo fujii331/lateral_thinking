@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-import '../widgets/quiz_detail/quiz_detail.widget.dart';
-import '../widgets/quiz_detail/quiz_questioned.widget.dart';
+import '../widgets/quiz_detail.widget.dart';
+import '../widgets/quiz_detail/questioned.widget.dart';
 import '../widgets/quiz_detail/quiz_answer.widget.dart';
-import '../widgets/hint_modal.widget.dart';
+import '../widgets/hint/hint_modal.widget.dart';
 
 import '../models/quiz.model.dart';
 
@@ -75,7 +75,7 @@ class QuizDetailTabScreen extends HookWidget {
         },
         children: [
           QuizDetail(quiz),
-          QuizQuestioned(),
+          Questioned(),
           QuizAnswer(),
         ],
       ),

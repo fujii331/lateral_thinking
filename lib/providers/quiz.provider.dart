@@ -15,6 +15,6 @@ final beforeWordProvider = StateProvider((ref) => '');
 final displayReplyFlgProvider = StateProvider((ref) => false);
 final selectedSubjectProvider = StateProvider((ref) => '');
 final selectedRelatedWordProvider = StateProvider((ref) => '');
-final askQuestionsProvider = StateProvider((ref) => <Question>[]);
+final askingQuestionsProvider = StateProvider((ref) => <Question>[]);
 
 const dummyQuestion = Question(asking: '', id: 0, reply: '');

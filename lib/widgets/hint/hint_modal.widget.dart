@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:math';
 
-import '../providers/quiz.provider.dart';
+import '../../providers/quiz.provider.dart';
+import './hint_replry_modal.widget.dart';
 
-import '../models/quiz.model.dart';
+import '../../models/quiz.model.dart';
 
 class HintModal extends HookWidget {
   final Quiz quiz;
@@ -113,9 +113,6 @@ class HintModal extends HookWidget {
                   onPressed: () async => hint < 4
                       ? {
                           Navigator.pop(context),
-                          Fluttertoast.showToast(
-                            msg: 'ヒント' + (hint + 1).toString() + 'を開放しました。',
-                          ),
                           context.read(selectedQuestionProvider).state =
                               dummyQuestion,
                           context.read(displayReplyFlgProvider).state = false,
@@ -124,7 +121,7 @@ class HintModal extends HookWidget {
                               context.read(beforeWordProvider).state = '↓質問を選択',
                               if (hint == 2)
                                 {
-                                  context.read(askQuestionsProvider).state =
+                                  context.read(askingQuestionsProvider).state =
                                       _shuffle(quiz.questions
                                           .take(quiz.hintDisplayQuestionId)
                                           .where((question) =>
@@ -134,8 +131,9 @@ class HintModal extends HookWidget {
                                 }
                               else if (hint == 3)
                                 {
-                                  context.read(askQuestionsProvider).state =
-                                      quiz.questions
+                                  context.read(askingQuestionsProvider).state =
+                                      quiz
+                                          .questions
                                           .take(quiz.correctAnswerQuestionId)
                                           .where((question) =>
                                               !currentQuestionIds
@@ -143,7 +141,7 @@ class HintModal extends HookWidget {
                                           .toList(),
                                 },
                               if (context
-                                  .read(askQuestionsProvider)
+                                  .read(askingQuestionsProvider)
                                   .state
                                   .isEmpty)
                                 {
@@ -154,9 +152,22 @@ class HintModal extends HookWidget {
                           else if (hint >= 0)
                             {
                               context.read(beforeWordProvider).state = '',
-                              context.read(askQuestionsProvider).state = [],
+                              context.read(askingQuestionsProvider).state = [],
                             },
                           context.read(hintProvider).state++,
+                          await showDialog<int>(
+                            context: context,
+                            barrierDismissible: true,
+                            builder: (BuildContext context) {
+                              return HintReplyModal(hint == 0
+                                  ? '主語を選択肢で選べるようになりました。'
+                                  : hint == 1
+                                      ? '関連語を選択肢で選べるようになりました。'
+                                      : hint == 2
+                                          ? '質問を選択肢で選べるようになりました。'
+                                          : '正解を導く質問のみ選べるようになりました。');
+                            },
+                          ),
                         }
                       : {},
                   child: const Text('開放する'),

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class QuizReply extends StatelessWidget {
+class QuestionReply extends StatelessWidget {
   final bool displayReplyFlg;
   final String reply;
 
-  QuizReply(this.displayReplyFlg, this.reply);
+  QuestionReply(this.displayReplyFlg, this.reply);
 
   @override
   Widget build(BuildContext context) {

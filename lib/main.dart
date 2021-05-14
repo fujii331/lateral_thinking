@@ -38,7 +38,6 @@ class MyApp extends StatelessWidget {
               ),
               button: TextStyle(
                 fontSize: 20.0,
-                // fontWeight: FontWeight.bold,
               ),
             ),
       ),
