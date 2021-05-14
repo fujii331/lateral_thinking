@@ -113,6 +113,7 @@ class HintModal extends HookWidget {
                   onPressed: () async => hint < 4
                       ? {
                           Navigator.pop(context),
+                          // TODO広告を入れる
                           context.read(selectedQuestionProvider).state =
                               dummyQuestion,
                           context.read(displayReplyFlgProvider).state = false,

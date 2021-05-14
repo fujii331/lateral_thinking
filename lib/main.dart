@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import './screens/title.screen.dart';
 import './screens/quiz_list.screen.dart';
 import './screens/quiz_detail_tab.screen.dart';
 
-void main() => runApp(
-      ProviderScope(
-        child: MyApp(),
-      ),
-    );
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
+
+  runApp(
+    ProviderScope(
+      child: MyApp(),
+    ),
+  );
+}
 
 class MyApp extends StatelessWidget {
   @override

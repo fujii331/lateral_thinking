@@ -46,3 +46,4 @@ app.*.map.json
 /android/app/release
 
 lib/quiz_data.dart
+lib/advertising.dart

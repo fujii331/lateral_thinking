@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../models/quiz.model.dart';
-import '../screens/quiz_detail_tab.screen.dart';
-import '../providers/quiz.provider.dart';
+import '../../models/quiz.model.dart';
+import '../../screens/quiz_detail_tab.screen.dart';
+import '../../providers/quiz.provider.dart';
 
 class QuizItem extends StatelessWidget {
   final Quiz quiz;
