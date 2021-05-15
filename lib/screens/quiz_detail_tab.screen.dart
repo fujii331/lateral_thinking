@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../widgets/quiz_detail.widget.dart';
+import '../widgets/quiz_detail/quiz_detail.widget.dart';
 import '../widgets/quiz_detail/questioned.widget.dart';
 import '../widgets/quiz_detail/quiz_answer.widget.dart';
 import '../widgets/hint/hint_modal.widget.dart';
+import '../widgets/loading.widget.dart';
+import '../providers/quiz.provider.dart';
 
 import '../models/quiz.model.dart';
 
@@ -15,8 +18,11 @@ class QuizDetailTabScreen extends HookWidget {
   Widget build(BuildContext context) {
     final quiz = ModalRoute.of(context)?.settings.arguments as Quiz;
 
-    final _screen = useState<int>(0);
-    final _pageController = usePageController(initialPage: 0, keepPage: true);
+    final screenNo = useState<int>(0);
+    final pageController = usePageController(initialPage: 0, keepPage: true);
+    final List<Answer> allAnswers = useProvider(allAnswersProvider).state;
+
+    final nowLoading = useState(false);
 
     return Scaffold(
       appBar: AppBar(
@@ -29,15 +35,17 @@ class QuizDetailTabScreen extends HookWidget {
               Icons.lightbulb,
               color: Colors.yellow,
             ),
-            onPressed: () async {
-              await showDialog<int>(
-                context: context,
-                barrierDismissible: true,
-                builder: (BuildContext context) {
-                  return HintModal(quiz);
-                },
-              );
-            },
+            onPressed: nowLoading.value || allAnswers.isEmpty
+                ? () {}
+                : () async {
+                    await showDialog<int>(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return HintModal(quiz);
+                      },
+                    );
+                  },
           ),
         ],
       ),
@@ -60,23 +68,33 @@ class QuizDetailTabScreen extends HookWidget {
             label: '回答',
           ),
         ],
-        onTap: (int selectIndex) {
-          _screen.value = selectIndex;
-          _pageController.animateToPage(selectIndex,
-              duration: Duration(milliseconds: 400), curve: Curves.easeOut);
-        },
-        currentIndex: _screen.value,
+        onTap: nowLoading.value
+            ? (int selectIndex) {}
+            : (int selectIndex) {
+                screenNo.value = selectIndex;
+                pageController.animateToPage(selectIndex,
+                    duration: Duration(milliseconds: 400),
+                    curve: Curves.easeOut);
+              },
+        currentIndex: screenNo.value,
       ),
-      body: PageView(
-        controller: _pageController,
-        // ページ切り替え時に実行する処理
-        onPageChanged: (index) {
-          _screen.value = index;
-        },
-        children: [
-          QuizDetail(quiz),
-          Questioned(),
-          QuizAnswer(),
+      body: Stack(
+        fit: StackFit.expand,
+        clipBehavior: Clip.antiAlias,
+        children: <Widget>[
+          PageView(
+            controller: pageController,
+            // ページ切り替え時に実行する処理
+            onPageChanged: (index) {
+              screenNo.value = index;
+            },
+            children: [
+              QuizDetail(quiz),
+              Questioned(),
+              QuizAnswer(nowLoading),
+            ],
+          ),
+          Loading(nowLoading.value),
         ],
       ),
     );

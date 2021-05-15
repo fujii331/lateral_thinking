@@ -39,7 +39,7 @@ class QuizItemAd extends StatelessWidget {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return HintReplyModal(quiz.id);
+            return AdvertisingModal(quiz.id);
           },
         ),
       ),

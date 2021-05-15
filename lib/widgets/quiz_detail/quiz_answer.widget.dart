@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../background.widget.dart';
 import '../../providers/quiz.provider.dart';
 import '../../models/quiz.model.dart';
 import 'correct_answer_modal.widget.dart';
+import '../../advertising.dart';
 
 class QuizAnswer extends HookWidget {
+  final ValueNotifier nowLoading;
+
+  QuizAnswer(this.nowLoading);
+
   void getAnswerChoices(
     BuildContext context,
     List<Answer> allAnswers,
@@ -61,6 +67,19 @@ class QuizAnswer extends HookWidget {
     selectedAnswer.value = null;
   }
 
+  Future loading(
+      BuildContext context, ValueNotifier loaded, myInterstitial) async {
+    myInterstitial.load();
+    nowLoading.value = true;
+    for (int i = 0; i < 10; i++) {
+      if (loaded.value) {
+        break;
+      }
+      await new Future.delayed(new Duration(seconds: 1));
+    }
+    nowLoading.value = false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<Answer> allAnswers = useProvider(allAnswersProvider).state;
@@ -80,6 +99,31 @@ class QuizAnswer extends HookWidget {
     final displayCommentFlg = useState<bool>(false);
     final comment = useState<String>('');
     final beforeAnswer = useState<String>('');
+
+    final loaded = useState(false);
+
+    final InterstitialAd myInterstitial = InterstitialAd(
+      adUnitId: ANDROID_INTERSTITIAL_MOVIE_ADVID,
+      request: AdRequest(),
+      listener: AdListener(
+        onAdLoaded: (Ad ad) => {
+          loaded.value = true,
+          print('インタースティシャル広告がロードされました。'),
+        },
+        onAdFailedToLoad: (Ad ad, LoadAdError error) => {
+          ad.dispose(),
+          print('インタースティシャル広告のロードに失敗しました。: $error'),
+        },
+        // onAdOpened: (Ad ad) => print('インタースティシャル広告が開かれました。'),
+        onAdClosed: (Ad ad) => {
+          ad.dispose(),
+          print('インタースティシャル広告が閉じられました。'),
+        },
+        // onApplicationExit: (Ad ad) => {
+        //   print('ユーザーがアプリを離れました。'),
+        // },
+      ),
+    );
 
     getAnswerChoices(
       context,
@@ -160,6 +204,15 @@ class QuizAnswer extends HookWidget {
                   onPressed: enableAnswerButtonFlg.value
                       ? correctAnswerIds.contains(selectedAnswer.value!.id)
                           ? () async {
+                              // 広告を出す
+                              await loading(context, loaded, myInterstitial);
+                              if (loaded.value) {
+                                await myInterstitial.show();
+                              }
+
+                              await new Future.delayed(
+                                  new Duration(seconds: 1));
+
                               String correctComment =
                                   selectedAnswer.value!.comment;
                               enableAnswerButtonFlg.value = false;
@@ -172,7 +225,7 @@ class QuizAnswer extends HookWidget {
                               context.read(remainingQuestionsProvider).state =
                                   [];
 
-                              await showDialog<int>(
+                              showDialog<int>(
                                 context: context,
                                 barrierDismissible: false,
                                 builder: (BuildContext context) {

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-class HintReplyModal extends HookWidget {
+class ReplyModal extends HookWidget {
   final String reply;
 
-  HintReplyModal(this.reply);
+  ReplyModal(this.reply);
 
   @override
   Widget build(BuildContext context) {

@@ -1,27 +1,136 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'dart:async';
 import 'dart:math';
 
 import '../../providers/quiz.provider.dart';
-import './hint_replry_modal.widget.dart';
+
+import '../replry_modal.widget.dart';
+import './ad_loading_modal.widget.dart';
 
 import '../../models/quiz.model.dart';
+import '../../advertising.dart';
 
 class HintModal extends HookWidget {
   final Quiz quiz;
 
   HintModal(this.quiz);
 
+  Future loading(BuildContext context, ValueNotifier loaded,
+      RewardedAd rewardAd, ValueNotifier nowLoading) async {
+    rewardAd.load();
+    nowLoading.value = true;
+    for (int i = 0; i < 15; i++) {
+      if (loaded.value) {
+        break;
+      }
+      await new Future.delayed(new Duration(seconds: 1));
+    }
+    nowLoading.value = false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final int hint = useProvider(hintProvider).state;
+    final loaded = useState(false);
+    final nowLoading = useState(false);
+
     final List<Question> askedQuestions =
         useProvider(askedQuestionsProvider).state;
 
     List<int> currentQuestionIds = askedQuestions.map((askedQuestion) {
       return askedQuestion.id;
     }).toList();
+
+    final rewardAd = RewardedAd(
+      adUnitId: ANDROID_REWQRD_ADVID,
+      request: AdRequest(),
+      listener: AdListener(
+        onAdLoaded: (Ad ad) {
+          loaded.value = true;
+          print('リワード広告を読み込みました！');
+        },
+        onAdFailedToLoad: (Ad ad, LoadAdError error) {
+          ad.dispose();
+          print('リワード広告の読み込みに失敗しました。: $error');
+        },
+        onAdOpened: (Ad ad) {
+          print('リワード広告が開かれました。');
+        },
+        onAdClosed: (Ad ad) => {
+          ad.dispose(),
+          print('リワード広告が閉じられました。'),
+          Navigator.pop(context),
+          Navigator.pop(context),
+          showDialog<int>(
+            context: context,
+            barrierDismissible: true,
+            builder: (BuildContext context) {
+              return ReplyModal(
+                'ヒントを開放できませんでした。',
+              );
+            },
+          ),
+        },
+        onApplicationExit: (Ad ad) => print('ユーザーがアプリを離れました。'),
+        onRewardedAdUserEarnedReward: (RewardedAd ad, RewardItem reward) => {
+          ad.dispose(),
+          print('報酬を獲得しました: $reward'),
+          context.read(hintProvider).state++,
+          context.read(selectedQuestionProvider).state = dummyQuestion,
+          context.read(displayReplyFlgProvider).state = false,
+          if (hint >= 2)
+            {
+              context.read(beforeWordProvider).state = '↓質問を選択',
+              if (hint == 2)
+                {
+                  context.read(askingQuestionsProvider).state = _shuffle(quiz
+                      .questions
+                      .take(quiz.hintDisplayQuestionId)
+                      .where((question) =>
+                          !currentQuestionIds.contains(question.id))
+                      .toList()) as List<Question>,
+                }
+              else if (hint == 3)
+                {
+                  context.read(askingQuestionsProvider).state = quiz.questions
+                      .take(quiz.correctAnswerQuestionId)
+                      .where((question) =>
+                          !currentQuestionIds.contains(question.id))
+                      .toList(),
+                },
+              if (context.read(askingQuestionsProvider).state.isEmpty)
+                {
+                  context.read(beforeWordProvider).state = 'もう質問はありません。',
+                },
+            }
+          else if (hint >= 0)
+            {
+              context.read(beforeWordProvider).state = '',
+              context.read(askingQuestionsProvider).state = [],
+            },
+          Navigator.pop(context),
+          Navigator.pop(context),
+          showDialog<int>(
+            context: context,
+            barrierDismissible: true,
+            builder: (BuildContext context) {
+              return ReplyModal(
+                hint == 0
+                    ? '主語を選択肢で選べるようになりました。'
+                    : hint == 1
+                        ? '関連語を選択肢で選べるようになりました。'
+                        : hint == 2
+                            ? '質問を選択肢で選べるようになりました。'
+                            : '正解を導く質問のみ選べるようになりました。',
+              );
+            },
+          ),
+        },
+      ),
+    );
 
     return AlertDialog(
       content: Column(
@@ -98,7 +207,8 @@ class HintModal extends HookWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () =>
+                      nowLoading.value ? {} : Navigator.pop(context),
                   child: const Text('やめる'),
                   style: ElevatedButton.styleFrom(
                     primary: Colors.red[500],
@@ -110,65 +220,33 @@ class HintModal extends HookWidget {
                 ),
                 const SizedBox(width: 15),
                 ElevatedButton(
-                  onPressed: () async => hint < 4
+                  onPressed: () async => nowLoading.value || hint < 4
                       ? {
-                          Navigator.pop(context),
-                          // TODO広告を入れる
-                          context.read(selectedQuestionProvider).state =
-                              dummyQuestion,
-                          context.read(displayReplyFlgProvider).state = false,
-                          if (hint >= 2)
-                            {
-                              context.read(beforeWordProvider).state = '↓質問を選択',
-                              if (hint == 2)
-                                {
-                                  context.read(askingQuestionsProvider).state =
-                                      _shuffle(quiz.questions
-                                          .take(quiz.hintDisplayQuestionId)
-                                          .where((question) =>
-                                              !currentQuestionIds
-                                                  .contains(question.id))
-                                          .toList()) as List<Question>,
-                                }
-                              else if (hint == 3)
-                                {
-                                  context.read(askingQuestionsProvider).state =
-                                      quiz
-                                          .questions
-                                          .take(quiz.correctAnswerQuestionId)
-                                          .where((question) =>
-                                              !currentQuestionIds
-                                                  .contains(question.id))
-                                          .toList(),
-                                },
-                              if (context
-                                  .read(askingQuestionsProvider)
-                                  .state
-                                  .isEmpty)
-                                {
-                                  context.read(beforeWordProvider).state =
-                                      'もう質問はありません。',
-                                },
-                            }
-                          else if (hint >= 0)
-                            {
-                              context.read(beforeWordProvider).state = '',
-                              context.read(askingQuestionsProvider).state = [],
-                            },
-                          context.read(hintProvider).state++,
-                          await showDialog<int>(
+                          showDialog<int>(
                             context: context,
-                            barrierDismissible: true,
+                            barrierDismissible: false,
                             builder: (BuildContext context) {
-                              return HintReplyModal(hint == 0
-                                  ? '主語を選択肢で選べるようになりました。'
-                                  : hint == 1
-                                      ? '関連語を選択肢で選べるようになりました。'
-                                      : hint == 2
-                                          ? '質問を選択肢で選べるようになりました。'
-                                          : '正解を導く質問のみ選べるようになりました。');
+                              return AdLoadingModal();
                             },
                           ),
+                          await loading(context, loaded, rewardAd, nowLoading),
+                          if (loaded.value)
+                            {
+                              rewardAd.show(),
+                            }
+                          else
+                            {
+                              Navigator.pop(context),
+                              showDialog<int>(
+                                context: context,
+                                barrierDismissible: true,
+                                builder: (BuildContext context) {
+                                  return ReplyModal(
+                                    'ヒントの取得に失敗しました。\n再度お試しください。',
+                                  );
+                                },
+                              ),
+                            },
                         }
                       : {},
                   child: const Text('開放する'),
