@@ -5,6 +5,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:audioplayers/audio_cache.dart';
 
 import './screens/title.screen.dart';
+import './screens/lecture_tab.screen.dart';
 import './screens/quiz_list.screen.dart';
 import './screens/quiz_detail_tab.screen.dart';
 import './providers/quiz.provider.dart';
@@ -46,6 +47,7 @@ class MyApp extends HookWidget {
 
     return MaterialApp(
       title: 'LateralThinking',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         canvasColor: Colors.grey.shade100,
         fontFamily: 'KiwiMaru',
@@ -74,6 +76,8 @@ class MyApp extends HookWidget {
       initialRoute: '/',
       routes: <String, WidgetBuilder>{
         '/': (BuildContext context) => TitleScreen(),
+        LectureTabScreen.routeName: (BuildContext context) =>
+            LectureTabScreen(),
         QuizListScreen.routeName: (BuildContext context) => QuizListScreen(),
         QuizDetailTabScreen.routeName: (BuildContext context) =>
             QuizDetailTabScreen(),

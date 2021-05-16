@@ -3,7 +3,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audio_cache.dart';
 
-import 'quiz_list.screen.dart';
+import './quiz_list.screen.dart';
+import './lecture_tab.screen.dart';
 import '../widgets/background.widget.dart';
 import '../providers/quiz.provider.dart';
 
@@ -11,6 +12,12 @@ class TitleScreen extends HookWidget {
   void toQuizList(BuildContext ctx) {
     Navigator.of(ctx).pushNamed(
       QuizListScreen.routeName,
+    );
+  }
+
+  void toLectureTab(BuildContext ctx) {
+    Navigator.of(ctx).pushNamed(
+      LectureTabScreen.routeName,
     );
   }
 
@@ -85,7 +92,14 @@ class TitleScreen extends HookWidget {
         icon: icon,
         onPressed: () => {
           soundEffect.play('sounds/tap.mp3', isNotification: true),
-          toQuizList(context)
+          if (text == '遊ぶ')
+            {
+              toQuizList(context),
+            }
+          else
+            {
+              toLectureTab(context),
+            },
         },
         label: Text(text),
         style: ElevatedButton.styleFrom(

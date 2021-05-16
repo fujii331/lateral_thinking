@@ -149,7 +149,7 @@ class HintModal extends HookWidget {
             ),
             child: Text(
               hint < 4
-                  ? 'ヒント' + (hint + 1).toString() + 'を取得しますか？'
+                  ? '短い動画を見てヒント' + (hint + 1).toString() + 'を取得しますか？'
                   : 'ヒントはもうありません。',
               style: TextStyle(
                 fontSize: 22.0,

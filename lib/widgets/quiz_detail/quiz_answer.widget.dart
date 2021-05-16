@@ -23,7 +23,6 @@ class QuizAnswer extends HookWidget {
     List<Question> askedQuestions,
     List<int> executedAnswerIds,
   ) {
-    bool judgeFlg = true;
     List<Answer> wkAnswers = [];
 
     List<int> currentQuestionIds = askedQuestions.map((askedQuestion) {
@@ -31,6 +30,7 @@ class QuizAnswer extends HookWidget {
     }).toList();
 
     allAnswers.forEach((Answer answer) {
+      bool judgeFlg = true;
       answer.questionIds.forEach((int questionId) {
         if (judgeFlg) {
           // 現在の回答の中に対象のidがなかったらfalse
@@ -183,7 +183,7 @@ class QuizAnswer extends HookWidget {
                                   : '回答を選択'
                               : beforeAnswer.value,
                       style: TextStyle(
-                        color: Colors.black87,
+                        color: Colors.black54,
                       ),
                     ),
                     underline: Container(
@@ -242,7 +242,7 @@ class QuizAnswer extends HookWidget {
                               );
                             }
                           : () => {
-                                soundEffect.play('quiz_button/tap.mp3',
+                                soundEffect.play('sounds/quiz_button.mp3',
                                     isNotification: true),
                                 executeAnswer(
                                   context,
@@ -283,7 +283,7 @@ class QuizAnswer extends HookWidget {
                     ),
                     decoration: BoxDecoration(
                       color: Colors.blue.shade100,
-                      borderRadius: BorderRadius.circular(50),
+                      borderRadius: BorderRadius.circular(30),
                       border: Border.all(
                         color: Colors.blue.shade800,
                         width: 5,

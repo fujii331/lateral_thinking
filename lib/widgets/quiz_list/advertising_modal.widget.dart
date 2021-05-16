@@ -106,7 +106,7 @@ class AdvertisingModal extends HookWidget {
               vertical: 10,
             ),
             child: Text(
-              '広告を見て次の問題を開放しますか？',
+              '短い動画を見て次の問題を取得しますか？',
               style: TextStyle(
                 fontSize: 22.0,
               ),

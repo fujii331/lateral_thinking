@@ -3,7 +3,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audio_cache.dart';
 
-import '../../screens/quiz_list.screen.dart';
 import '../../providers/quiz.provider.dart';
 
 class CorrectAnswerModal extends HookWidget {
@@ -32,7 +31,7 @@ class CorrectAnswerModal extends HookWidget {
             ),
           ),
           Container(
-            height: MediaQuery.of(context).size.height * .40,
+            height: MediaQuery.of(context).size.height * .30,
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -54,9 +53,8 @@ class CorrectAnswerModal extends HookWidget {
             child: ElevatedButton(
               onPressed: () => {
                 soundEffect.play('sounds/tap.mp3', isNotification: true),
-                Navigator.of(context).pushNamed(
-                  QuizListScreen.routeName,
-                )
+                Navigator.pop(context),
+                Navigator.pop(context),
               },
               child: const Text('一覧に戻る'),
               style: ElevatedButton.styleFrom(
