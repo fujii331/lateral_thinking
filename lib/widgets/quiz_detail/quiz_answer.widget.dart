@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 import '../background.widget.dart';
 import '../../providers/quiz.provider.dart';
@@ -82,6 +84,8 @@ class QuizAnswer extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AudioCache player = useProvider(soundEffectProvider).state;
+    final AudioPlayer bgm = useProvider(bgmProvider).state;
     final List<Answer> allAnswers = useProvider(allAnswersProvider).state;
 
     final List<Question> askedQuestions =
@@ -118,6 +122,7 @@ class QuizAnswer extends HookWidget {
         onAdClosed: (Ad ad) => {
           ad.dispose(),
           print('インタースティシャル広告が閉じられました。'),
+          bgm.resume(),
         },
         // onApplicationExit: (Ad ad) => {
         //   print('ユーザーがアプリを離れました。'),
@@ -204,9 +209,12 @@ class QuizAnswer extends HookWidget {
                   onPressed: enableAnswerButtonFlg.value
                       ? correctAnswerIds.contains(selectedAnswer.value!.id)
                           ? () async {
+                              player.play('sounds/correct_answer.mp3',
+                                  isNotification: true);
                               // 広告を出す
                               await loading(context, loaded, myInterstitial);
                               if (loaded.value) {
+                                bgm.pause();
                                 await myInterstitial.show();
                               }
 
@@ -233,15 +241,19 @@ class QuizAnswer extends HookWidget {
                                 },
                               );
                             }
-                          : () => executeAnswer(
-                                context,
-                                enableAnswerButtonFlg,
-                                comment,
-                                displayCommentFlg,
-                                beforeAnswer,
-                                selectedAnswer,
-                                availableAnswers,
-                              )
+                          : () => {
+                                player.play('quiz_button/tap.mp3',
+                                    isNotification: true),
+                                executeAnswer(
+                                  context,
+                                  enableAnswerButtonFlg,
+                                  comment,
+                                  displayCommentFlg,
+                                  beforeAnswer,
+                                  selectedAnswer,
+                                  availableAnswers,
+                                ),
+                              }
                       : () => {},
                   child: const Text('回答！'),
                   style: ElevatedButton.styleFrom(

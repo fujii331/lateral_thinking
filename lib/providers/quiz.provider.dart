@@ -1,5 +1,7 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../models/quiz.model.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:audioplayers/audio_cache.dart';
 
 final remainingQuestionsProvider = StateProvider((ref) => <Question>[]);
 final askedQuestionsProvider = StateProvider((ref) => <Question>[]);
@@ -19,3 +21,7 @@ final selectedRelatedWordProvider = StateProvider((ref) => '');
 final askingQuestionsProvider = StateProvider((ref) => <Question>[]);
 
 const dummyQuestion = Question(asking: '', id: 0, reply: '');
+
+final initBgmProvider = StateProvider((ref) => false);
+final bgmProvider = StateProvider((ref) => new AudioPlayer());
+final soundEffectProvider = StateProvider((ref) => new AudioCache());

@@ -3,6 +3,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
+
 import 'dart:async';
 
 import '../replry_modal.widget.dart';
@@ -37,6 +40,8 @@ class AdvertisingModal extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AudioCache player = useProvider(soundEffectProvider).state;
+    final AudioPlayer bgm = useProvider(bgmProvider).state;
     final loaded = useState(false);
     final nowLoading = useState(false);
 
@@ -66,6 +71,7 @@ class AdvertisingModal extends HookWidget {
             builder: (BuildContext context) {
               return ReplyModal(
                 '問題を開放できませんでした。',
+                true,
               );
             },
           ),
@@ -82,7 +88,8 @@ class AdvertisingModal extends HookWidget {
             barrierDismissible: true,
             builder: (BuildContext context) {
               return ReplyModal(
-                '新たな問題を開放しました。',
+                '新たな問題を取得しました。',
+                true,
               );
             },
           ),
@@ -114,7 +121,10 @@ class AdvertisingModal extends HookWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () => {
+                    player.play('sounds/cancel.mp3', isNotification: true),
+                    Navigator.pop(context)
+                  },
                   child: const Text('見ん'),
                   style: ElevatedButton.styleFrom(
                     primary: Colors.red[500],
@@ -135,6 +145,7 @@ class AdvertisingModal extends HookWidget {
                     ),
                   ),
                   onPressed: () async => {
+                    player.play('sounds/tap.mp3', isNotification: true),
                     showDialog<int>(
                       context: context,
                       barrierDismissible: false,
@@ -145,6 +156,7 @@ class AdvertisingModal extends HookWidget {
                     await loading(context, loaded, rewardAd, nowLoading),
                     if (loaded.value)
                       {
+                        bgm.pause(),
                         rewardAd.show(),
                       }
                     else
@@ -157,6 +169,7 @@ class AdvertisingModal extends HookWidget {
                           builder: (BuildContext context) {
                             return ReplyModal(
                               '問題の開放に失敗しました。\n再度お試しください。',
+                              false,
                             );
                           },
                         ),

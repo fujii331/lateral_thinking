@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:audioplayers/audio_cache.dart';
 
 import '../../providers/quiz.provider.dart';
 import '../../models/quiz.model.dart';
@@ -31,6 +32,7 @@ class QuestionInput extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AudioCache player = useProvider(soundEffectProvider).state;
     final String beforeWord = useProvider(beforeWordProvider).state;
 
     return Padding(
@@ -82,11 +84,14 @@ class QuestionInput extends HookWidget {
           ),
           ElevatedButton(
             onPressed: () => selectedQuestion.id != 0
-                ? _executeQuestion(
-                    context,
-                    askingQuestions,
-                    selectedQuestion,
-                  )
+                ? {
+                    _executeQuestion(
+                      context,
+                      askingQuestions,
+                      selectedQuestion,
+                    ),
+                    player.play('sounds/quiz_button.mp3', isNotification: true),
+                  }
                 : {},
             child: const Text('質問！'),
             style: ElevatedButton.styleFrom(

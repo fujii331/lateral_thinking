@@ -17,6 +17,7 @@ dependencies:
   hooks_riverpod: ^0.14.0+3
   shared_preferences: ^2.0.5
   google_mobile_ads: ^0.12.2
+  audioplayers: ^0.18.3
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -38,6 +39,12 @@ flutter:
 
   assets:
     - assets/images/background.png
+    - assets/sounds/bgm.mp3
+    - assets/sounds/correct_answer.mp3
+    - assets/sounds/tap.mp3
+    - assets/sounds/cancel.mp3
+    - assets/sounds/quiz_button.mp3
+    - assets/sounds/hint.mp3
 
   fonts:
     - family: KiwiMaru

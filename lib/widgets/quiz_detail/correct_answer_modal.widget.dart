@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:audioplayers/audio_cache.dart';
 
 import '../../screens/quiz_list.screen.dart';
+import '../../providers/quiz.provider.dart';
 
-class CorrectAnswerModal extends StatelessWidget {
+class CorrectAnswerModal extends HookWidget {
   final String comment;
 
   CorrectAnswerModal(this.comment);
 
   @override
   Widget build(BuildContext context) {
+    final AudioCache player = useProvider(soundEffectProvider).state;
+
     return AlertDialog(
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -46,9 +52,13 @@ class CorrectAnswerModal extends StatelessWidget {
               top: 20,
             ),
             child: ElevatedButton(
-              onPressed: () => Navigator.of(context).pushNamed(
-                QuizListScreen.routeName,
-              ),
+              onPressed: () => {
+                player.play('sounds/tap.mp3', isNotification: true),
+                Navigator.of(context).pushNamed(
+                  QuizListScreen.routeName,
+                  arguments: player,
+                )
+              },
               child: const Text('一覧に戻る'),
               style: ElevatedButton.styleFrom(
                 primary: Colors.blue[700],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:audioplayers/audio_cache.dart';
 
 import '../widgets/quiz_detail/quiz_detail.widget.dart';
 import '../widgets/quiz_detail/questioned.widget.dart';
@@ -16,7 +17,8 @@ class QuizDetailTabScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final quiz = ModalRoute.of(context)?.settings.arguments as Quiz;
+    final AudioCache player = useProvider(soundEffectProvider).state;
+    final Quiz quiz = ModalRoute.of(context)?.settings.arguments as Quiz;
 
     final screenNo = useState<int>(0);
     final pageController = usePageController(initialPage: 0, keepPage: true);
@@ -37,10 +39,11 @@ class QuizDetailTabScreen extends HookWidget {
             ),
             onPressed: nowLoading.value || allAnswers.isEmpty
                 ? () {}
-                : () async {
-                    await showDialog<int>(
+                : () {
+                    player.play('sounds/hint.mp3', isNotification: true);
+                    showDialog<int>(
                       context: context,
-                      barrierDismissible: false,
+                      barrierDismissible: true,
                       builder: (BuildContext context) {
                         return HintModal(quiz);
                       },

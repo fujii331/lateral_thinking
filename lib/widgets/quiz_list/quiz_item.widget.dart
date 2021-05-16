@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:audioplayers/audio_cache.dart';
 
 import '../../models/quiz.model.dart';
 import '../../screens/quiz_detail_tab.screen.dart';
 import '../../providers/quiz.provider.dart';
 
-class QuizItem extends StatelessWidget {
+class QuizItem extends HookWidget {
   final Quiz quiz;
 
   QuizItem(this.quiz);
 
-  void toQuizDetail(BuildContext ctx) {
+  void toQuizDetail(BuildContext ctx, AudioCache player) {
+    player.play('sounds/tap.mp3', isNotification: true);
+
     ctx.read(remainingQuestionsProvider).state = quiz.questions;
     ctx.read(askedQuestionsProvider).state = [];
     ctx.read(allAnswersProvider).state = quiz.answers;
@@ -25,14 +29,13 @@ class QuizItem extends StatelessWidget {
     ctx.read(selectedRelatedWordProvider).state = '';
     ctx.read(askingQuestionsProvider).state = [];
 
-    Navigator.of(ctx).pushNamed(
-      QuizDetailTabScreen.routeName,
-      arguments: quiz,
-    );
+    Navigator.of(ctx).pushNamed(QuizDetailTabScreen.routeName, arguments: quiz);
   }
 
   @override
   Widget build(BuildContext context) {
+    final AudioCache player = useProvider(soundEffectProvider).state;
+
     return Card(
       elevation: 4,
       margin: EdgeInsets.symmetric(
@@ -57,7 +60,7 @@ class QuizItem extends StatelessWidget {
             fontSize: 20,
           ),
         ),
-        onTap: () => toQuizDetail(context),
+        onTap: () => toQuizDetail(context, player),
       ),
     );
   }

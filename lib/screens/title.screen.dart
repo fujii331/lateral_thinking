@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:audioplayers/audio_cache.dart';
+
 import 'quiz_list.screen.dart';
 import '../widgets/background.widget.dart';
+import '../providers/quiz.provider.dart';
 
-class TitleScreen extends StatelessWidget {
+class TitleScreen extends HookWidget {
   void toQuizList(BuildContext ctx) {
     Navigator.of(ctx).pushNamed(
       QuizListScreen.routeName,
@@ -11,6 +16,8 @@ class TitleScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AudioCache player = useProvider(soundEffectProvider).state;
+
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -43,12 +50,14 @@ class TitleScreen extends StatelessWidget {
                         '遊ぶ',
                         Colors.green,
                         Icon(Icons.account_balance),
+                        player,
                       ),
                       _selectButton(
                         context,
                         '遊び方',
                         Colors.teal,
                         Icon(Icons.auto_stories),
+                        player,
                       ),
                     ],
                   ),
@@ -66,6 +75,7 @@ class TitleScreen extends StatelessWidget {
     String text,
     MaterialColor color,
     Icon icon,
+    AudioCache player,
   ) {
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -73,7 +83,10 @@ class TitleScreen extends StatelessWidget {
       ),
       child: ElevatedButton.icon(
         icon: icon,
-        onPressed: () => toQuizList(context),
+        onPressed: () => {
+          player.play('sounds/tap.mp3', isNotification: true),
+          toQuizList(context)
+        },
         label: Text(text),
         style: ElevatedButton.styleFrom(
           elevation: 8, // 影をつける
