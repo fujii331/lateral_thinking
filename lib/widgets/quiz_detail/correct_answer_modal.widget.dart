@@ -13,7 +13,7 @@ class CorrectAnswerModal extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AudioCache player = useProvider(soundEffectProvider).state;
+    final AudioCache soundEffect = useProvider(soundEffectProvider).state;
 
     return AlertDialog(
       content: Column(
@@ -53,10 +53,9 @@ class CorrectAnswerModal extends HookWidget {
             ),
             child: ElevatedButton(
               onPressed: () => {
-                player.play('sounds/tap.mp3', isNotification: true),
+                soundEffect.play('sounds/tap.mp3', isNotification: true),
                 Navigator.of(context).pushNamed(
                   QuizListScreen.routeName,
-                  arguments: player,
                 )
               },
               child: const Text('一覧に戻る'),

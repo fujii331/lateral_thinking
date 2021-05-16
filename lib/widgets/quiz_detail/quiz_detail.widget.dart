@@ -23,7 +23,7 @@ class QuizDetail extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AudioCache player = useProvider(soundEffectProvider).state;
+    final AudioCache soundEffect = useProvider(soundEffectProvider).state;
     final Question selectedQuestion =
         useProvider(selectedQuestionProvider).state;
 

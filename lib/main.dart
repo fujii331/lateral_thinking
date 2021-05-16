@@ -22,16 +22,16 @@ void main() {
 
 class MyApp extends HookWidget {
   Future initSoundAction(BuildContext context) async {
-    final AudioCache player = useProvider(soundEffectProvider).state;
-    player.loadAll([
+    final AudioCache soundEffect = useProvider(soundEffectProvider).state;
+    soundEffect.loadAll([
       'sounds/correct_answer.mp3',
       'sounds/tap.mp3',
       'sounds/cancel.mp3',
       'sounds/quiz_button.mp3',
       'sounds/hint.mp3',
     ]);
-    context.read(bgmProvider).state =
-        await player.loop('sounds/bgm.mp3', volume: 0.2, isNotification: true);
+    context.read(bgmProvider).state = await soundEffect.loop('sounds/bgm.mp3',
+        volume: 0.2, isNotification: true);
 
     context.read(initBgmProvider).state = true;
   }

@@ -32,7 +32,7 @@ class QuestionInput extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AudioCache player = useProvider(soundEffectProvider).state;
+    final AudioCache soundEffect = useProvider(soundEffectProvider).state;
     final String beforeWord = useProvider(beforeWordProvider).state;
 
     return Padding(
@@ -90,7 +90,8 @@ class QuestionInput extends HookWidget {
                       askingQuestions,
                       selectedQuestion,
                     ),
-                    player.play('sounds/quiz_button.mp3', isNotification: true),
+                    soundEffect.play('sounds/quiz_button.mp3',
+                        isNotification: true),
                   }
                 : {},
             child: const Text('質問！'),

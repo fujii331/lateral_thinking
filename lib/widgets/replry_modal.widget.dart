@@ -14,7 +14,7 @@ class ReplyModal extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AudioCache player = useProvider(soundEffectProvider).state;
+    final AudioCache soundEffect = useProvider(soundEffectProvider).state;
     final AudioPlayer bgm = useProvider(bgmProvider).state;
 
     return AlertDialog(
@@ -39,7 +39,7 @@ class ReplyModal extends HookWidget {
             ),
             child: ElevatedButton(
               onPressed: () => {
-                player.play('sounds/cancel.mp3', isNotification: true),
+                soundEffect.play('sounds/cancel.mp3', isNotification: true),
                 if (bgmFlg)
                   {
                     bgm.resume(),

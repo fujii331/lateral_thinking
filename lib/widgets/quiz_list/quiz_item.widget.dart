@@ -12,8 +12,8 @@ class QuizItem extends HookWidget {
 
   QuizItem(this.quiz);
 
-  void toQuizDetail(BuildContext ctx, AudioCache player) {
-    player.play('sounds/tap.mp3', isNotification: true);
+  void toQuizDetail(BuildContext ctx, AudioCache soundEffect) {
+    soundEffect.play('sounds/tap.mp3', isNotification: true);
 
     ctx.read(remainingQuestionsProvider).state = quiz.questions;
     ctx.read(askedQuestionsProvider).state = [];
@@ -34,7 +34,7 @@ class QuizItem extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AudioCache player = useProvider(soundEffectProvider).state;
+    final AudioCache soundEffect = useProvider(soundEffectProvider).state;
 
     return Card(
       elevation: 4,
@@ -60,7 +60,7 @@ class QuizItem extends HookWidget {
             fontSize: 20,
           ),
         ),
-        onTap: () => toQuizDetail(context, player),
+        onTap: () => toQuizDetail(context, soundEffect),
       ),
     );
   }

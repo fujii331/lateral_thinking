@@ -40,7 +40,7 @@ class AdvertisingModal extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AudioCache player = useProvider(soundEffectProvider).state;
+    final AudioCache soundEffect = useProvider(soundEffectProvider).state;
     final AudioPlayer bgm = useProvider(bgmProvider).state;
     final loaded = useState(false);
     final nowLoading = useState(false);
@@ -122,7 +122,7 @@ class AdvertisingModal extends HookWidget {
               children: [
                 ElevatedButton(
                   onPressed: () => {
-                    player.play('sounds/cancel.mp3', isNotification: true),
+                    soundEffect.play('sounds/cancel.mp3', isNotification: true),
                     Navigator.pop(context)
                   },
                   child: const Text('見ん'),
@@ -145,7 +145,7 @@ class AdvertisingModal extends HookWidget {
                     ),
                   ),
                   onPressed: () async => {
-                    player.play('sounds/tap.mp3', isNotification: true),
+                    soundEffect.play('sounds/tap.mp3', isNotification: true),
                     showDialog<int>(
                       context: context,
                       barrierDismissible: false,

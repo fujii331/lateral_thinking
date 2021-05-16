@@ -17,7 +17,7 @@ class QuizDetailTabScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AudioCache player = useProvider(soundEffectProvider).state;
+    final AudioCache soundEffect = useProvider(soundEffectProvider).state;
     final Quiz quiz = ModalRoute.of(context)?.settings.arguments as Quiz;
 
     final screenNo = useState<int>(0);
@@ -40,7 +40,7 @@ class QuizDetailTabScreen extends HookWidget {
             onPressed: nowLoading.value || allAnswers.isEmpty
                 ? () {}
                 : () {
-                    player.play('sounds/hint.mp3', isNotification: true);
+                    soundEffect.play('sounds/hint.mp3', isNotification: true);
                     showDialog<int>(
                       context: context,
                       barrierDismissible: true,

@@ -84,7 +84,7 @@ class QuizAnswer extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AudioCache player = useProvider(soundEffectProvider).state;
+    final AudioCache soundEffect = useProvider(soundEffectProvider).state;
     final AudioPlayer bgm = useProvider(bgmProvider).state;
     final List<Answer> allAnswers = useProvider(allAnswersProvider).state;
 
@@ -209,7 +209,7 @@ class QuizAnswer extends HookWidget {
                   onPressed: enableAnswerButtonFlg.value
                       ? correctAnswerIds.contains(selectedAnswer.value!.id)
                           ? () async {
-                              player.play('sounds/correct_answer.mp3',
+                              soundEffect.play('sounds/correct_answer.mp3',
                                   isNotification: true);
                               // 広告を出す
                               await loading(context, loaded, myInterstitial);
@@ -242,7 +242,7 @@ class QuizAnswer extends HookWidget {
                               );
                             }
                           : () => {
-                                player.play('quiz_button/tap.mp3',
+                                soundEffect.play('quiz_button/tap.mp3',
                                     isNotification: true),
                                 executeAnswer(
                                   context,

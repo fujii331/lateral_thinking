@@ -16,7 +16,7 @@ class TitleScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AudioCache player = useProvider(soundEffectProvider).state;
+    final AudioCache soundEffect = useProvider(soundEffectProvider).state;
 
     return Scaffold(
       body: Stack(
@@ -50,14 +50,14 @@ class TitleScreen extends HookWidget {
                         '遊ぶ',
                         Colors.green,
                         Icon(Icons.account_balance),
-                        player,
+                        soundEffect,
                       ),
                       _selectButton(
                         context,
                         '遊び方',
                         Colors.teal,
                         Icon(Icons.auto_stories),
-                        player,
+                        soundEffect,
                       ),
                     ],
                   ),
@@ -75,7 +75,7 @@ class TitleScreen extends HookWidget {
     String text,
     MaterialColor color,
     Icon icon,
-    AudioCache player,
+    AudioCache soundEffect,
   ) {
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -84,7 +84,7 @@ class TitleScreen extends HookWidget {
       child: ElevatedButton.icon(
         icon: icon,
         onPressed: () => {
-          player.play('sounds/tap.mp3', isNotification: true),
+          soundEffect.play('sounds/tap.mp3', isNotification: true),
           toQuizList(context)
         },
         label: Text(text),

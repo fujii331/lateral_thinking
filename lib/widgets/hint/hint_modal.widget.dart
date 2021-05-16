@@ -36,7 +36,7 @@ class HintModal extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AudioCache player = useProvider(soundEffectProvider).state;
+    final AudioCache soundEffect = useProvider(soundEffectProvider).state;
     final AudioPlayer bgm = useProvider(bgmProvider).state;
     final int hint = useProvider(hintProvider).state;
     final loaded = useState(false);
@@ -217,7 +217,7 @@ class HintModal extends HookWidget {
                   onPressed: () => nowLoading.value
                       ? {}
                       : {
-                          player.play('sounds/cancel.mp3',
+                          soundEffect.play('sounds/cancel.mp3',
                               isNotification: true),
                           Navigator.pop(context)
                         },
@@ -234,7 +234,8 @@ class HintModal extends HookWidget {
                 ElevatedButton(
                   onPressed: () async => nowLoading.value || hint < 4
                       ? {
-                          player.play('sounds/tap.mp3', isNotification: true),
+                          soundEffect.play('sounds/tap.mp3',
+                              isNotification: true),
                           showDialog<int>(
                             context: context,
                             barrierDismissible: false,
