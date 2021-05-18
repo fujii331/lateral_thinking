@@ -152,7 +152,7 @@ class HintModal extends HookWidget {
                   ? '短い動画を見てヒント' + (hint + 1).toString() + 'を取得しますか？'
                   : 'ヒントはもうありません。',
               style: TextStyle(
-                fontSize: 22.0,
+                fontSize: 20.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -184,7 +184,7 @@ class HintModal extends HookWidget {
             ),
           ),
           Container(
-            height: MediaQuery.of(context).size.height * .15,
+            height: 100,
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 vertical: 15,
@@ -210,8 +210,7 @@ class HintModal extends HookWidget {
               vertical: 10,
               horizontal: 15,
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+            child: Wrap(
               children: [
                 ElevatedButton(
                   onPressed: () => nowLoading.value
@@ -221,7 +220,7 @@ class HintModal extends HookWidget {
                               isNotification: true),
                           Navigator.pop(context)
                         },
-                  child: const Text('やめる'),
+                  child: const Text('見ない'),
                   style: ElevatedButton.styleFrom(
                     primary: Colors.red[500],
                     textStyle: Theme.of(context).textTheme.button,
@@ -230,7 +229,7 @@ class HintModal extends HookWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 15),
+                const SizedBox(width: 30),
                 ElevatedButton(
                   onPressed: () async => nowLoading.value || hint < 4
                       ? {
@@ -257,7 +256,7 @@ class HintModal extends HookWidget {
                                 barrierDismissible: true,
                                 builder: (BuildContext context) {
                                   return ReplyModal(
-                                    'ヒントの取得に失敗しました。\n再度お試しください。',
+                                    '動画の読み込みに失敗しました。\n再度お試しください。',
                                     false,
                                   );
                                 },
@@ -265,7 +264,7 @@ class HintModal extends HookWidget {
                             },
                         }
                       : {},
-                  child: const Text('取得する'),
+                  child: const Text('見る'),
                   style: ElevatedButton.styleFrom(
                     primary: hint < 4 ? Colors.blue[700] : Colors.blue[300],
                     textStyle: Theme.of(context).textTheme.button,

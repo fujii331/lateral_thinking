@@ -37,15 +37,18 @@ class TitleScreen extends HookWidget {
                   '謎解きの館',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 40.0,
+                    fontSize: 45.0,
                     fontWeight: FontWeight.bold,
+                    fontFamily: 'KiwiMaru',
+                    color: Colors.yellow.shade200,
                   ),
                 ),
                 Text(
-                  '一人用水平思考ゲーム',
+                  '一人用水平思考クイズ',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 20.0,
+                    color: Colors.white,
+                    fontSize: 25.0,
                   ),
                 ),
                 Padding(

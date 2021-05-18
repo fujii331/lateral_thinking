@@ -8,15 +8,17 @@ class QuestionReply extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Padding(
-      padding: const EdgeInsets.only(
-        top: 15,
+      padding: EdgeInsets.only(
+        top: size.height * .35 < 210 ? 11 : 16.5,
       ),
       child: Container(
-        height: MediaQuery.of(context).size.height * .12,
-        width: MediaQuery.of(context).size.width * .85,
-        padding: const EdgeInsets.symmetric(
-          vertical: 15,
+        height: size.height * .35 < 200 ? 66 : 80,
+        width: size.width * .86,
+        padding: EdgeInsets.symmetric(
+          vertical: 6,
           horizontal: 10,
         ),
         decoration: BoxDecoration(
@@ -32,7 +34,7 @@ class QuestionReply extends StatelessWidget {
           child: Text(
             reply,
             style: TextStyle(
-              fontSize: 17.0,
+              fontSize: size.height * .35 > 200 ? 18 : 16,
               color: Colors.white,
               fontFamily: 'NotoSerifJP',
             ),

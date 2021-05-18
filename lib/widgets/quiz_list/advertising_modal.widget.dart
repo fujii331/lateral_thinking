@@ -70,7 +70,7 @@ class AdvertisingModal extends HookWidget {
             barrierDismissible: true,
             builder: (BuildContext context) {
               return ReplyModal(
-                '問題を開放できませんでした。',
+                '問題を手に入れられませんでした。',
                 true,
               );
             },
@@ -88,7 +88,7 @@ class AdvertisingModal extends HookWidget {
             barrierDismissible: true,
             builder: (BuildContext context) {
               return ReplyModal(
-                '新たな問題を取得しました。',
+                '新たな問題で遊べるようになりました！',
                 true,
               );
             },
@@ -106,9 +106,9 @@ class AdvertisingModal extends HookWidget {
               vertical: 10,
             ),
             child: Text(
-              '短い動画を見て次の問題を取得しますか？',
+              '短い動画を見て次の問題を手に入れますか？',
               style: TextStyle(
-                fontSize: 22.0,
+                fontSize: 20.0,
               ),
             ),
           ),
@@ -117,15 +117,14 @@ class AdvertisingModal extends HookWidget {
               vertical: 10,
               horizontal: 15,
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+            child: Wrap(
               children: [
                 ElevatedButton(
                   onPressed: () => {
                     soundEffect.play('sounds/cancel.mp3', isNotification: true),
                     Navigator.pop(context)
                   },
-                  child: const Text('見ん'),
+                  child: const Text('見ない'),
                   style: ElevatedButton.styleFrom(
                     primary: Colors.red[500],
                     textStyle: Theme.of(context).textTheme.button,
@@ -134,9 +133,9 @@ class AdvertisingModal extends HookWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 15),
+                const SizedBox(width: 30),
                 ElevatedButton(
-                  child: const Text('見てやる'),
+                  child: const Text('見る'),
                   style: ElevatedButton.styleFrom(
                     primary: Colors.blue[700],
                     textStyle: Theme.of(context).textTheme.button,
@@ -168,7 +167,7 @@ class AdvertisingModal extends HookWidget {
                           barrierDismissible: true,
                           builder: (BuildContext context) {
                             return ReplyModal(
-                              '問題の開放に失敗しました。\n再度お試しください。',
+                              '動画の読み込みに失敗しました。\n再度お試しください。',
                               false,
                             );
                           },

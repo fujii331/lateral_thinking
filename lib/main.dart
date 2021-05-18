@@ -64,12 +64,29 @@ class MyApp extends HookWidget {
                 fontFamily: 'NotoSerifJP',
               ),
               bodyText2: TextStyle(
-                fontSize: 20.0,
-                color: Colors.white,
+                fontSize: 15.5,
+                color: Colors.black,
                 fontFamily: 'NotoSerifJP',
               ),
               button: TextStyle(
                 fontSize: 20.0,
+              ),
+              headline1: TextStyle(
+                fontSize: 18.0,
+                color: Colors.white,
+                fontFamily: 'NotoSerifJP',
+              ),
+              headline2: TextStyle(
+                // 質問済みリスト用 黒
+                fontSize: 18.0,
+                color: Colors.black,
+                fontFamily: 'NotoSerifJP',
+              ),
+              headline3: TextStyle(
+                // 質問済みリスト用 黒 小さめ
+                fontSize: 16.0,
+                color: Colors.black,
+                fontFamily: 'NotoSerifJP',
               ),
             ),
       ),

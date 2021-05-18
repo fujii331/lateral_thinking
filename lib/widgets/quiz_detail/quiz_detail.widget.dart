@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:audioplayers/audio_cache.dart';
 
 import '../../models/quiz.model.dart';
 import '../background.widget.dart';
@@ -22,7 +21,6 @@ class QuizDetail extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AudioCache soundEffect = useProvider(soundEffectProvider).state;
     final Question selectedQuestion =
         useProvider(selectedQuestionProvider).state;
 
@@ -38,30 +36,35 @@ class QuizDetail extends HookWidget {
       child: Stack(
         children: <Widget>[
           background(),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                QuizSentence(
-                  quiz.sentence,
+          Center(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    top: 5, bottom: 16.0, right: 16.0, left: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    QuizSentence(
+                      quiz.sentence,
+                    ),
+                    QuizInputWords(
+                      quiz,
+                      selectedQuestion,
+                      askingQuestions,
+                      subjectController,
+                      relatedWordController,
+                    ),
+                    QuestionInput(
+                      selectedQuestion,
+                      askingQuestions,
+                    ),
+                    QuestionReply(
+                      displayReplyFlg,
+                      reply,
+                    ),
+                  ],
                 ),
-                QuizInputWords(
-                  quiz,
-                  selectedQuestion,
-                  askingQuestions,
-                  subjectController,
-                  relatedWordController,
-                ),
-                QuestionInput(
-                  selectedQuestion,
-                  askingQuestions,
-                ),
-                QuestionReply(
-                  displayReplyFlg,
-                  reply,
-                )
-              ],
+              ),
             ),
           ),
         ],

@@ -111,8 +111,8 @@ class QuizInputWords extends HookWidget {
         useProvider(selectedRelatedWordProvider).state;
 
     return Padding(
-      padding: const EdgeInsets.only(
-        top: 18,
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).size.height * .35 < 210 ? 6 : 12,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -141,7 +141,11 @@ class QuizInputWords extends HookWidget {
                 ),
           Text(
             'は',
-            style: Theme.of(context).textTheme.bodyText2,
+            style: TextStyle(
+              fontSize: 20.0,
+              color: Colors.white,
+              fontFamily: 'NotoSerifJP',
+            ),
           ),
           // 関連語の入力
           hint < 2
@@ -167,7 +171,11 @@ class QuizInputWords extends HookWidget {
                 ),
           Text(
             '...？',
-            style: Theme.of(context).textTheme.bodyText2,
+            style: TextStyle(
+              fontSize: 20.0,
+              color: Colors.white,
+              fontFamily: 'NotoSerifJP',
+            ),
           ),
         ],
       ),
@@ -182,9 +190,13 @@ class QuizInputWords extends HookWidget {
     Question selectedQuestion,
     List<Question> askingQuestions,
   ) {
+    final height = MediaQuery.of(context).size.height * .35;
+
     return Container(
       width: MediaQuery.of(context).size.width * .30,
+      height: height < 210 ? 50 : null,
       child: TextField(
+        textAlignVertical: TextAlignVertical.bottom,
         decoration: InputDecoration(
           fillColor: Colors.white,
           filled: true,
@@ -230,13 +242,15 @@ class QuizInputWords extends HookWidget {
     Question selectedQuestion,
     List<Question> askingQuestions,
   ) {
+    final height = MediaQuery.of(context).size.height * .35;
+
     return Container(
       padding: const EdgeInsets.symmetric(
         vertical: 7,
         horizontal: 10,
       ),
       width: MediaQuery.of(context).size.width * .305,
-      height: MediaQuery.of(context).size.height * .083,
+      height: height < 210 ? 50 : 63,
       decoration: BoxDecoration(
         color: hint < 3 ? Colors.white : Colors.grey[400],
         borderRadius: BorderRadius.circular(16),
@@ -244,6 +258,7 @@ class QuizInputWords extends HookWidget {
           color: Colors.black,
         ),
       ),
+      alignment: Alignment.center,
       child: DropdownButton(
         isExpanded: true,
         hint: Text(

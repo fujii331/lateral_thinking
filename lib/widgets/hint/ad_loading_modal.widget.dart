@@ -15,6 +15,7 @@ class AdLoadingModal extends StatelessWidget {
               'Now Loading...',
               style: TextStyle(
                 fontSize: 22.0,
+                color: Colors.black,
               ),
             ),
           ),

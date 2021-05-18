@@ -32,24 +32,26 @@ class QuestionInput extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height * .35;
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
     final String beforeWord = useProvider(beforeWordProvider).state;
 
     return Padding(
-      padding: const EdgeInsets.only(
-        top: 23,
-        bottom: 8,
+      padding: EdgeInsets.only(
+        top: height < 210 ? 11 : 16.5,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           Container(
-            padding: const EdgeInsets.symmetric(
-              vertical: 7,
-              horizontal: 10,
+            padding: EdgeInsets.only(
+              top: height < 220 ? 4 : 7,
+              bottom: height < 220 ? 5 : 7,
+              right: 10,
+              left: 10,
             ),
             width: MediaQuery.of(context).size.width * .60,
-            height: MediaQuery.of(context).size.height * .09,
+            height: height < 220 ? 58 : 67,
             decoration: BoxDecoration(
               color: askingQuestions.isEmpty ? Colors.grey[400] : Colors.white,
               borderRadius: BorderRadius.circular(10),

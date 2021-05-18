@@ -84,6 +84,7 @@ class QuizAnswer extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height * .35;
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
     final AudioPlayer bgm = useProvider(bgmProvider).state;
     final List<Answer> allAnswers = useProvider(allAnswersProvider).state;
@@ -142,164 +143,173 @@ class QuizAnswer extends HookWidget {
       children: <Widget>[
         background(),
         Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                '今までの質問から導かれた\n回答を実行',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 30.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 50),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 7,
-                    horizontal: 10,
-                  ),
-                  width: MediaQuery.of(context).size.width * .70,
-                  height: MediaQuery.of(context).size.height * .15,
-                  decoration: BoxDecoration(
-                    color: availableAnswers.value.isEmpty
-                        ? Colors.grey[400]
-                        : Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: Colors.black,
-                    ),
-                  ),
-                  child: DropdownButton(
-                    itemHeight: MediaQuery.of(context).size.height * .15,
-                    isExpanded: true,
-                    hint: Text(
-                      allAnswers.isEmpty
-                          ? 'この問題は終わりです。'
-                          : beforeAnswer.value.isEmpty
-                              ? availableAnswers.value.isEmpty
-                                  ? 'もっと質問しましょう！'
-                                  : '回答を選択'
-                              : beforeAnswer.value,
-                      style: TextStyle(
-                        color: Colors.black54,
-                      ),
-                    ),
-                    underline: Container(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '今までの質問から導かれた\n回答を実行',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: height > 210 ? 28.0 : 22.0,
                       color: Colors.white,
-                    ),
-                    value: selectedAnswer.value,
-                    items: availableAnswers.value.map((Answer answer) {
-                      return DropdownMenuItem(
-                        value: answer,
-                        child: Text(answer.answer),
-                      );
-                    }).toList(),
-                    onChanged: (targetAnswer) {
-                      enableAnswerButtonFlg.value = true;
-                      selectedAnswer.value = targetAnswer as Answer;
-                    },
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: ElevatedButton(
-                  onPressed: enableAnswerButtonFlg.value
-                      ? correctAnswerIds.contains(selectedAnswer.value!.id)
-                          ? () async {
-                              soundEffect.play('sounds/correct_answer.mp3',
-                                  isNotification: true);
-                              // 広告を出す
-                              await loading(context, loaded, myInterstitial);
-                              if (loaded.value) {
-                                bgm.pause();
-                                await myInterstitial.show();
-                              }
-
-                              await new Future.delayed(
-                                  new Duration(seconds: 1));
-
-                              String correctComment =
-                                  selectedAnswer.value!.comment;
-                              enableAnswerButtonFlg.value = false;
-                              selectedAnswer.value = null;
-                              context.read(beforeWordProvider).state =
-                                  'この問題は終わりです。';
-                              context.read(allAnswersProvider).state = [];
-                              context.read(displayReplyFlgProvider).state =
-                                  false;
-                              context.read(remainingQuestionsProvider).state =
-                                  [];
-
-                              showDialog<int>(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (BuildContext context) {
-                                  return CorrectAnswerModal(correctComment);
-                                },
-                              );
-                            }
-                          : () => {
-                                soundEffect.play('sounds/quiz_button.mp3',
-                                    isNotification: true),
-                                executeAnswer(
-                                  context,
-                                  enableAnswerButtonFlg,
-                                  comment,
-                                  displayCommentFlg,
-                                  beforeAnswer,
-                                  selectedAnswer,
-                                  availableAnswers,
-                                ),
-                              }
-                      : () => {},
-                  child: const Text('回答！'),
-                  style: ElevatedButton.styleFrom(
-                    primary: enableAnswerButtonFlg.value
-                        ? Colors.orange
-                        : Colors.orange[200],
-                    textStyle: Theme.of(context).textTheme.button,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.only(
-                  top: 15,
-                ),
-                height: MediaQuery.of(context).size.height * .18,
-                width: MediaQuery.of(context).size.width * .85,
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 500),
-                  opacity: displayCommentFlg.value ? 1 : 0,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 15,
-                      horizontal: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.blue.shade100,
-                      borderRadius: BorderRadius.circular(30),
-                      border: Border.all(
-                        color: Colors.blue.shade800,
-                        width: 5,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 7,
+                        horizontal: 10,
                       ),
-                    ),
-                    child: Text(
-                      comment.value,
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        color: Colors.black,
+                      width: MediaQuery.of(context).size.width * .70,
+                      height: 110,
+                      decoration: BoxDecoration(
+                        color: availableAnswers.value.isEmpty
+                            ? Colors.grey[400]
+                            : Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: Colors.black,
+                        ),
+                      ),
+                      child: DropdownButton(
+                        itemHeight: 100,
+                        isExpanded: true,
+                        hint: Text(
+                          allAnswers.isEmpty
+                              ? 'この問題は終わりです。'
+                              : beforeAnswer.value.isEmpty
+                                  ? availableAnswers.value.isEmpty
+                                      ? 'もっと質問しましょう！'
+                                      : '回答を選択'
+                                  : beforeAnswer.value,
+                          style: TextStyle(
+                            color: Colors.black54,
+                          ),
+                        ),
+                        underline: Container(
+                          color: Colors.white,
+                        ),
+                        value: selectedAnswer.value,
+                        items: availableAnswers.value.map((Answer answer) {
+                          return DropdownMenuItem(
+                            value: answer,
+                            child: Text(answer.answer),
+                          );
+                        }).toList(),
+                        onChanged: (targetAnswer) {
+                          enableAnswerButtonFlg.value = true;
+                          displayCommentFlg.value = false;
+                          selectedAnswer.value = targetAnswer as Answer;
+                        },
                       ),
                     ),
                   ),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 15.0),
+                    child: ElevatedButton(
+                      onPressed: enableAnswerButtonFlg.value
+                          ? correctAnswerIds.contains(selectedAnswer.value!.id)
+                              ? () async {
+                                  soundEffect.play('sounds/correct_answer.mp3',
+                                      isNotification: true);
+                                  // 広告を出す
+                                  await loading(
+                                      context, loaded, myInterstitial);
+                                  if (loaded.value) {
+                                    bgm.pause();
+                                    await myInterstitial.show();
+                                  }
+
+                                  await new Future.delayed(
+                                      new Duration(seconds: 1));
+
+                                  String correctComment =
+                                      selectedAnswer.value!.comment;
+                                  enableAnswerButtonFlg.value = false;
+                                  selectedAnswer.value = null;
+                                  context.read(beforeWordProvider).state =
+                                      'この問題は終わりです。';
+                                  context.read(allAnswersProvider).state = [];
+                                  context.read(displayReplyFlgProvider).state =
+                                      false;
+                                  context
+                                      .read(remainingQuestionsProvider)
+                                      .state = [];
+
+                                  showDialog<int>(
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (BuildContext context) {
+                                      return CorrectAnswerModal(correctComment);
+                                    },
+                                  );
+                                }
+                              : () => {
+                                    soundEffect.play('sounds/quiz_button.mp3',
+                                        isNotification: true),
+                                    executeAnswer(
+                                      context,
+                                      enableAnswerButtonFlg,
+                                      comment,
+                                      displayCommentFlg,
+                                      beforeAnswer,
+                                      selectedAnswer,
+                                      availableAnswers,
+                                    ),
+                                  }
+                          : () => {},
+                      child: const Text('回答！'),
+                      style: ElevatedButton.styleFrom(
+                        primary: enableAnswerButtonFlg.value
+                            ? Colors.orange
+                            : Colors.orange[200],
+                        textStyle: Theme.of(context).textTheme.button,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(
+                      top: 15,
+                    ),
+                    height: height > 200 ? 135 : 125,
+                    width: MediaQuery.of(context).size.width * .85,
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 500),
+                      opacity: displayCommentFlg.value ? 1 : 0,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 15,
+                          horizontal: 10,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.shade100,
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(
+                            color: Colors.blue.shade800,
+                            width: 5,
+                          ),
+                        ),
+                        child: Text(
+                          comment.value,
+                          style: TextStyle(
+                            fontSize: height > 200 ? 18 : 16,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ],

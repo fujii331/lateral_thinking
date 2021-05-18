@@ -23,9 +23,9 @@ class CorrectAnswerModal extends HookWidget {
               vertical: 10,
             ),
             child: Text(
-              "お見事！正解です！！",
+              "お見事！正解です！",
               style: TextStyle(
-                fontSize: 25.0,
+                fontSize: 22.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
