@@ -102,8 +102,8 @@ class HintModal extends HookWidget {
               else if (hint == 3)
                 {
                   context.read(askingQuestionsProvider).state = quiz.questions
-                      .take(quiz.correctAnswerQuestionId)
                       .where((question) =>
+                          quiz.correctAnswerQuestionIds.contains(question.id) &&
                           !currentQuestionIds.contains(question.id))
                       .toList(),
                 },

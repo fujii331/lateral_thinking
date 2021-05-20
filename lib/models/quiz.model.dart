@@ -35,7 +35,7 @@ class Quiz {
   final List<Answer> answers;
   final int hintDisplayWordId;
   final int hintDisplayQuestionId;
-  final int correctAnswerQuestionId;
+  final List<int> correctAnswerQuestionIds;
 
   const Quiz({
     required this.id,
@@ -48,6 +48,6 @@ class Quiz {
     required this.answers,
     required this.hintDisplayWordId,
     required this.hintDisplayQuestionId,
-    required this.correctAnswerQuestionId,
+    required this.correctAnswerQuestionIds,
   });
 }

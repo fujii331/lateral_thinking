@@ -196,7 +196,7 @@ class QuizInputWords extends HookWidget {
       width: MediaQuery.of(context).size.width * .30,
       height: height < 210 ? 50 : null,
       child: TextField(
-        textAlignVertical: TextAlignVertical.bottom,
+        textAlignVertical: height < 210 ? TextAlignVertical.bottom : null,
         decoration: InputDecoration(
           fillColor: Colors.white,
           filled: true,
