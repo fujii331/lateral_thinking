@@ -30,6 +30,7 @@
 .pub-cache/
 .pub/
 /build/
+aseets/
 
 # Web related
 lib/generated_plugin_registrant.dart
@@ -48,3 +49,4 @@ app.*.map.json
 
 lib/quiz_data.dart
 lib/advertising.dart
+lib/sample_quiz_data.dart
