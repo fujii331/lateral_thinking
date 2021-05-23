@@ -3,7 +3,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:audioplayers/audio_cache.dart';
-import 'package:audioplayers/audioplayers.dart';
 
 import '../background.widget.dart';
 import '../../providers/quiz.provider.dart';
@@ -86,7 +85,6 @@ class QuizAnswer extends HookWidget {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height * .35;
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
-    final AudioPlayer bgm = useProvider(bgmProvider).state;
     final List<Answer> allAnswers = useProvider(allAnswersProvider).state;
 
     final List<Question> askedQuestions =
@@ -123,7 +121,6 @@ class QuizAnswer extends HookWidget {
         onAdClosed: (Ad ad) => {
           ad.dispose(),
           print('インタースティシャル広告が閉じられました。'),
-          bgm.resume(),
         },
         // onApplicationExit: (Ad ad) => {
         //   print('ユーザーがアプリを離れました。'),
@@ -221,7 +218,6 @@ class QuizAnswer extends HookWidget {
                                   await loading(
                                       context, loaded, myInterstitial);
                                   if (loaded.value) {
-                                    bgm.pause();
                                     await myInterstitial.show();
                                   }
 

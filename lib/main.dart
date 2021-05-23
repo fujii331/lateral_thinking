@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 import './screens/title.screen.dart';
 import './screens/lecture_tab.screen.dart';
 import './screens/quiz_list.screen.dart';
 import './screens/quiz_detail_tab.screen.dart';
-import './providers/quiz.provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,30 +20,43 @@ void main() {
   );
 }
 
-class MyApp extends HookWidget {
-  Future initSoundAction(BuildContext context) async {
-    final AudioCache soundEffect = useProvider(soundEffectProvider).state;
-    soundEffect.loadAll([
-      'sounds/correct_answer.mp3',
-      'sounds/tap.mp3',
-      'sounds/cancel.mp3',
-      'sounds/quiz_button.mp3',
-      'sounds/hint.mp3',
-    ]);
-    context.read(bgmProvider).state = await soundEffect.loop('sounds/bgm.mp3',
-        volume: 0.2, isNotification: true);
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
 
-    context.read(initBgmProvider).state = true;
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  late AudioPlayer bgm;
+  final AudioCache soundEffect = AudioCache();
+
+  @override
+  void initState() {
+    super.initState();
+    Future(() async {
+      bgm = await soundEffect.loop('sounds/bgm.mp3',
+          volume: 0.2, isNotification: true);
+    });
+    WidgetsBinding.instance!.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
+      bgm.pause();
+    } else if (state == AppLifecycleState.resumed) {
+      bgm.resume();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final bool bgmFlg = useProvider(initBgmProvider).state;
-
-    if (!bgmFlg) {
-      initSoundAction(context);
-    }
-
     return MaterialApp(
       title: 'LateralThinking',
       debugShowCheckedModeBanner: false,

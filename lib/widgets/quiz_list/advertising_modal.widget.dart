@@ -4,7 +4,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:audioplayers/audio_cache.dart';
-import 'package:audioplayers/audioplayers.dart';
 
 import 'dart:async';
 
@@ -41,7 +40,6 @@ class AdvertisingModal extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
-    final AudioPlayer bgm = useProvider(bgmProvider).state;
     final loaded = useState(false);
     final nowLoading = useState(false);
 
@@ -71,7 +69,6 @@ class AdvertisingModal extends HookWidget {
             builder: (BuildContext context) {
               return ReplyModal(
                 '問題を手に入れられませんでした。',
-                true,
               );
             },
           ),
@@ -89,7 +86,6 @@ class AdvertisingModal extends HookWidget {
             builder: (BuildContext context) {
               return ReplyModal(
                 '新たな問題で遊べるようになりました！',
-                true,
               );
             },
           ),
@@ -155,7 +151,6 @@ class AdvertisingModal extends HookWidget {
                     await loading(context, loaded, rewardAd, nowLoading),
                     if (loaded.value)
                       {
-                        bgm.pause(),
                         rewardAd.show(),
                       }
                     else
@@ -168,7 +163,6 @@ class AdvertisingModal extends HookWidget {
                           builder: (BuildContext context) {
                             return ReplyModal(
                               '動画の読み込みに失敗しました。\n再度お試しください。',
-                              false,
                             );
                           },
                         ),

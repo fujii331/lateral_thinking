@@ -2,20 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audio_cache.dart';
-import 'package:audioplayers/audioplayers.dart';
 
 import '../providers/quiz.provider.dart';
 
 class ReplyModal extends HookWidget {
   final String reply;
-  final bool bgmFlg;
 
-  ReplyModal(this.reply, this.bgmFlg);
+  ReplyModal(this.reply);
 
   @override
   Widget build(BuildContext context) {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
-    final AudioPlayer bgm = useProvider(bgmProvider).state;
 
     return AlertDialog(
       content: Column(
@@ -40,10 +37,6 @@ class ReplyModal extends HookWidget {
             child: ElevatedButton(
               onPressed: () => {
                 soundEffect.play('sounds/cancel.mp3', isNotification: true),
-                if (bgmFlg)
-                  {
-                    bgm.resume(),
-                  },
                 Navigator.pop(context)
               },
               child: const Text('閉じる'),

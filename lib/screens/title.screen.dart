@@ -24,6 +24,14 @@ class TitleScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
+    // 初回起動時しか通らないのでload
+    soundEffect.loadAll([
+      'sounds/correct_answer.mp3',
+      'sounds/tap.mp3',
+      'sounds/cancel.mp3',
+      'sounds/quiz_button.mp3',
+      'sounds/hint.mp3',
+    ]);
 
     return Scaffold(
       body: Stack(

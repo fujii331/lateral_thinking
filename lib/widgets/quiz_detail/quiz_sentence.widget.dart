@@ -8,7 +8,6 @@ class QuizSentence extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    print(MediaQuery.of(context).size.height * .35);
 
     return Container(
       height: height * .35 < 240

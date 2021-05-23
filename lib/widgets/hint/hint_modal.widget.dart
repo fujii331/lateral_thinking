@@ -3,7 +3,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:audioplayers/audio_cache.dart';
-import 'package:audioplayers/audioplayers.dart';
 
 import 'dart:async';
 import 'dart:math';
@@ -37,7 +36,6 @@ class HintModal extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
-    final AudioPlayer bgm = useProvider(bgmProvider).state;
     final int hint = useProvider(hintProvider).state;
     final loaded = useState(false);
     final nowLoading = useState(false);
@@ -75,7 +73,6 @@ class HintModal extends HookWidget {
             builder: (BuildContext context) {
               return ReplyModal(
                 'ヒントを取得できませんでした。',
-                true,
               );
             },
           ),
@@ -131,7 +128,6 @@ class HintModal extends HookWidget {
                         : hint == 2
                             ? '質問を選択肢で選べるようになりました。'
                             : '正解を導く質問のみ選べるようになりました。',
-                true,
               );
             },
           ),
@@ -245,7 +241,6 @@ class HintModal extends HookWidget {
                           await loading(context, loaded, rewardAd, nowLoading),
                           if (loaded.value)
                             {
-                              bgm.pause(),
                               rewardAd.show(),
                             }
                           else
@@ -257,7 +252,6 @@ class HintModal extends HookWidget {
                                 builder: (BuildContext context) {
                                   return ReplyModal(
                                     '動画の読み込みに失敗しました。\n再度お試しください。',
-                                    false,
                                   );
                                 },
                               ),
