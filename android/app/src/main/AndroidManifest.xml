@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.lateral_thinking">
+    package="io.github.naoto613.lateral_thinking">
    <application
         android:label="lateral_thinking"
         android:icon="@mipmap/ic_launcher">
