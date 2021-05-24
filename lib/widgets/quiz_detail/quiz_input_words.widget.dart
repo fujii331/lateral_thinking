@@ -101,6 +101,9 @@ class QuizInputWords extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final subjectFocusNode = useFocusNode();
+    final relatedWordFocusNode = useFocusNode();
+
     final List<Question> remainingQuestions =
         useProvider(remainingQuestionsProvider).state;
 
@@ -109,6 +112,32 @@ class QuizInputWords extends HookWidget {
     final String? selectedSubject = useProvider(selectedSubjectProvider).state;
     final String? selectedRelatedWord =
         useProvider(selectedRelatedWordProvider).state;
+
+    subjectFocusNode.addListener(() {
+      if (!subjectFocusNode.hasFocus) {
+        print("Focus Change : " + subjectFocusNode.hasFocus.toString());
+        _submitData(
+          context,
+          quiz,
+          remainingQuestions,
+          selectedQuestion,
+          askingQuestions,
+        );
+      }
+    });
+
+    relatedWordFocusNode.addListener(() {
+      if (!relatedWordFocusNode.hasFocus) {
+        print("Focus Change : " + relatedWordFocusNode.hasFocus.toString());
+        _submitData(
+          context,
+          quiz,
+          remainingQuestions,
+          selectedQuestion,
+          askingQuestions,
+        );
+      }
+    });
 
     return Padding(
       padding: EdgeInsets.only(
@@ -123,9 +152,7 @@ class QuizInputWords extends HookWidget {
                   context,
                   '主語',
                   subjectController,
-                  remainingQuestions,
-                  selectedQuestion,
-                  askingQuestions,
+                  subjectFocusNode,
                 )
               : _wordSelectForQuestion(
                   context,
@@ -148,14 +175,12 @@ class QuizInputWords extends HookWidget {
             ),
           ),
           // 関連語の入力
-          hint < 2
+          hint < 1
               ? _wordForQuestion(
                   context,
                   '関連語',
                   relatedWordController,
-                  remainingQuestions,
-                  selectedQuestion,
-                  askingQuestions,
+                  relatedWordFocusNode,
                 )
               : _wordSelectForQuestion(
                   context,
@@ -182,14 +207,8 @@ class QuizInputWords extends HookWidget {
     );
   }
 
-  Widget _wordForQuestion(
-    BuildContext context,
-    String text,
-    TextEditingController controller,
-    List<Question> remainingQuestions,
-    Question selectedQuestion,
-    List<Question> askingQuestions,
-  ) {
+  Widget _wordForQuestion(BuildContext context, String text,
+      TextEditingController controller, FocusNode _focusNode) {
     final height = MediaQuery.of(context).size.height * .35;
 
     return Container(
@@ -219,13 +238,7 @@ class QuizInputWords extends HookWidget {
           LengthLimitingTextInputFormatter(10),
         ],
         controller: controller,
-        onSubmitted: (_) => _submitData(
-          context,
-          quiz,
-          remainingQuestions,
-          selectedQuestion,
-          askingQuestions,
-        ),
+        focusNode: _focusNode,
       ),
     );
   }
@@ -252,7 +265,7 @@ class QuizInputWords extends HookWidget {
       width: MediaQuery.of(context).size.width * .305,
       height: height < 210 ? 50 : 63,
       decoration: BoxDecoration(
-        color: hint < 3 ? Colors.white : Colors.grey[400],
+        color: hint < 2 ? Colors.white : Colors.grey[400],
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: Colors.black,
@@ -271,7 +284,7 @@ class QuizInputWords extends HookWidget {
           color: Colors.white,
         ),
         value: selectedWord != '' ? selectedWord : null,
-        items: hint < 3
+        items: hint < 2
             ? wordList.map((String word) {
                 return DropdownMenuItem(
                   value: word,

@@ -37,6 +37,10 @@ class LectureLast extends StatelessWidget {
                     style: Theme.of(context).textTheme.headline1,
                   ),
                   Text(
+                    '・関連語に「関係」という言葉を選ぶと、きっかけとしてはいい情報が得られる場合が多いです。\n',
+                    style: Theme.of(context).textTheme.headline1,
+                  ),
+                  Text(
                     'どうぞ、謎解きの館をお楽しみください！\n',
                     style: TextStyle(
                       fontSize: 20.0,

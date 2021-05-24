@@ -84,10 +84,10 @@ class HintModal extends HookWidget {
           context.read(hintProvider).state++,
           context.read(selectedQuestionProvider).state = dummyQuestion,
           context.read(displayReplyFlgProvider).state = false,
-          if (hint >= 2)
+          if (hint >= 1)
             {
               context.read(beforeWordProvider).state = '↓質問を選択',
-              if (hint == 2)
+              if (hint == 1)
                 {
                   context.read(askingQuestionsProvider).state = _shuffle(quiz
                       .questions
@@ -96,7 +96,7 @@ class HintModal extends HookWidget {
                           !currentQuestionIds.contains(question.id))
                       .toList()) as List<Question>,
                 }
-              else if (hint == 3)
+              else if (hint == 2)
                 {
                   context.read(askingQuestionsProvider).state = quiz.questions
                       .where((question) =>
@@ -109,10 +109,12 @@ class HintModal extends HookWidget {
                   context.read(beforeWordProvider).state = 'もう質問はありません。',
                 },
             }
-          else if (hint >= 0)
+          else
             {
               context.read(beforeWordProvider).state = '',
               context.read(askingQuestionsProvider).state = [],
+              context.read(selectedSubjectProvider).state = '',
+              context.read(selectedRelatedWordProvider).state = '',
             },
           Navigator.pop(context),
           Navigator.pop(context),
@@ -122,12 +124,10 @@ class HintModal extends HookWidget {
             builder: (BuildContext context) {
               return ReplyModal(
                 hint == 0
-                    ? '主語を選択肢で選べるようになりました。'
+                    ? '主語と関連語を選択肢で選べるようになりました。'
                     : hint == 1
-                        ? '関連語を選択肢で選べるようになりました。'
-                        : hint == 2
-                            ? '質問を選択肢で選べるようになりました。'
-                            : '正解を導く質問のみ選べるようになりました。',
+                        ? '質問を選択肢で選べるようになりました。'
+                        : '正解を導く質問のみ選べるようになりました。',
               );
             },
           ),
@@ -144,7 +144,7 @@ class HintModal extends HookWidget {
               vertical: 10,
             ),
             child: Text(
-              hint < 4
+              hint < 3
                   ? '短い動画を見てヒント' + (hint + 1).toString() + 'を取得しますか？'
                   : 'ヒントはもうありません。',
               style: TextStyle(
@@ -172,10 +172,6 @@ class HintModal extends HookWidget {
                   hint < 3 ? Icons.looks_3_outlined : Icons.looks_3,
                   size: 45,
                 ),
-                Icon(
-                  hint < 4 ? Icons.looks_4_outlined : Icons.looks_4,
-                  size: 45,
-                ),
               ],
             ),
           ),
@@ -187,14 +183,12 @@ class HintModal extends HookWidget {
               ),
               child: Text(
                 hint < 1
-                    ? '主語を選択肢で選べるようになります。'
+                    ? '主語と関連後を選択肢で選べるようになります。'
                     : hint == 1
-                        ? '関連語を選択肢で選べるようになります。'
+                        ? '質問を選択肢で選べるようになります。'
                         : hint == 2
-                            ? '質問を選択肢で選べるようになります。'
-                            : hint == 3
-                                ? '正解を導く質問のみ選べるようになります。'
-                                : 'もう答えはすぐそこです！',
+                            ? '正解を導く質問のみ選べるようになります。'
+                            : 'もう答えはすぐそこです！',
                 style: TextStyle(
                   fontSize: 18.0,
                 ),
@@ -227,7 +221,7 @@ class HintModal extends HookWidget {
                 ),
                 const SizedBox(width: 30),
                 ElevatedButton(
-                  onPressed: () async => nowLoading.value || hint < 4
+                  onPressed: () async => hint < 3
                       ? {
                           soundEffect.play('sounds/tap.mp3',
                               isNotification: true),
@@ -260,7 +254,7 @@ class HintModal extends HookWidget {
                       : {},
                   child: const Text('見る'),
                   style: ElevatedButton.styleFrom(
-                    primary: hint < 4 ? Colors.blue[700] : Colors.blue[300],
+                    primary: hint < 3 ? Colors.blue[700] : Colors.blue[300],
                     textStyle: Theme.of(context).textTheme.button,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),

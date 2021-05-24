@@ -18,7 +18,7 @@ class QuizListScreen extends HookWidget {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     context.read(openingNumberProvider).state =
-        prefs.getInt('openingNumber') ?? 5;
+        prefs.getInt('openingNumber') ?? 10;
   }
 
   @override
