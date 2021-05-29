@@ -41,7 +41,7 @@ class LectureLast extends StatelessWidget {
                     style: Theme.of(context).textTheme.headline1,
                   ),
                   Text(
-                    'どうぞ、謎解きの館をお楽しみください！\n',
+                    'それでは、謎解きの王様をお楽しみください！m(._.)m\n',
                     style: TextStyle(
                       fontSize: 20.0,
                       color: Colors.white,

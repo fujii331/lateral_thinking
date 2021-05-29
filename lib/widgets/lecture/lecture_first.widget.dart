@@ -25,7 +25,7 @@ class LectureFirst extends StatelessWidget {
                     style: Theme.of(context).textTheme.headline1,
                   ),
                   Text(
-                    '「謎解きの館　一人用水平思考クイズ」',
+                    '「謎解きの王様　一人用水平思考クイズ」',
                     style: TextStyle(
                       fontSize: 19.0,
                       fontWeight: FontWeight.bold,

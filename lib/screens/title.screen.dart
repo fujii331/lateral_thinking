@@ -42,7 +42,7 @@ class TitleScreen extends HookWidget {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
-                  '謎解きの館',
+                  '謎解きの王様',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 45.0,
