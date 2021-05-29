@@ -24,6 +24,7 @@ class QuizListScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final int openingNumber = useProvider(openingNumberProvider).state;
+    final bool listOrder = useProvider(listOrderProvider).state;
 
     _getOpeningNumber(context);
 
@@ -32,6 +33,16 @@ class QuizListScreen extends HookWidget {
         title: Text('問題一覧'),
         centerTitle: true,
         backgroundColor: Colors.blueGrey[900]?.withOpacity(0.9),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.swap_vert,
+            ),
+            onPressed: () {
+              context.read(listOrderProvider).state = !listOrder;
+            },
+          ),
+        ],
       ),
       body: Stack(
         children: <Widget>[
@@ -44,11 +55,17 @@ class QuizListScreen extends HookWidget {
             ),
             child: ListView.builder(
                 itemBuilder: (ctx, index) {
-                  return index < openingNumber
-                      ? QuizItem(QUIZ_DATA[index])
-                      : openingNumber < QUIZ_DATA.length
-                          ? QuizItemAd(QUIZ_DATA[index])
-                          : QuizItemNone(openingNumber + 1);
+                  return listOrder
+                      ? index < openingNumber
+                          ? QuizItem(QUIZ_DATA[index])
+                          : openingNumber < QUIZ_DATA.length
+                              ? QuizItemAd(QUIZ_DATA[index])
+                              : QuizItemNone(openingNumber + 1)
+                      : index == 0
+                          ? QUIZ_DATA.length == openingNumber
+                              ? QuizItemNone(openingNumber + 1)
+                              : QuizItemAd(QUIZ_DATA[openingNumber])
+                          : QuizItem(QUIZ_DATA[openingNumber - index]);
                 },
                 itemCount: openingNumber + 1),
           ),

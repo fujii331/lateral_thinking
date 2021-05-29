@@ -92,7 +92,7 @@ class QuizInputWords extends HookWidget {
     context.read(displayReplyFlgProvider).state = false;
 
     if (context.read(askingQuestionsProvider).state.isEmpty) {
-      context.read(beforeWordProvider).state = 'それらの言葉は関係ないようです。';
+      context.read(beforeWordProvider).state = '質問が見つかりませんでした。';
     } else {
       context.read(selectedQuestionProvider).state = dummyQuestion;
       context.read(beforeWordProvider).state = '↓質問を選択';
@@ -115,7 +115,6 @@ class QuizInputWords extends HookWidget {
 
     subjectFocusNode.addListener(() {
       if (!subjectFocusNode.hasFocus) {
-        print("Focus Change : " + subjectFocusNode.hasFocus.toString());
         _submitData(
           context,
           quiz,
@@ -128,7 +127,6 @@ class QuizInputWords extends HookWidget {
 
     relatedWordFocusNode.addListener(() {
       if (!relatedWordFocusNode.hasFocus) {
-        print("Focus Change : " + relatedWordFocusNode.hasFocus.toString());
         _submitData(
           context,
           quiz,

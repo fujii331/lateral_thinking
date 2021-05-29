@@ -1,7 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../models/quiz.model.dart';
 import 'package:audioplayers/audio_cache.dart';
-import 'package:audioplayers/audioplayers.dart';
 
 final remainingQuestionsProvider = StateProvider((ref) => <Question>[]);
 final askedQuestionsProvider = StateProvider((ref) => <Question>[]);
@@ -10,6 +9,7 @@ final executedAnswerIdsProvider = StateProvider((ref) => <int>[]);
 final correctAnswerIdsProvider = StateProvider((ref) => <int>[]);
 final hintProvider = StateProvider((ref) => 0);
 final openingNumberProvider = StateProvider((ref) => 0);
+final listOrderProvider = StateProvider((ref) => true);
 
 // detail画面用
 final selectedQuestionProvider = StateProvider((ref) => dummyQuestion);
@@ -23,4 +23,3 @@ final askingQuestionsProvider = StateProvider((ref) => <Question>[]);
 const dummyQuestion = Question(asking: '', id: 0, reply: '');
 
 final soundEffectProvider = StateProvider((ref) => new AudioCache());
-final bgmProvider = StateProvider((ref) => new AudioPlayer());
