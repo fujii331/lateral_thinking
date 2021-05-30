@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:audioplayers/audio_cache.dart';
 
 import './advertising_modal.widget.dart';
 import '../../models/quiz.model.dart';
 import '../../providers/quiz.provider.dart';
-import 'package:audioplayers/audio_cache.dart';
 
 class QuizItemAd extends HookWidget {
   final Quiz quiz;
@@ -15,9 +15,10 @@ class QuizItemAd extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
+    final height = MediaQuery.of(context).size.height;
 
     return Container(
-      height: 54,
+      height: height > 620 ? 52 : 44,
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: Colors.grey,
@@ -32,7 +33,11 @@ class QuizItemAd extends HookWidget {
       ),
       child: ListTile(
         leading: Container(
-          padding: const EdgeInsets.only(top: 5, bottom: 10, left: 5, right: 5),
+          padding: EdgeInsets.only(
+              top: height > 620 ? 5 : 0,
+              bottom: height > 620 ? 10 : 15,
+              left: 5,
+              right: 5),
           child: Text(
             '問' + quiz.id.toString(),
             style: TextStyle(
@@ -43,7 +48,10 @@ class QuizItemAd extends HookWidget {
           ),
         ),
         title: Container(
-          padding: const EdgeInsets.only(top: 5, bottom: 10, right: 5),
+          padding: EdgeInsets.only(
+              top: height > 620 ? 5 : 0,
+              bottom: height > 620 ? 10 : 15,
+              right: 5),
           child: Text(
             quiz.title,
             style: TextStyle(

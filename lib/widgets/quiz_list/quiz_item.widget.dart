@@ -35,9 +35,10 @@ class QuizItem extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
+    final height = MediaQuery.of(context).size.height;
 
     return Container(
-      height: 54,
+      height: height > 620 ? 52 : 44,
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -52,7 +53,11 @@ class QuizItem extends HookWidget {
       ),
       child: ListTile(
         leading: Container(
-          padding: const EdgeInsets.only(top: 5, bottom: 10, left: 5, right: 5),
+          padding: EdgeInsets.only(
+              top: height > 620 ? 5 : 0,
+              bottom: height > 620 ? 10 : 15,
+              left: 5,
+              right: 5),
           child: Text(
             '問' + quiz.id.toString(),
             style: TextStyle(
@@ -63,7 +68,10 @@ class QuizItem extends HookWidget {
           ),
         ),
         title: Container(
-          padding: const EdgeInsets.only(top: 5, bottom: 10, right: 5),
+          padding: EdgeInsets.only(
+              top: height > 620 ? 5 : 0,
+              bottom: height > 620 ? 10 : 15,
+              right: 5),
           child: Text(
             quiz.title,
             style: TextStyle(

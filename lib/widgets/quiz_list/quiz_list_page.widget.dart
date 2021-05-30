@@ -20,28 +20,34 @@ class QuizListPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+
     return Stack(
       children: <Widget>[
         background(),
         Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 20, bottom: 10),
-              child: Text(
-                tabTitle,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 30.0,
-                  fontWeight: FontWeight.bold,
-                  // fontFamily: 'KiwiMaru',
-                  color: Colors.yellow.shade100,
-                ),
-              ),
-            ),
+            height > 528
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 20, bottom: 10),
+                    child: Text(
+                      tabTitle,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: height > 620 ? 30.0 : 25,
+                        fontWeight: FontWeight.bold,
+                        // fontFamily: 'KiwiMaru',
+                        color: Colors.yellow.shade100,
+                      ),
+                    ),
+                  )
+                : Container(),
             Container(
-              height: MediaQuery.of(context).size.height * .7 > 430
+              height: height > 620
                   ? 430
-                  : MediaQuery.of(context).size.height * .7,
+                  : height > 480
+                      ? 350
+                      : height * 0.65,
               margin: EdgeInsets.symmetric(
                 vertical: 5,
                 horizontal: 15,
@@ -127,8 +133,6 @@ class QuizListPage extends HookWidget {
   }
 
   Widget _dummyBox() {
-    return const SizedBox(
-      width: 64,
-    );
+    return const SizedBox(width: 64);
   }
 }

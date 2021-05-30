@@ -7,8 +7,10 @@ class QuizItemNone extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+
     return Container(
-      height: 54,
+      height: height > 620 ? 52 : 44,
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: Colors.grey.shade700,
@@ -23,7 +25,11 @@ class QuizItemNone extends StatelessWidget {
       ),
       child: ListTile(
         leading: Container(
-          padding: const EdgeInsets.only(top: 5, bottom: 10, left: 5, right: 5),
+          padding: EdgeInsets.only(
+              top: height > 620 ? 5 : 0,
+              bottom: height > 620 ? 10 : 15,
+              left: 5,
+              right: 5),
           child: Text(
             '問' + quizNum.toString(),
             style: TextStyle(
@@ -34,7 +40,10 @@ class QuizItemNone extends StatelessWidget {
           ),
         ),
         title: Container(
-          padding: const EdgeInsets.only(top: 5, bottom: 10, right: 5),
+          padding: EdgeInsets.only(
+              top: height > 620 ? 5 : 0,
+              bottom: height > 620 ? 10 : 15,
+              right: 5),
           child: Text(
             '近日公開！お楽しみに',
             style: TextStyle(
@@ -43,7 +52,7 @@ class QuizItemNone extends StatelessWidget {
             ),
           ),
         ),
-        onTap: () => {},
+        onTap: null,
       ),
     );
   }
