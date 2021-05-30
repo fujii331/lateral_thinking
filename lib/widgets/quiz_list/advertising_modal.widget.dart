@@ -19,9 +19,11 @@ class AdvertisingModal extends HookWidget {
   AdvertisingModal(this.quizId);
 
   void _setOpeningNumber(int quizNumber, BuildContext context) async {
+    int openQuizNumber = (quizNumber / 3).ceil() * 3;
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt('openingNumber', quizNumber);
-    context.read(openingNumberProvider).state = quizNumber;
+    prefs.setInt('openingNumber', openQuizNumber);
+    context.read(openingNumberProvider).state = openQuizNumber;
   }
 
   Future loading(BuildContext context, ValueNotifier loaded,
@@ -102,7 +104,7 @@ class AdvertisingModal extends HookWidget {
               vertical: 10,
             ),
             child: Text(
-              '短い動画を見て次の問題を手に入れますか？',
+              '短い動画を見て3つの問題を手に入れますか？',
               style: TextStyle(
                 fontSize: 20.0,
               ),

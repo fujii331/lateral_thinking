@@ -36,15 +36,23 @@ class QuizItem extends HookWidget {
   Widget build(BuildContext context) {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
 
-    return Card(
-      elevation: 4,
+    return Container(
+      height: 54,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: Colors.black,
+        ),
+      ),
       margin: EdgeInsets.symmetric(
         vertical: 8,
         horizontal: 5,
       ),
       child: ListTile(
         leading: Container(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.only(top: 5, bottom: 10, left: 5, right: 5),
           child: Text(
             '問' + quiz.id.toString(),
             style: TextStyle(
@@ -54,10 +62,13 @@ class QuizItem extends HookWidget {
             ),
           ),
         ),
-        title: Text(
-          quiz.title,
-          style: TextStyle(
-            fontSize: 20,
+        title: Container(
+          padding: const EdgeInsets.only(top: 5, bottom: 10, right: 5),
+          child: Text(
+            quiz.title,
+            style: TextStyle(
+              fontSize: 20,
+            ),
           ),
         ),
         onTap: () => toQuizDetail(context, soundEffect),

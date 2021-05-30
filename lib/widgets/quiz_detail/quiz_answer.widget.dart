@@ -16,36 +16,48 @@ class QuizAnswer extends HookWidget {
   QuizAnswer(this.nowLoading);
 
   void getAnswerChoices(
-    BuildContext context,
-    List<Answer> allAnswers,
-    ValueNotifier<List<Answer>> availableAnswers,
-    List<Question> askedQuestions,
-    List<int> executedAnswerIds,
-  ) {
+      BuildContext context,
+      List<Answer> allAnswers,
+      ValueNotifier<List<Answer>> availableAnswers,
+      List<Question> askedQuestions,
+      List<int> executedAnswerIds,
+      List<int> correctAnswerIds) {
     List<Answer> wkAnswers = [];
 
     List<int> currentQuestionIds = askedQuestions.map((askedQuestion) {
       return askedQuestion.id;
     }).toList();
 
+    bool correctAnswerFlg = false;
+
     allAnswers.forEach((Answer answer) {
-      bool judgeFlg = true;
-      answer.questionIds.forEach((int questionId) {
-        if (judgeFlg) {
-          // 現在の回答の中に対象のidがなかったらfalse
-          if (!currentQuestionIds.contains(questionId)) {
-            judgeFlg = false;
+      if (!correctAnswerFlg) {
+        bool judgeFlg = true;
+        answer.questionIds.forEach((int questionId) {
+          if (judgeFlg) {
+            // 現在の実行済質問の中に対象のidがなかったらfalse
+            if (!currentQuestionIds.contains(questionId)) {
+              judgeFlg = false;
+            }
+          }
+        });
+
+        // 必要な質問が出ている、かつ、まだ回答されていないanswerを追加
+        if (judgeFlg && !executedAnswerIds.contains(answer.id)) {
+          // 正解だった場合はそれを回答に設定して残りのループをスキップする
+          if (correctAnswerIds.contains(answer.id)) {
+            availableAnswers.value = [answer];
+            correctAnswerFlg = true;
+          } else {
+            wkAnswers.add(answer);
           }
         }
-      });
-
-      // 必要な質問が出ている、かつ、まだ回答されていないanswerを追加
-      if (judgeFlg && !executedAnswerIds.contains(answer.id)) {
-        wkAnswers.add(answer);
       }
     });
 
-    availableAnswers.value = wkAnswers;
+    if (!correctAnswerFlg) {
+      availableAnswers.value = wkAnswers;
+    }
   }
 
   void executeAnswer(
@@ -134,6 +146,7 @@ class QuizAnswer extends HookWidget {
       availableAnswers,
       askedQuestions,
       executedAnswerIds,
+      correctAnswerIds,
     );
 
     return Stack(

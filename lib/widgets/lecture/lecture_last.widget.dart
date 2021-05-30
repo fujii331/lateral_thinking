@@ -21,19 +21,15 @@ class LectureLast extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    '・主語は本文にある、または、関係する”名詞”を選ぶと良いです。\n',
-                    style: Theme.of(context).textTheme.headline1,
-                  ),
-                  Text(
-                    '・関連語は名詞・形容詞以外にも本文にある「帰って」「寄って」などの単語も選択肢になることがあります。\n',
-                    style: Theme.of(context).textTheme.headline1,
-                  ),
-                  Text(
                     '・質問は入力した言葉を必ず含むので、質問文からイメージしましょう。\n',
                     style: Theme.of(context).textTheme.headline1,
                   ),
                   Text(
-                    '・質問をするほど回答の選択肢は増えるのでどんどん質問してみましょう。\n',
+                    '・同じ関連語でも主語を変えてみると質問が出てくる場合もあります。\n',
+                    style: Theme.of(context).textTheme.headline1,
+                  ),
+                  Text(
+                    '・質問をするほど回答の選択肢は増えるのでどんどん質問してみましょう。（複数パターンの正解がある場合もあります。）\n',
                     style: Theme.of(context).textTheme.headline1,
                   ),
                   Text(

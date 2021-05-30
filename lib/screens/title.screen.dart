@@ -57,6 +57,7 @@ class TitleScreen extends HookWidget {
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 25.0,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 Padding(

@@ -9,7 +9,6 @@ final executedAnswerIdsProvider = StateProvider((ref) => <int>[]);
 final correctAnswerIdsProvider = StateProvider((ref) => <int>[]);
 final hintProvider = StateProvider((ref) => 0);
 final openingNumberProvider = StateProvider((ref) => 0);
-final listOrderProvider = StateProvider((ref) => true);
 
 // detail画面用
 final selectedQuestionProvider = StateProvider((ref) => dummyQuestion);

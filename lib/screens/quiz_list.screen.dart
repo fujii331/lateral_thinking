@@ -3,12 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../widgets/quiz_list/quiz_item.widget.dart';
-import '../widgets/quiz_list/quiz_item_ad.widget.dart';
-import '../widgets/quiz_list/quiz_item_none.widget.dart';
-
-import '../quiz_data.dart';
-import '../widgets/background.widget.dart';
+import '../widgets/quiz_list/quiz_list_page.widget.dart';
 import '../providers/quiz.provider.dart';
 
 class QuizListScreen extends HookWidget {
@@ -18,58 +13,53 @@ class QuizListScreen extends HookWidget {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     context.read(openingNumberProvider).state =
-        prefs.getInt('openingNumber') ?? 10;
+        prefs.getInt('openingNumber') ?? 9;
   }
 
   @override
   Widget build(BuildContext context) {
-    final int openingNumber = useProvider(openingNumberProvider).state;
-    final bool listOrder = useProvider(listOrderProvider).state;
+    final screenNo = useState<int>(0);
+    final pageController = usePageController(initialPage: 0, keepPage: true);
 
     _getOpeningNumber(context);
+
+    final int openingNumber = useProvider(openingNumberProvider).state;
+
+    final int numOfPages = ((openingNumber + 1) / 6).ceil();
+    final List<String> tabTitle = [
+      '- 始まりの門 -',
+      '- 控えの間 -',
+      '- お洒落な厨房 -',
+      '- 憩いの食堂 -',
+      '- 安らぎの寝室 -',
+      '- 多忙の執務室 -',
+      '- 王の居間 -',
+      '- 地下の洞窟 -',
+      '- 優雅な中庭 -',
+      '- 開放的な屋上 -',
+      '- 歌人の間 -',
+    ];
+    final List<Widget> quizList = [];
+
+    for (int i = 0; i < numOfPages; i++) {
+      quizList.add(
+        QuizListPage(i + 1, openingNumber, screenNo, pageController, numOfPages,
+            tabTitle[i]),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
         title: Text('問題一覧'),
         centerTitle: true,
         backgroundColor: Colors.blueGrey[900]?.withOpacity(0.9),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.swap_vert,
-            ),
-            onPressed: () {
-              context.read(listOrderProvider).state = !listOrder;
-            },
-          ),
-        ],
       ),
-      body: Stack(
-        children: <Widget>[
-          background(),
-          Container(
-            height: MediaQuery.of(context).size.height * .85,
-            margin: EdgeInsets.symmetric(
-              vertical: 10,
-              horizontal: 15,
-            ),
-            child: ListView.builder(
-                itemBuilder: (ctx, index) {
-                  return listOrder
-                      ? index < openingNumber
-                          ? QuizItem(QUIZ_DATA[index])
-                          : openingNumber < QUIZ_DATA.length
-                              ? QuizItemAd(QUIZ_DATA[index])
-                              : QuizItemNone(openingNumber + 1)
-                      : index == 0
-                          ? QUIZ_DATA.length == openingNumber
-                              ? QuizItemNone(openingNumber + 1)
-                              : QuizItemAd(QUIZ_DATA[openingNumber])
-                          : QuizItem(QUIZ_DATA[openingNumber - index]);
-                },
-                itemCount: openingNumber + 1),
-          ),
-        ],
+      body: PageView(
+        controller: pageController,
+        onPageChanged: (index) {
+          screenNo.value = index;
+        },
+        children: quizList,
       ),
     );
   }
