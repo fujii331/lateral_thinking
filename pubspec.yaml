@@ -31,8 +31,8 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 
 flutter_native_splash:
-  image: "assets/icons/small-logo.png"
-  color: "220000"
+  image: "assets/icons/small-logo.jpg"
+  color: "000000"
 
 # The following section is specific to Flutter.
 flutter:
