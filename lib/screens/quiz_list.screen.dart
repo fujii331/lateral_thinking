@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:lateral_thinking/widgets/quiz_list/quiz_list_detail_title.widget.dart';
+import 'package:lateral_thinking/widgets/quiz_list/quiz_list_pagination.widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../widgets/quiz_list/quiz_list_page.widget.dart';
+import '../widgets/quiz_list/quiz_list_detail.widget.dart';
 import '../providers/quiz.provider.dart';
+import '../widgets/background.widget.dart';
 
 class QuizListScreen extends HookWidget {
   static const routeName = '/quiz-list';
@@ -19,16 +22,15 @@ class QuizListScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final screenNo = useState<int>(0);
-    final pageController = usePageController(initialPage: 0, keepPage: true);
 
     _getOpeningNumber(context);
 
     final int openingNumber = useProvider(openingNumberProvider).state;
 
     final int numOfPages = ((openingNumber + 1) / 6).ceil();
-    final List<String> tabTitle = [
+    final List<String> titles = [
       '- 始まりの門 -',
-      '- 控えの間 -',
+      '- 客人の間 -',
       '- お洒落な厨房 -',
       '- 憩いの食堂 -',
       '- 安らぎの寝室 -',
@@ -38,15 +40,8 @@ class QuizListScreen extends HookWidget {
       '- 優雅な中庭 -',
       '- 開放的な屋上 -',
       '- 歌人の間 -',
+      '- 王座の間 -',
     ];
-    final List<Widget> quizList = [];
-
-    for (int i = 0; i < numOfPages; i++) {
-      quizList.add(
-        QuizListPage(i + 1, openingNumber, screenNo, pageController, numOfPages,
-            tabTitle[i]),
-      );
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -54,12 +49,26 @@ class QuizListScreen extends HookWidget {
         centerTitle: true,
         backgroundColor: Colors.blueGrey[900]?.withOpacity(0.9),
       ),
-      body: PageView(
-        controller: pageController,
-        onPageChanged: (index) {
-          screenNo.value = index;
-        },
-        children: quizList,
+      body: Stack(
+        children: [
+          background(),
+          Column(
+            children: [
+              QuizListDetailTitle(
+                titles[screenNo.value],
+              ),
+              QuizListDetail(
+                openingNumber,
+                screenNo,
+                numOfPages,
+              ),
+              QuizListPagination(
+                screenNo,
+                numOfPages,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

@@ -11,7 +11,7 @@ class QuizSentence extends StatelessWidget {
 
     return Container(
       height: height * .35 < 240
-          ? height * .35
+          ? height * .32
           : height * .35 > 320
               ? 320
               : height * .40,

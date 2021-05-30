@@ -24,6 +24,8 @@ class TitleScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
+    final height = MediaQuery.of(context).size.height;
+
     // 初回起動時しか通らないのでload
     soundEffect.loadAll([
       'sounds/correct_answer.mp3',
@@ -45,7 +47,7 @@ class TitleScreen extends HookWidget {
                   '謎解きの王様',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 45.0,
+                    fontSize: height > 610 ? 45 : 38,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'KiwiMaru',
                     color: Colors.yellow.shade200,
@@ -56,12 +58,12 @@ class TitleScreen extends HookWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 25.0,
+                    fontSize: height > 610 ? 25 : 22,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 100),
+                  padding: EdgeInsets.only(top: height > 610 ? 100 : 60),
                   child: Column(
                     children: [
                       _selectButton(

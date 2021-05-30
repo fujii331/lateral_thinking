@@ -18,7 +18,7 @@ class QuizItemAd extends HookWidget {
     final height = MediaQuery.of(context).size.height;
 
     return Container(
-      height: height > 620 ? 52 : 44,
+      height: height > 620 ? 52 : 45,
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: Colors.grey,
@@ -28,7 +28,7 @@ class QuizItemAd extends HookWidget {
         ),
       ),
       margin: EdgeInsets.symmetric(
-        vertical: 8,
+        vertical: height > 620 ? 8 : 6,
         horizontal: 5,
       ),
       child: ListTile(
