@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 import './quiz_item.widget.dart';
 import './quiz_item_ad.widget.dart';
@@ -31,19 +32,31 @@ class QuizListDetail extends HookWidget {
         vertical: 5,
         horizontal: 15,
       ),
-      child: ListView.builder(
-        itemBuilder: (ctx, index) {
-          int quizNumber = index + 6 * (screenNo.value);
-          return quizNumber < openingNumber
-              ? QuizItem(QUIZ_DATA[quizNumber])
-              : openingNumber < QUIZ_DATA.length
-                  ? QuizItemAd(QUIZ_DATA[quizNumber])
-                  : quizNumber == QUIZ_DATA.length
-                      ? QuizItemNone(openingNumber + 1)
-                      : Container();
-        },
-        itemCount:
-            screenNo.value + 1 == numOfPages && openingNumber % 6 == 0 ? 3 : 6,
+      child: AnimationLimiter(
+        child: ListView.builder(
+          itemBuilder: (ctx, index) {
+            int quizNumber = index + 6 * (screenNo.value);
+            return AnimationConfiguration.staggeredList(
+              position: index,
+              duration: const Duration(milliseconds: 500),
+              child: SlideAnimation(
+                verticalOffset: 50.0,
+                child: FadeInAnimation(
+                  child: quizNumber < openingNumber
+                      ? QuizItem(QUIZ_DATA[quizNumber])
+                      : openingNumber < QUIZ_DATA.length
+                          ? QuizItemAd(QUIZ_DATA[quizNumber])
+                          : quizNumber == QUIZ_DATA.length
+                              ? QuizItemNone(openingNumber + 1)
+                              : Container(),
+                ),
+              ),
+            );
+          },
+          itemCount: screenNo.value + 1 == numOfPages && openingNumber % 6 == 0
+              ? 3
+              : 6,
+        ),
       ),
     );
   }

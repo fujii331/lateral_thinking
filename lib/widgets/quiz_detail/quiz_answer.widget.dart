@@ -90,7 +90,6 @@ class QuizAnswer extends HookWidget {
       }
       await new Future.delayed(new Duration(seconds: 1));
     }
-    nowLoading.value = false;
   }
 
   @override
@@ -234,8 +233,11 @@ class QuizAnswer extends HookWidget {
                                     await myInterstitial.show();
                                   }
 
+                                  // 広告が呼ばれてから画面が切り替わるまでに何もボタンが反応しないようにするため
                                   await new Future.delayed(
                                       new Duration(seconds: 1));
+
+                                  nowLoading.value = false;
 
                                   String correctComment =
                                       selectedAnswer.value!.comment;

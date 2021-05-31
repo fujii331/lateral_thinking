@@ -53,6 +53,7 @@ class QuizListScreen extends HookWidget {
         children: [
           background(),
           Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               QuizListDetailTitle(
                 titles[screenNo.value],

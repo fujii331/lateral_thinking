@@ -183,7 +183,7 @@ class HintModal extends HookWidget {
               ),
               child: Text(
                 hint < 1
-                    ? '主語と関連後を選択肢で選べるようになります。'
+                    ? '主語と関連語を選択肢で選べるようになります。'
                     : hint == 1
                         ? '質問を選択肢で選べるようになります。'
                         : hint == 2

@@ -20,22 +20,22 @@ class QuizListPagination extends HookWidget {
         children: <Widget>[
           screenNo.value == 0
               ? _dummyBox()
-              : _paginationButton(context, screenNo, 0, '<<'),
+              : _pagingButton(context, screenNo, 0, '<<'),
           screenNo.value == 0
               ? _dummyBox()
-              : _paginationButton(context, screenNo, screenNo.value - 1, '<'),
+              : _pagingButton(context, screenNo, screenNo.value - 1, '<'),
           screenNo.value == numOfPages - 1
               ? _dummyBox()
-              : _paginationButton(context, screenNo, screenNo.value + 1, '>'),
+              : _pagingButton(context, screenNo, screenNo.value + 1, '>'),
           screenNo.value == numOfPages - 1
               ? _dummyBox()
-              : _paginationButton(context, screenNo, numOfPages - 1, '>>'),
+              : _pagingButton(context, screenNo, numOfPages - 1, '>>'),
         ],
       ),
     );
   }
 
-  Widget _paginationButton(
+  Widget _pagingButton(
     BuildContext context,
     ValueNotifier<int> screenNo,
     int toScreenNo,

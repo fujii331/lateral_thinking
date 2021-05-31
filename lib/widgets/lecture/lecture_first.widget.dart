@@ -22,7 +22,12 @@ class LectureFirst extends StatelessWidget {
                 children: [
                   Text(
                     'アプリをダウンロードしていただきありがとうございます！\n',
-                    style: Theme.of(context).textTheme.headline1,
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      color: Colors.white,
+                      fontFamily: 'NotoSerifJP',
+                      height: 1.7,
+                    ),
                   ),
                   Text(
                     '「謎解きの王様　一人用水平思考クイズ」',
@@ -30,11 +35,17 @@ class LectureFirst extends StatelessWidget {
                       fontSize: 19.0,
                       fontWeight: FontWeight.bold,
                       color: Colors.yellow.shade200,
+                      height: 1.7,
                     ),
                   ),
                   Text(
                     'は、ウミガメのスープに代表される水平思考クイズを、一人で遊べる様に作成したものです。\n\nちなみに水平思考クイズとは、問題出題者と回答者に分かれ、回答者は出題されたクイズに対してYESかNOで答えられる質問を行い、答えを推理していくゲームです。\n\n操作について実際の画面で例題を見ながら説明させてください。',
-                    style: Theme.of(context).textTheme.headline1,
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      color: Colors.white,
+                      fontFamily: 'NotoSerifJP',
+                      height: 1.7,
+                    ),
                   ),
                 ],
               ),

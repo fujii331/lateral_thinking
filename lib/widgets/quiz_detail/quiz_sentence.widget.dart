@@ -31,12 +31,27 @@ class QuizSentence extends StatelessWidget {
         ],
       ),
       child: SingleChildScrollView(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.only(
+          right: 10,
+          left: 10,
+          top: 4,
+          bottom: 10,
+        ),
         child: Text(
           sentence,
           style: height * .35 > 230
-              ? Theme.of(context).textTheme.bodyText1
-              : Theme.of(context).textTheme.bodyText2,
+              ? TextStyle(
+                  fontSize: 17.0,
+                  color: Colors.black,
+                  height: 1.7,
+                  fontFamily: 'NotoSerifJP',
+                )
+              : TextStyle(
+                  fontSize: 15.5,
+                  color: Colors.black,
+                  height: 1.6,
+                  fontFamily: 'NotoSerifJP',
+                ),
         ),
       ),
     );
