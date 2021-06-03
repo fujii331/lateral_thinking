@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 import 'dart:async';
 import 'dart:math';
@@ -67,15 +68,15 @@ class HintModal extends HookWidget {
           print('リワード広告が閉じられました。'),
           Navigator.pop(context),
           Navigator.pop(context),
-          showDialog<int>(
+          AwesomeDialog(
             context: context,
-            barrierDismissible: true,
-            builder: (BuildContext context) {
-              return ReplyModal(
-                'ヒントを取得できませんでした。',
-              );
-            },
-          ),
+            dialogType: DialogType.ERROR,
+            headerAnimationLoop: false,
+            animType: AnimType.SCALE,
+            body: ReplyModal(
+              'ヒントを取得できませんでした。',
+            ),
+          )..show(),
         },
         onApplicationExit: (Ad ad) => print('ユーザーがアプリを離れました。'),
         onRewardedAdUserEarnedReward: (RewardedAd ad, RewardItem reward) => {
@@ -118,25 +119,30 @@ class HintModal extends HookWidget {
             },
           Navigator.pop(context),
           Navigator.pop(context),
-          showDialog<int>(
+          AwesomeDialog(
             context: context,
-            barrierDismissible: true,
-            builder: (BuildContext context) {
-              return ReplyModal(
-                hint == 0
-                    ? '主語と関連語を選択肢で選べるようになりました。'
-                    : hint == 1
-                        ? '質問を選択肢で選べるようになりました。'
-                        : '正解を導く質問のみ選べるようになりました。',
-              );
-            },
-          ),
+            dialogType: DialogType.SUCCES,
+            headerAnimationLoop: false,
+            animType: AnimType.SCALE,
+            body: ReplyModal(
+              hint == 0
+                  ? '主語と関連語を選択肢で選べるようになりました。'
+                  : hint == 1
+                      ? '質問を選択肢で選べるようになりました。'
+                      : '正解を導く質問のみ選べるようになりました。',
+            ),
+          )..show(),
         },
       ),
     );
 
-    return AlertDialog(
-      content: Column(
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 20,
+        right: 20,
+        bottom: 25,
+      ),
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Padding(
@@ -150,12 +156,13 @@ class HintModal extends HookWidget {
               style: TextStyle(
                 fontSize: 20.0,
                 fontWeight: FontWeight.bold,
+                fontFamily: 'SawarabiGothic',
               ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(
-              vertical: 10,
+              vertical: 5,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -176,10 +183,9 @@ class HintModal extends HookWidget {
             ),
           ),
           Container(
-            height: 100,
             child: Padding(
               padding: const EdgeInsets.symmetric(
-                vertical: 15,
+                vertical: 20,
               ),
               child: Text(
                 hint < 1
@@ -191,27 +197,30 @@ class HintModal extends HookWidget {
                             : 'もう答えはすぐそこです！',
                 style: TextStyle(
                   fontSize: 18.0,
+                  fontFamily: 'SawarabiGothic',
                 ),
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 10,
-              horizontal: 15,
+            padding: const EdgeInsets.only(
+              left: 5,
+              right: 5,
+              top: 15,
             ),
             child: Wrap(
               children: [
                 ElevatedButton(
-                  onPressed: () => nowLoading.value
-                      ? {}
-                      : {
-                          soundEffect.play('sounds/cancel.mp3',
-                              isNotification: true),
-                          Navigator.pop(context)
-                        },
+                  onPressed: () => {
+                    soundEffect.play('sounds/cancel.mp3', isNotification: true),
+                    Navigator.pop(context)
+                  },
                   child: const Text('見ない'),
                   style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.only(
+                      right: 14,
+                      left: 14,
+                    ),
                     primary: Colors.red[500],
                     textStyle: Theme.of(context).textTheme.button,
                     shape: RoundedRectangleBorder(
@@ -240,20 +249,24 @@ class HintModal extends HookWidget {
                           else
                             {
                               Navigator.pop(context),
-                              showDialog<int>(
+                              AwesomeDialog(
                                 context: context,
-                                barrierDismissible: true,
-                                builder: (BuildContext context) {
-                                  return ReplyModal(
-                                    '動画の読み込みに失敗しました。\n再度お試しください。',
-                                  );
-                                },
-                              ),
+                                dialogType: DialogType.ERROR,
+                                headerAnimationLoop: false,
+                                animType: AnimType.SCALE,
+                                body: ReplyModal(
+                                  '動画の読み込みに失敗しました。\n再度お試しください。',
+                                ),
+                              )..show(),
                             },
                         }
                       : {},
                   child: const Text('見る'),
                   style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.only(
+                      right: 14,
+                      left: 14,
+                    ),
                     primary: hint < 3 ? Colors.blue[700] : Colors.blue[300],
                     textStyle: Theme.of(context).textTheme.button,
                     shape: RoundedRectangleBorder(

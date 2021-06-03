@@ -1,6 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../models/quiz.model.dart';
-import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 final remainingQuestionsProvider = StateProvider((ref) => <Question>[]);
 final askedQuestionsProvider = StateProvider((ref) => <Question>[]);

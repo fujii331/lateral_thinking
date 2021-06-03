@@ -2,19 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 import '../background.widget.dart';
 import '../../providers/quiz.provider.dart';
 import '../../models/quiz.model.dart';
 import 'correct_answer_modal.widget.dart';
 import '../../advertising.dart';
+import './answering_modal.widget.dart';
 
 class QuizAnswer extends HookWidget {
-  final ValueNotifier nowLoading;
-
-  QuizAnswer(this.nowLoading);
-
   void getAnswerChoices(
       BuildContext context,
       List<Answer> allAnswers,
@@ -81,7 +78,11 @@ class QuizAnswer extends HookWidget {
   }
 
   Future loading(
-      BuildContext context, ValueNotifier loaded, myInterstitial) async {
+      BuildContext context,
+      ValueNotifier loaded,
+      InterstitialAd myInterstitial,
+      ValueNotifier nowLoading,
+      AudioCache soundEffect) async {
     myInterstitial.load();
     nowLoading.value = true;
     for (int i = 0; i < 10; i++) {
@@ -90,6 +91,7 @@ class QuizAnswer extends HookWidget {
       }
       await new Future.delayed(new Duration(seconds: 1));
     }
+    nowLoading.value = false;
   }
 
   @override
@@ -115,6 +117,7 @@ class QuizAnswer extends HookWidget {
     final beforeAnswer = useState<String>('');
 
     final loaded = useState(false);
+    final nowLoading = useState(false);
 
     final InterstitialAd myInterstitial = InterstitialAd(
       adUnitId: ANDROID_INTERSTITIAL_MOVIE_ADVID,
@@ -224,20 +227,40 @@ class QuizAnswer extends HookWidget {
                       onPressed: enableAnswerButtonFlg.value
                           ? correctAnswerIds.contains(selectedAnswer.value!.id)
                               ? () async {
-                                  soundEffect.play('sounds/correct_answer.mp3',
+                                  soundEffect.play('sounds/quiz_button.mp3',
                                       isNotification: true);
+
+                                  await new Future.delayed(
+                                    new Duration(milliseconds: 600),
+                                  );
+
+                                  showDialog<int>(
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (BuildContext context) {
+                                      return AnsweringModal(true);
+                                    },
+                                  );
+
                                   // 広告を出す
-                                  await loading(
-                                      context, loaded, myInterstitial);
+                                  await loading(context, loaded, myInterstitial,
+                                      nowLoading, soundEffect);
+
+                                  soundEffect.play(
+                                    'sounds/correct_answer.mp3',
+                                    isNotification: true,
+                                  );
+
                                   if (loaded.value) {
-                                    await myInterstitial.show();
+                                    myInterstitial.show();
                                   }
+
+                                  Navigator.pop(context);
 
                                   // 広告が呼ばれてから画面が切り替わるまでに何もボタンが反応しないようにするため
                                   await new Future.delayed(
-                                      new Duration(seconds: 1));
-
-                                  nowLoading.value = false;
+                                    new Duration(seconds: 1),
+                                  );
 
                                   String correctComment =
                                       selectedAnswer.value!.comment;
@@ -260,22 +283,46 @@ class QuizAnswer extends HookWidget {
                                     },
                                   );
                                 }
-                              : () => {
-                                    soundEffect.play('sounds/quiz_button.mp3',
-                                        isNotification: true),
-                                    executeAnswer(
-                                      context,
-                                      enableAnswerButtonFlg,
-                                      comment,
-                                      displayCommentFlg,
-                                      beforeAnswer,
-                                      selectedAnswer,
-                                      availableAnswers,
-                                    ),
-                                  }
+                              : () async {
+                                  soundEffect.play('sounds/quiz_button.mp3',
+                                      isNotification: true);
+                                  await new Future.delayed(
+                                    new Duration(milliseconds: 600),
+                                  );
+                                  showDialog<int>(
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (BuildContext context) {
+                                      return AnsweringModal(false);
+                                    },
+                                  );
+
+                                  await new Future.delayed(
+                                    new Duration(milliseconds: 3400),
+                                  );
+
+                                  soundEffect.play('sounds/wrong_answer.mp3',
+                                      isNotification: true);
+
+                                  Navigator.pop(context);
+
+                                  executeAnswer(
+                                    context,
+                                    enableAnswerButtonFlg,
+                                    comment,
+                                    displayCommentFlg,
+                                    beforeAnswer,
+                                    selectedAnswer,
+                                    availableAnswers,
+                                  );
+                                }
                           : () => {},
                       child: const Text('回答！'),
                       style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.only(
+                          right: 11,
+                          left: 14,
+                        ),
                         primary: enableAnswerButtonFlg.value
                             ? Colors.orange
                             : Colors.orange[200],
@@ -301,7 +348,7 @@ class QuizAnswer extends HookWidget {
                           horizontal: 10,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.blue.shade100,
+                          color: Colors.blue.shade50,
                           borderRadius: BorderRadius.circular(30),
                           border: Border.all(
                             color: Colors.blue.shade800,
@@ -313,6 +360,7 @@ class QuizAnswer extends HookWidget {
                           style: TextStyle(
                             fontSize: height > 200 ? 18 : 16,
                             color: Colors.black,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),

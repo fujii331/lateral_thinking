@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 import '../../providers/quiz.provider.dart';
 import '../../models/quiz.model.dart';
@@ -98,6 +98,10 @@ class QuestionInput extends HookWidget {
                 : {},
             child: const Text('質問！'),
             style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.only(
+                right: 7,
+                left: 11,
+              ),
               primary:
                   selectedQuestion.id != 0 ? Colors.blue : Colors.blue[200],
               textStyle: Theme.of(context).textTheme.button,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 import '../providers/quiz.provider.dart';
 
@@ -14,8 +14,13 @@ class ReplyModal extends HookWidget {
   Widget build(BuildContext context) {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
 
-    return AlertDialog(
-      content: Column(
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 20,
+        right: 20,
+        bottom: 15,
+      ),
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Padding(
@@ -26,6 +31,7 @@ class ReplyModal extends HookWidget {
               reply,
               style: TextStyle(
                 fontSize: 22.0,
+                fontFamily: 'SawarabiGothic',
               ),
             ),
           ),

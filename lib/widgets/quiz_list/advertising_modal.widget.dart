@@ -3,7 +3,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 import 'dart:async';
 
@@ -65,15 +66,15 @@ class AdvertisingModal extends HookWidget {
           print('リワード広告が閉じられました。'),
           Navigator.pop(context),
           Navigator.pop(context),
-          showDialog<int>(
+          AwesomeDialog(
             context: context,
-            barrierDismissible: true,
-            builder: (BuildContext context) {
-              return ReplyModal(
-                '問題を手に入れられませんでした。',
-              );
-            },
-          ),
+            dialogType: DialogType.ERROR,
+            headerAnimationLoop: false,
+            animType: AnimType.SCALE,
+            body: ReplyModal(
+              '問題を手に入れられませんでした。',
+            ),
+          )..show(),
         },
         onApplicationExit: (Ad ad) => print('ユーザーがアプリを離れました。'),
         onRewardedAdUserEarnedReward: (RewardedAd ad, RewardItem reward) => {
@@ -82,21 +83,26 @@ class AdvertisingModal extends HookWidget {
           _setOpeningNumber(quizId, context),
           Navigator.pop(context),
           Navigator.pop(context),
-          showDialog<int>(
+          AwesomeDialog(
             context: context,
-            barrierDismissible: true,
-            builder: (BuildContext context) {
-              return ReplyModal(
-                '新たな問題で遊べるようになりました！',
-              );
-            },
-          ),
+            dialogType: DialogType.SUCCES,
+            headerAnimationLoop: false,
+            animType: AnimType.SCALE,
+            body: ReplyModal(
+              '新たな問題で遊べるようになりました！',
+            ),
+          )..show(),
         },
       ),
     );
 
-    return AlertDialog(
-      content: Column(
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 20,
+        right: 20,
+        bottom: 15,
+      ),
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Padding(
@@ -104,9 +110,10 @@ class AdvertisingModal extends HookWidget {
               vertical: 10,
             ),
             child: Text(
-              '短い動画を見て3つの問題を手に入れますか？',
+              '短い動画を見て3つの問題を取得しますか？',
               style: TextStyle(
                 fontSize: 20.0,
+                fontFamily: 'SawarabiGothic',
               ),
             ),
           ),
@@ -159,15 +166,15 @@ class AdvertisingModal extends HookWidget {
                       {
                         Navigator.pop(context),
                         Navigator.pop(context),
-                        showDialog<int>(
+                        AwesomeDialog(
                           context: context,
-                          barrierDismissible: true,
-                          builder: (BuildContext context) {
-                            return ReplyModal(
-                              '動画の読み込みに失敗しました。\n再度お試しください。',
-                            );
-                          },
-                        ),
+                          dialogType: DialogType.ERROR,
+                          headerAnimationLoop: false,
+                          animType: AnimType.SCALE,
+                          body: ReplyModal(
+                            '動画の読み込みに失敗しました。\n再度お試しください。',
+                          ),
+                        )..show(),
                       },
                   },
                 ),

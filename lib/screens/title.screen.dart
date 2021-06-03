@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:lottie/lottie.dart';
 
 import './quiz_list.screen.dart';
 import './lecture_tab.screen.dart';
-import '../widgets/background.widget.dart';
 import '../providers/quiz.provider.dart';
 
 class TitleScreen extends HookWidget {
@@ -38,7 +38,61 @@ class TitleScreen extends HookWidget {
     return Scaffold(
       body: Stack(
         children: <Widget>[
-          background(),
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/title_back.png'),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Center(
+            child: Lottie.asset('assets/lottie/night.json'),
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Lottie.asset('assets/lottie/castle.json'),
+            ),
+          ),
+          Column(
+            children: [
+              SizedBox(),
+              Spacer(),
+              Row(
+                children: [
+                  SizedBox(),
+                  Spacer(),
+                  Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0, bottom: 4.0),
+                        child: Text(
+                          'jk kim @LottieFiles',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0, bottom: 8.0),
+                        child: Text(
+                          'Arun Sajeev @LottieFiles',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
           Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -49,7 +103,7 @@ class TitleScreen extends HookWidget {
                   style: TextStyle(
                     fontSize: height > 610 ? 45 : 38,
                     fontWeight: FontWeight.bold,
-                    fontFamily: 'KiwiMaru',
+                    fontFamily: 'YuseiMagic',
                     color: Colors.yellow.shade200,
                   ),
                 ),
@@ -63,13 +117,13 @@ class TitleScreen extends HookWidget {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: height > 610 ? 100 : 60),
+                  padding: EdgeInsets.only(top: height > 610 ? 150 : 90),
                   child: Column(
                     children: [
                       _selectButton(
                         context,
                         '遊ぶ',
-                        Colors.green,
+                        Colors.lightBlue.shade500,
                         Icon(Icons.account_balance),
                         soundEffect,
                       ),
@@ -94,7 +148,7 @@ class TitleScreen extends HookWidget {
   Widget _selectButton(
     BuildContext context,
     String text,
-    MaterialColor color,
+    Color color,
     Icon icon,
     AudioCache soundEffect,
   ) {
@@ -102,31 +156,35 @@ class TitleScreen extends HookWidget {
       padding: const EdgeInsets.symmetric(
         vertical: 20,
       ),
-      child: ElevatedButton.icon(
-        icon: icon,
-        onPressed: () => {
-          soundEffect.play('sounds/tap.mp3', isNotification: true),
-          if (text == '遊ぶ')
-            {
-              toQuizList(context),
-            }
-          else
-            {
-              toLectureTab(context),
-            },
-        },
-        label: Text(text),
-        style: ElevatedButton.styleFrom(
-          elevation: 8, // 影をつける
-          shadowColor: Colors.white,
-          primary: color,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 5,
-          ),
-          textStyle: Theme.of(context).textTheme.button,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+      child: SizedBox(
+        height: 50,
+        child: ElevatedButton.icon(
+          icon: icon,
+          onPressed: () => {
+            soundEffect.play('sounds/tap.mp3', isNotification: true),
+            if (text == '遊ぶ')
+              {
+                toQuizList(context),
+              }
+            else
+              {
+                toLectureTab(context),
+              },
+          },
+          label: Text(text),
+          style: ElevatedButton.styleFrom(
+            elevation: 8, // 影をつける
+            shadowColor: Colors.white,
+            primary: color,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 5,
+            ),
+            textStyle: Theme.of(context).textTheme.button,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            side: const BorderSide(),
           ),
         ),
       ),

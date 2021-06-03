@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import './screens/title.screen.dart';
@@ -62,7 +61,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         canvasColor: Colors.grey.shade100,
-        fontFamily: 'KiwiMaru',
+        fontFamily: 'SawarabiGothic',
         pageTransitionsTheme: const PageTransitionsTheme(
           builders: <TargetPlatform, PageTransitionsBuilder>{
             TargetPlatform.android: CupertinoPageTransitionsBuilder(),
@@ -81,7 +80,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 fontFamily: 'NotoSerifJP',
               ),
               button: TextStyle(
-                fontSize: 20.0,
+                fontSize: 19.0,
               ),
               headline1: TextStyle(
                 fontSize: 18.0,

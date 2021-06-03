@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 import './advertising_modal.widget.dart';
 import '../../models/quiz.model.dart';
@@ -59,14 +60,16 @@ class QuizItemAd extends HookWidget {
             ),
           ),
         ),
-        onTap: () => showDialog<int>(
-          context: context,
-          barrierDismissible: true,
-          builder: (BuildContext context) {
-            soundEffect.play('sounds/hint.mp3', isNotification: true);
-            return AdvertisingModal(quiz.id);
-          },
-        ),
+        onTap: () => {
+          soundEffect.play('sounds/hint.mp3', isNotification: true),
+          AwesomeDialog(
+            context: context,
+            dialogType: DialogType.QUESTION,
+            headerAnimationLoop: false,
+            animType: AnimType.BOTTOMSLIDE,
+            body: AdvertisingModal(quiz.id),
+          )..show(),
+        },
       ),
     );
   }

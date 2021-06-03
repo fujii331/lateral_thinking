@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 import '../../models/quiz.model.dart';
 import '../../screens/quiz_detail_tab.screen.dart';
@@ -21,6 +21,7 @@ class QuizItem extends HookWidget {
     ctx.read(executedAnswerIdsProvider).state = [];
     ctx.read(correctAnswerIdsProvider).state = quiz.correctAnswerIds;
     ctx.read(hintProvider).state = 0;
+    ctx.read(selectedQuestionProvider).state = dummyQuestion;
 
     ctx.read(replyProvider).state = '';
     ctx.read(beforeWordProvider).state = '';
