@@ -63,31 +63,16 @@ class TitleScreen extends HookWidget {
                 children: [
                   SizedBox(),
                   Spacer(),
-                  Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0, bottom: 4.0),
-                        child: Text(
-                          'jk kim @LottieFiles',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 10,
-                          ),
-                        ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0, bottom: 8.0),
+                    child: Text(
+                      'Arun Sajeev, jk kim @LottieFiles',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 10,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0, bottom: 8.0),
-                        child: Text(
-                          'Arun Sajeev @LottieFiles',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 10,
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ],
               ),

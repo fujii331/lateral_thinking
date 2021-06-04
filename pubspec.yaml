@@ -17,10 +17,14 @@ dependencies:
   hooks_riverpod: ^0.14.0+3
   shared_preferences: ^2.0.5
   google_mobile_ads: ^0.12.2
-  audioplayers: ^0.18.3
+  audioplayers: ^0.19.0
   firebase_messaging: "^10.0.0"
+  flutter_staggered_animations: "^1.0.0"
+  awesome_dialog: ^2.1.0
+  flutter_spinkit: "^5.0.0"
 
   cupertino_icons: ^1.0.2
+  lottie: ^1.0.1
 
 dev_dependencies:
   flutter_test:
@@ -42,27 +46,19 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/background.png
-    - assets/images/lecture1.png
-    - assets/images/lecture2.png
-    - assets/images/lecture3.png
-    - assets/images/lecture4.png
-    - assets/images/lecture5.png
-    - assets/images/lecture6.png
-    - assets/images/lecture_hint.png
-    - assets/sounds/bgm.mp3
-    - assets/sounds/correct_answer.mp3
-    - assets/sounds/tap.mp3
-    - assets/sounds/cancel.mp3
-    - assets/sounds/quiz_button.mp3
-    - assets/sounds/hint.mp3
+    - assets/images/
+    - assets/sounds/
+    - assets/lottie/
 
   fonts:
-    - family: KiwiMaru
-      fonts:
-        - asset: assets/fonts/KiwiMaru-Regular.ttf
     - family: NotoSerifJP
       fonts:
         - asset: assets/fonts/NotoSerifJP-Regular.otf
         - asset: assets/fonts/NotoSerifJP-Bold.otf
           weight: 700
+    - family: YuseiMagic
+      fonts:
+        - asset: assets/fonts/YuseiMagic-Regular.ttf
+    - family: SawarabiGothic
+      fonts:
+        - asset: assets/fonts/SawarabiGothic-Regular.ttf

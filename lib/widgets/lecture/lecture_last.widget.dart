@@ -8,9 +8,14 @@ class LectureLast extends StatelessWidget {
     return Stack(
       children: <Widget>[
         background(),
-        Opacity(
-          opacity: 0.5,
-          child: Image.asset('assets/images/prince.png'),
+        Center(
+          child: Opacity(
+            opacity: 0.4,
+            child: Image.asset(
+              'assets/images/true_4_1.png',
+              // width: 130,
+            ),
+          ),
         ),
         Center(
           child: Container(
@@ -63,7 +68,7 @@ class LectureLast extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'それでは、謎解きの王様をお楽しみください！m(._.)m\n',
+                      'それでは、謎解きの王様をお楽しみください！\n',
                       style: TextStyle(
                         fontSize: 20.0,
                         color: Colors.white,

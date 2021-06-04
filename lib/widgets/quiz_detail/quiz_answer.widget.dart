@@ -78,11 +78,11 @@ class QuizAnswer extends HookWidget {
   }
 
   Future loading(
-      BuildContext context,
-      ValueNotifier loaded,
-      InterstitialAd myInterstitial,
-      ValueNotifier nowLoading,
-      AudioCache soundEffect) async {
+    BuildContext context,
+    ValueNotifier loaded,
+    InterstitialAd myInterstitial,
+    ValueNotifier nowLoading,
+  ) async {
     myInterstitial.load();
     nowLoading.value = true;
     for (int i = 0; i < 10; i++) {
@@ -243,8 +243,12 @@ class QuizAnswer extends HookWidget {
                                   );
 
                                   // 広告を出す
-                                  await loading(context, loaded, myInterstitial,
-                                      nowLoading, soundEffect);
+                                  await loading(
+                                    context,
+                                    loaded,
+                                    myInterstitial,
+                                    nowLoading,
+                                  );
 
                                   soundEffect.play(
                                     'sounds/correct_answer.mp3',
