@@ -19,7 +19,6 @@ class LectureTabScreen extends HookWidget {
         centerTitle: true,
         backgroundColor: Colors.blueGrey[900]?.withOpacity(0.9),
       ),
-      resizeToAvoidBottomInset: false,
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.shifting,
         selectedItemColor: Colors.blue,

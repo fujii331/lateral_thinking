@@ -8,14 +8,27 @@ class LectureFirst extends StatelessWidget {
     return Stack(
       children: <Widget>[
         background(),
-        Center(
-          child: Opacity(
-            opacity: 0.4,
-            child: Image.asset(
-              'assets/images/1_2.png',
-              // width: 130,
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Center(
+              child: Opacity(
+                opacity: 0.5,
+                child: Image.asset(
+                  'assets/images/1_2.png',
+                  width: MediaQuery.of(context).size.width * .6,
+                ),
+              ),
             ),
-          ),
+            Text(
+              '坊やくん',
+              style: TextStyle(
+                fontSize: 26.0,
+                color: Colors.white,
+                fontFamily: 'YuseiMagic',
+              ),
+            ),
+          ],
         ),
         Center(
           child: Container(
@@ -49,7 +62,25 @@ class LectureFirst extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'は、ウミガメのスープに代表される水平思考クイズを、一人で遊べる様に作成したものです。\n\nちなみに水平思考クイズとは、問題出題者と回答者に分かれ、回答者は出題されたクイズに対してYESかNOで答えられる質問を行い、答えを推理していくゲームです。\n\nここでは、城に迷い込んだ「坊やくん（後ろにいる白いやつ）」が謎好きの王様にいろいろな謎を出題されて困っているので、彼を手伝ってあげましょう。\n\n操作について実際の画面で例題を見ながら説明させてください。',
+                      'は、ウミガメのスープに代表される水平思考クイズを、一人で遊べるように作成したものです。',
+                      style: TextStyle(
+                        fontSize: 17.0,
+                        color: Colors.white,
+                        fontFamily: 'NotoSerifJP',
+                        height: 1.7,
+                      ),
+                    ),
+                    Text(
+                      '\n※水平思考クイズ：YESかNOで答えられる質問を行い、答えを推理していくゲーム',
+                      style: TextStyle(
+                        fontSize: 15.0,
+                        color: Colors.white,
+                        fontFamily: 'NotoSerifJP',
+                        height: 1.7,
+                      ),
+                    ),
+                    Text(
+                      '\nこのゲームでは、城に迷い込んだ「坊やくん」が謎好きの王様にいろいろな謎を出題されて困っているので、彼を手伝ってあげましょう。\n\nでは、下のボタンを押す、またはスワイプ操作で画面を切り替えてみてください。',
                       style: TextStyle(
                         fontSize: 17.0,
                         color: Colors.white,

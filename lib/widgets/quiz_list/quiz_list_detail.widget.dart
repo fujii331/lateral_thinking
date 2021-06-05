@@ -38,7 +38,7 @@ class QuizListDetail extends HookWidget {
             int quizNumber = index + 6 * (screenNo.value);
             return AnimationConfiguration.staggeredList(
               position: index,
-              duration: const Duration(milliseconds: 500),
+              duration: const Duration(milliseconds: 700),
               child: SlideAnimation(
                 verticalOffset: 50.0,
                 child: FadeInAnimation(

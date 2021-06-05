@@ -10,10 +10,10 @@ class LectureLast extends StatelessWidget {
         background(),
         Center(
           child: Opacity(
-            opacity: 0.4,
+            opacity: 0.5,
             child: Image.asset(
               'assets/images/true_4_1.png',
-              // width: 130,
+              width: MediaQuery.of(context).size.width * .6,
             ),
           ),
         ),
@@ -41,7 +41,7 @@ class LectureLast extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '・同じ関連語でも主語を変えてみると質問が出てくる場合もあります。\n',
+                      '・同じ関連語でも主語を変えてみると質問が出てくる場合があります。\n',
                       style: TextStyle(
                         fontSize: 18.0,
                         color: Colors.white,
@@ -50,7 +50,7 @@ class LectureLast extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '・関連語に「関係」という言葉を選ぶと、きっかけとしてはいい情報が得られる場合が多いです。\n',
+                      '・関連語に「関係」という言葉を選ぶと、質問を考えるきっかけになる情報が得られる場合が多いです。\n（例）ある日は関係していますか？\n',
                       style: TextStyle(
                         fontSize: 18.0,
                         color: Colors.white,

@@ -86,8 +86,7 @@ class TitleScreen extends HookWidget {
                   '謎解きの王様',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: height > 610 ? 45 : 38,
-                    fontWeight: FontWeight.bold,
+                    fontSize: height > 610 ? 48 : 41,
                     fontFamily: 'YuseiMagic',
                     color: Colors.yellow.shade200,
                   ),

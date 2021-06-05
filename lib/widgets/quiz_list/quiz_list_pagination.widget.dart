@@ -51,6 +51,7 @@ class QuizListPagination extends HookWidget {
           fontSize: 25.0,
           color: Colors.white,
           fontWeight: FontWeight.bold,
+          height: 1,
         ),
       ),
       style: ElevatedButton.styleFrom(

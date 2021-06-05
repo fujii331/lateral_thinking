@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'dart:math';
 
 import '../../providers/quiz.provider.dart';
 import '../../models/quiz.model.dart';
@@ -92,7 +93,12 @@ class QuizInputWords extends HookWidget {
     context.read(displayReplyFlgProvider).state = false;
 
     if (context.read(askingQuestionsProvider).state.isEmpty) {
-      context.read(beforeWordProvider).state = '質問が見つかりませんでした。';
+      final randomNumber = new Random().nextInt(5);
+      if (randomNumber == 0) {
+        context.read(beforeWordProvider).state = '難しければ右上のヒントボタンを！';
+      } else {
+        context.read(beforeWordProvider).state = '質問が見つかりませんでした。';
+      }
     } else {
       context.read(selectedQuestionProvider).state = dummyQuestion;
       context.read(beforeWordProvider).state = '↓質問を選択';
