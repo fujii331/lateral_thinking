@@ -120,7 +120,7 @@ class QuizAnswer extends HookWidget {
     final nowLoading = useState(false);
 
     final InterstitialAd myInterstitial = InterstitialAd(
-      adUnitId: ANDROID_INTERSTITIAL_MOVIE_ADVID,
+      adUnitId: ANDROID_ANSWER_INTERSTITIAL_ADVID,
       request: AdRequest(),
       listener: AdListener(
         onAdLoaded: (Ad ad) => {

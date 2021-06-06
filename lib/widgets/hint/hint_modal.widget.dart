@@ -49,7 +49,7 @@ class HintModal extends HookWidget {
     }).toList();
 
     final rewardAd = RewardedAd(
-      adUnitId: ANDROID_REWQRD_ADVID,
+      adUnitId: ANDROID_HINT_REWQRD_ADVID,
       request: AdRequest(),
       listener: AdListener(
         onAdLoaded: (Ad ad) {

@@ -47,7 +47,7 @@ class AdvertisingModal extends HookWidget {
     final nowLoading = useState(false);
 
     final rewardAd = RewardedAd(
-      adUnitId: ANDROID_REWQRD_ADVID,
+      adUnitId: ANDROID_OPEN_QUESTION_REWQRD_ADVID,
       request: AdRequest(),
       listener: AdListener(
         onAdLoaded: (Ad ad) {

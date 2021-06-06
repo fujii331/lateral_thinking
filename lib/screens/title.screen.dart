@@ -158,7 +158,7 @@ class TitleScreen extends HookWidget {
           label: Text(text),
           style: ElevatedButton.styleFrom(
             elevation: 8, // 影をつける
-            shadowColor: Colors.white,
+            shadowColor: Colors.black,
             primary: color,
             padding: const EdgeInsets.symmetric(
               horizontal: 20,
