@@ -20,7 +20,7 @@ class AdvertisingModal extends HookWidget {
   AdvertisingModal(this.quizId);
 
   void _setOpeningNumber(int quizNumber, BuildContext context) async {
-    int openQuizNumber = (quizNumber / 3).ceil() * 3;
+    int openQuizNumber = quizNumber + 3;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt('openingNumber', openQuizNumber);

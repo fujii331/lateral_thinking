@@ -1,21 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:audioplayers/audioplayers.dart';
-import 'package:awesome_dialog/awesome_dialog.dart';
 
-import './advertising_modal.widget.dart';
 import '../../models/quiz.model.dart';
-import '../../providers/quiz.provider.dart';
 
-class QuizItemAd extends HookWidget {
+class QuizItemAd extends StatelessWidget {
   final Quiz quiz;
 
   QuizItemAd(this.quiz);
 
   @override
   Widget build(BuildContext context) {
-    final AudioCache soundEffect = useProvider(soundEffectProvider).state;
     final height = MediaQuery.of(context).size.height;
 
     return Container(
@@ -60,16 +53,7 @@ class QuizItemAd extends HookWidget {
             ),
           ),
         ),
-        onTap: () => {
-          soundEffect.play('sounds/hint.mp3', isNotification: true),
-          AwesomeDialog(
-            context: context,
-            dialogType: DialogType.QUESTION,
-            headerAnimationLoop: false,
-            animType: AnimType.BOTTOMSLIDE,
-            body: AdvertisingModal(quiz.id),
-          )..show(),
-        },
+        onTap: null,
       ),
     );
   }
