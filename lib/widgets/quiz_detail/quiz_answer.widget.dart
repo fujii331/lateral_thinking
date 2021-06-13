@@ -4,6 +4,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:audioplayers/audioplayers.dart';
 
+import 'dart:io';
+
 import '../background.widget.dart';
 import '../../providers/quiz.provider.dart';
 import '../../models/quiz.model.dart';
@@ -120,7 +122,9 @@ class QuizAnswer extends HookWidget {
     final nowLoading = useState(false);
 
     final InterstitialAd myInterstitial = InterstitialAd(
-      adUnitId: ANDROID_ANSWER_INTERSTITIAL_ADVID,
+      adUnitId: Platform.isAndroid
+          ? ANDROID_ANSWER_INTERSTITIAL_ADVID
+          : IOS_ANSWER_INTERSTITIAL_ADVID,
       request: AdRequest(),
       listener: AdListener(
         onAdLoaded: (Ad ad) => {
@@ -259,12 +263,12 @@ class QuizAnswer extends HookWidget {
                                     myInterstitial.show();
                                   }
 
-                                  Navigator.pop(context);
-
-                                  // 広告が呼ばれてから画面が切り替わるまでに何もボタンが反応しないようにするため
+                                  // Navigator.pop(context)を実行させる前に坊やくんの表示を完了させるため
                                   await new Future.delayed(
-                                    new Duration(seconds: 1),
+                                    new Duration(seconds: 3),
                                   );
+
+                                  Navigator.pop(context);
 
                                   String correctComment =
                                       selectedAnswer.value!.comment;

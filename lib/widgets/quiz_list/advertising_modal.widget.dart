@@ -6,6 +6,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 
+import 'dart:io';
 import 'dart:async';
 
 import '../replry_modal.widget.dart';
@@ -47,7 +48,9 @@ class AdvertisingModal extends HookWidget {
     final nowLoading = useState(false);
 
     final rewardAd = RewardedAd(
-      adUnitId: ANDROID_OPEN_QUESTION_REWQRD_ADVID,
+      adUnitId: Platform.isAndroid
+          ? ANDROID_OPEN_QUESTION_REWQRD_ADVID
+          : IOS_OPEN_QUESTION_REWQRD_ADVID,
       request: AdRequest(),
       listener: AdListener(
         onAdLoaded: (Ad ad) {
@@ -78,7 +81,6 @@ class AdvertisingModal extends HookWidget {
         },
         onApplicationExit: (Ad ad) => print('ユーザーがアプリを離れました。'),
         onRewardedAdUserEarnedReward: (RewardedAd ad, RewardItem reward) => {
-          ad.dispose(),
           print('報酬を獲得しました: $reward'),
           _setOpeningNumber(quizId, context),
           Navigator.pop(context),

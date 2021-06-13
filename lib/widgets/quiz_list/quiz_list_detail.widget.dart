@@ -98,7 +98,7 @@ class QuizListDetail extends HookWidget {
                             'タップして問題を開放！',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: height > 620 ? 24 : 22,
+                              fontSize: height > 620 ? 22 : 20,
                               color: Colors.black,
                             ),
                           ),

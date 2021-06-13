@@ -5,6 +5,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 
+import 'dart:io';
 import 'dart:async';
 import 'dart:math';
 
@@ -49,7 +50,9 @@ class HintModal extends HookWidget {
     }).toList();
 
     final rewardAd = RewardedAd(
-      adUnitId: ANDROID_HINT_REWQRD_ADVID,
+      adUnitId: Platform.isAndroid
+          ? ANDROID_HINT_REWQRD_ADVID
+          : IOS_HINT_REWQRD_ADVID,
       request: AdRequest(),
       listener: AdListener(
         onAdLoaded: (Ad ad) {
@@ -80,7 +83,6 @@ class HintModal extends HookWidget {
         },
         onApplicationExit: (Ad ad) => print('ユーザーがアプリを離れました。'),
         onRewardedAdUserEarnedReward: (RewardedAd ad, RewardItem reward) => {
-          ad.dispose(),
           print('報酬を獲得しました: $reward'),
           context.read(hintProvider).state++,
           context.read(selectedQuestionProvider).state = dummyQuestion,
