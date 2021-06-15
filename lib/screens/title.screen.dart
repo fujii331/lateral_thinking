@@ -4,6 +4,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:lottie/lottie.dart';
 
+import 'dart:io';
+
 import './quiz_list.screen.dart';
 import './lecture_tab.screen.dart';
 import '../providers/quiz.provider.dart';
@@ -64,7 +66,10 @@ class TitleScreen extends HookWidget {
                   SizedBox(),
                   Spacer(),
                   Padding(
-                    padding: const EdgeInsets.only(right: 8.0, bottom: 8.0),
+                    padding: EdgeInsets.only(
+                      right: Platform.isAndroid ? 8 : 15,
+                      bottom: Platform.isAndroid ? 8 : 20,
+                    ),
                     child: Text(
                       'Arun Sajeev, jk kim @LottieFiles',
                       textAlign: TextAlign.center,
