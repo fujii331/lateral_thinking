@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../widgets/quiz_detail/quiz_detail.widget.dart';
 import '../widgets/quiz_detail/questioned.widget.dart';
@@ -55,18 +56,18 @@ class QuizDetailTabScreen extends HookWidget {
         type: BottomNavigationBarType.shifting,
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.school),
-            label: '問題',
+            label: AppLocalizations.of(context)!.bottomQuiz,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.check_box),
-            label: '質問済',
+            label: AppLocalizations.of(context)!.bottomQuestioned,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.comment),
-            label: '回答',
+            label: AppLocalizations.of(context)!.bottomAnswer,
           ),
         ],
         onTap: (int selectIndex) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../models/quiz.model.dart';
 
@@ -33,7 +34,7 @@ class QuizItemAd extends StatelessWidget {
               left: 5,
               right: 5),
           child: Text(
-            '問' + quiz.id.toString(),
+            AppLocalizations.of(context)!.listPrefix + quiz.id.toString(),
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,

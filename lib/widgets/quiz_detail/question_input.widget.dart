@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../providers/quiz.provider.dart';
 import '../../models/quiz.model.dart';
@@ -96,7 +97,7 @@ class QuestionInput extends HookWidget {
                         isNotification: true),
                   }
                 : {},
-            child: const Text('質問！'),
+            child: Text(AppLocalizations.of(context)!.ask),
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.only(
                 right: 7,

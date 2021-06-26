@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lateral_thinking/widgets/quiz_list/quiz_list_detail_title.widget.dart';
 import 'package:lateral_thinking/widgets/quiz_list/quiz_list_pagination.widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../widgets/quiz_list/quiz_list_detail.widget.dart';
 import '../providers/quiz.provider.dart';
@@ -28,24 +29,26 @@ class QuizListScreen extends HookWidget {
     final int openingNumber = useProvider(openingNumberProvider).state;
 
     final int numOfPages = ((openingNumber + 1) / 6).ceil();
+    // Localeの方法
+    Locale locale = Localizations.localeOf(context);
     final List<String> titles = [
-      '- 始まりの門 -',
-      '- 客人の間 -',
-      '- お洒落な厨房 -',
-      '- 憩いの食堂 -',
-      '- 安らぎの寝室 -',
-      '- 多忙の執務室 -',
-      '- 王の居間 -',
-      '- 地下の洞窟 -',
-      '- 優雅な中庭 -',
-      '- 開放的な屋上 -',
-      '- 歌人の間 -',
-      '- 王座の間 -',
+      AppLocalizations.of(context)!.listPageTitle1,
+      AppLocalizations.of(context)!.listPageTitle2,
+      AppLocalizations.of(context)!.listPageTitle3,
+      AppLocalizations.of(context)!.listPageTitle4,
+      AppLocalizations.of(context)!.listPageTitle5,
+      AppLocalizations.of(context)!.listPageTitle6,
+      AppLocalizations.of(context)!.listPageTitle7,
+      AppLocalizations.of(context)!.listPageTitle8,
+      AppLocalizations.of(context)!.listPageTitle9,
+      AppLocalizations.of(context)!.listPageTitle10,
+      AppLocalizations.of(context)!.listPageTitle11,
+      AppLocalizations.of(context)!.listPageTitle12,
     ];
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('問題一覧'),
+        title: Text(AppLocalizations.of(context)!.listTitle),
         centerTitle: true,
         backgroundColor: Colors.blueGrey[900]?.withOpacity(0.9),
       ),

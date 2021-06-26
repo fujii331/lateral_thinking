@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../background.widget.dart';
 import '../../providers/quiz.provider.dart';
@@ -34,7 +35,7 @@ class Questioned extends HookWidget {
                   ? Container(
                       padding: const EdgeInsets.all(10),
                       child: Text(
-                        '質問をすることで、ここに聞いた質問と返答が追加されていきます。',
+                        AppLocalizations.of(context)!.questionedList,
                         style: TextStyle(
                           fontSize: height > 210 ? 18 : 16,
                           color: Colors.black54,

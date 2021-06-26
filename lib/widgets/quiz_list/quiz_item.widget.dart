@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../models/quiz.model.dart';
 import '../../screens/quiz_detail_tab.screen.dart';
@@ -60,7 +61,7 @@ class QuizItem extends HookWidget {
               left: 5,
               right: 5),
           child: Text(
-            '問' + quiz.id.toString(),
+            AppLocalizations.of(context)!.listPrefix + quiz.id.toString(),
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,

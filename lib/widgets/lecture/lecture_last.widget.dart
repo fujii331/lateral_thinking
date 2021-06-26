@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../background.widget.dart';
 
@@ -32,7 +33,7 @@ class LectureLast extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      '・質問は入力した言葉を必ず含むので、質問文からイメージしましょう。\n',
+                      AppLocalizations.of(context)!.lectureLast1,
                       style: TextStyle(
                         fontSize: 18.0,
                         color: Colors.white,
@@ -41,34 +42,7 @@ class LectureLast extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '・同じ関連語でも主語を変えてみると質問が出てくる場合があります。\n',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: Colors.white,
-                        fontFamily: 'NotoSerifJP',
-                        height: 1.7,
-                      ),
-                    ),
-                    Text(
-                      '・関連語に「関係」という言葉を選ぶと、質問を考えるきっかけになる情報が得られる場合が多いです。\n（例）ある日は関係していますか？\n',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: Colors.white,
-                        fontFamily: 'NotoSerifJP',
-                        height: 1.7,
-                      ),
-                    ),
-                    Text(
-                      '・主語に「一般の人」という言葉を選ぶと、世間一般の人の場合はどうかについての質問を得られることがあります。\n（例）\n主語：一般の人\n関連語：起こる\n質問：一般の人でも起こることですか？\n',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: Colors.yellow,
-                        fontFamily: 'NotoSerifJP',
-                        height: 1.7,
-                      ),
-                    ),
-                    Text(
-                      'それでは、謎解きの王様をお楽しみください！\n',
+                      AppLocalizations.of(context)!.lectureLast2,
                       style: TextStyle(
                         fontSize: 20.0,
                         color: Colors.white,

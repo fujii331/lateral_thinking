@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'dart:io';
 import 'dart:async';
@@ -51,24 +52,24 @@ class HintModal extends HookWidget {
 
     final rewardAd = RewardedAd(
       adUnitId: Platform.isAndroid
-          ? ANDROID_HINT_REWQRD_ADVID
+          ? TEST_ANDROID_REWQRD_ADVID
           : IOS_HINT_REWQRD_ADVID,
       request: AdRequest(),
       listener: AdListener(
         onAdLoaded: (Ad ad) {
           loaded.value = true;
-          print('リワード広告を読み込みました！');
+          // print('リワード広告を読み込みました！');
         },
         onAdFailedToLoad: (Ad ad, LoadAdError error) {
           ad.dispose();
-          print('リワード広告の読み込みに失敗しました。: $error');
+          // print('リワード広告の読み込みに失敗しました。: $error');
         },
         onAdOpened: (Ad ad) {
-          print('リワード広告が開かれました。');
+          // print('リワード広告が開かれました。');
         },
         onAdClosed: (Ad ad) => {
           ad.dispose(),
-          print('リワード広告が閉じられました。'),
+          // print('リワード広告が閉じられました。'),
           Navigator.pop(context),
           Navigator.pop(context),
           AwesomeDialog(
@@ -77,19 +78,20 @@ class HintModal extends HookWidget {
             headerAnimationLoop: false,
             animType: AnimType.SCALE,
             body: ReplyModal(
-              'ヒントを取得できませんでした。',
+              AppLocalizations.of(context)!.notGetHint,
             ),
           )..show(),
         },
-        onApplicationExit: (Ad ad) => print('ユーザーがアプリを離れました。'),
+        // onApplicationExit: (Ad ad) => print('ユーザーがアプリを離れました。'),
         onRewardedAdUserEarnedReward: (RewardedAd ad, RewardItem reward) => {
-          print('報酬を獲得しました: $reward'),
+          // print('報酬を獲得しました: $reward'),
           context.read(hintProvider).state++,
           context.read(selectedQuestionProvider).state = dummyQuestion,
           context.read(displayReplyFlgProvider).state = false,
           if (hint >= 1)
             {
-              context.read(beforeWordProvider).state = '↓質問を選択',
+              context.read(beforeWordProvider).state =
+                  AppLocalizations.of(context)!.selectQuestion,
               if (hint == 1)
                 {
                   context.read(askingQuestionsProvider).state = _shuffle(quiz
@@ -109,7 +111,8 @@ class HintModal extends HookWidget {
                 },
               if (context.read(askingQuestionsProvider).state.isEmpty)
                 {
-                  context.read(beforeWordProvider).state = 'もう質問はありません。',
+                  context.read(beforeWordProvider).state =
+                      AppLocalizations.of(context)!.notExistQuestion,
                 },
             }
           else
@@ -128,10 +131,10 @@ class HintModal extends HookWidget {
             animType: AnimType.SCALE,
             body: ReplyModal(
               hint == 0
-                  ? '主語と関連語を選択肢で選べるようになりました。'
+                  ? AppLocalizations.of(context)!.openedHint1
                   : hint == 1
-                      ? '質問を選択肢で選べるようになりました。'
-                      : '正解を導く質問のみ選べるようになりました。',
+                      ? AppLocalizations.of(context)!.openedHint2
+                      : AppLocalizations.of(context)!.openedHint3,
             ),
           )..show(),
         },
@@ -153,8 +156,10 @@ class HintModal extends HookWidget {
             ),
             child: Text(
               hint < 3
-                  ? '短い動画を見てヒント' + (hint + 1).toString() + 'を取得しますか？'
-                  : 'ヒントはもうありません。',
+                  ? AppLocalizations.of(context)!.getHintPrefix +
+                      (hint + 1).toString() +
+                      AppLocalizations.of(context)!.getHintSuffix
+                  : AppLocalizations.of(context)!.noHintExist,
               style: TextStyle(
                 fontSize: 20.0,
                 fontWeight: FontWeight.bold,
@@ -191,12 +196,12 @@ class HintModal extends HookWidget {
               ),
               child: Text(
                 hint < 1
-                    ? '主語と関連語を選択肢で選べるようになります。'
+                    ? AppLocalizations.of(context)!.getHint1
                     : hint == 1
-                        ? '質問を選択肢で選べるようになります。'
+                        ? AppLocalizations.of(context)!.getHint2
                         : hint == 2
-                            ? '正解を導く質問のみ選べるようになります。'
-                            : 'もう答えはすぐそこです！',
+                            ? AppLocalizations.of(context)!.getHint3
+                            : AppLocalizations.of(context)!.gotAllHint,
                 style: TextStyle(
                   fontSize: 18.0,
                   fontFamily: 'SawarabiGothic',
@@ -217,7 +222,7 @@ class HintModal extends HookWidget {
                     soundEffect.play('sounds/cancel.mp3', isNotification: true),
                     Navigator.pop(context)
                   },
-                  child: const Text('見ない'),
+                  child: Text(AppLocalizations.of(context)!.noButton),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.only(
                       right: 14,
@@ -257,13 +262,13 @@ class HintModal extends HookWidget {
                                 headerAnimationLoop: false,
                                 animType: AnimType.SCALE,
                                 body: ReplyModal(
-                                  '動画の読み込みに失敗しました。\n再度お試しください。',
+                                  AppLocalizations.of(context)!.failedToLoad,
                                 ),
                               )..show(),
                             },
                         }
                       : {},
-                  child: const Text('見る'),
+                  child: Text(AppLocalizations.of(context)!.yesButton),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.only(
                       right: 14,

@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:lottie/lottie.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'dart:io';
 
@@ -88,7 +89,7 @@ class TitleScreen extends HookWidget {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
-                  '謎解きの王様',
+                  AppLocalizations.of(context)!.title,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: height > 610 ? 48 : 41,
@@ -97,7 +98,7 @@ class TitleScreen extends HookWidget {
                   ),
                 ),
                 Text(
-                  '一人用水平思考クイズ',
+                  AppLocalizations.of(context)!.subTitle,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,
@@ -111,14 +112,14 @@ class TitleScreen extends HookWidget {
                     children: [
                       _selectButton(
                         context,
-                        '遊ぶ',
+                        AppLocalizations.of(context)!.playButton,
                         Colors.lightBlue.shade500,
                         Icon(Icons.account_balance),
                         soundEffect,
                       ),
                       _selectButton(
                         context,
-                        '遊び方',
+                        AppLocalizations.of(context)!.playMethodButton,
                         Colors.teal,
                         Icon(Icons.auto_stories),
                         soundEffect,
@@ -151,7 +152,7 @@ class TitleScreen extends HookWidget {
           icon: icon,
           onPressed: () => {
             soundEffect.play('sounds/tap.mp3', isNotification: true),
-            if (text == '遊ぶ')
+            if (text == AppLocalizations.of(context)!.playButton)
               {
                 toQuizList(context),
               }

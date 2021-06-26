@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class QuizItemNone extends StatelessWidget {
   final int quizNum;
@@ -31,7 +32,7 @@ class QuizItemNone extends StatelessWidget {
               left: 5,
               right: 5),
           child: Text(
-            '問' + quizNum.toString(),
+            AppLocalizations.of(context)!.listPrefix + quizNum.toString(),
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,
@@ -45,7 +46,7 @@ class QuizItemNone extends StatelessWidget {
               bottom: height > 620 ? 10 : 15,
               right: 5),
           child: Text(
-            '近日公開！お楽しみに',
+            AppLocalizations.of(context)!.quizItemNoneText,
             style: TextStyle(
               color: Colors.white60,
               fontSize: 20,

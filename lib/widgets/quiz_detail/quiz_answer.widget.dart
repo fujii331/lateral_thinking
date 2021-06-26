@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'dart:io';
 
@@ -41,9 +42,9 @@ class QuizAnswer extends HookWidget {
           }
         });
 
-        // 必要な質問が出ている、かつ、まだ回答されていないanswerを追加
+        // 必要な質問が出ている、かつ、まだ解答されていないanswerを追加
         if (judgeFlg && !executedAnswerIds.contains(answer.id)) {
-          // 正解だった場合はそれを回答に設定して残りのループをスキップする
+          // 正解だった場合はそれを解答に設定して残りのループをスキップする
           if (correctAnswerIds.contains(answer.id)) {
             availableAnswers.value = [answer];
             correctAnswerFlg = true;
@@ -123,22 +124,22 @@ class QuizAnswer extends HookWidget {
 
     final InterstitialAd myInterstitial = InterstitialAd(
       adUnitId: Platform.isAndroid
-          ? ANDROID_ANSWER_INTERSTITIAL_ADVID
+          ? TEST_ANDROID_INTERSTITIAL_ADVID
           : IOS_ANSWER_INTERSTITIAL_ADVID,
       request: AdRequest(),
       listener: AdListener(
         onAdLoaded: (Ad ad) => {
           loaded.value = true,
-          print('インタースティシャル広告がロードされました。'),
+          // print('インタースティシャル広告がロードされました。'),
         },
         onAdFailedToLoad: (Ad ad, LoadAdError error) => {
           ad.dispose(),
-          print('インタースティシャル広告のロードに失敗しました。: $error'),
+          // print('インタースティシャル広告のロードに失敗しました。: $error'),
         },
         // onAdOpened: (Ad ad) => print('インタースティシャル広告が開かれました。'),
         onAdClosed: (Ad ad) => {
           ad.dispose(),
-          print('インタースティシャル広告が閉じられました。'),
+          // print('インタースティシャル広告が閉じられました。'),
         },
         // onApplicationExit: (Ad ad) => {
         //   print('ユーザーがアプリを離れました。'),
@@ -166,7 +167,7 @@ class QuizAnswer extends HookWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    '今までの質問から導かれた\n回答を実行',
+                    AppLocalizations.of(context)!.answerMessage,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: height > 210 ? 28.0 : 22.0,
@@ -197,11 +198,13 @@ class QuizAnswer extends HookWidget {
                         isExpanded: true,
                         hint: Text(
                           allAnswers.isEmpty
-                              ? 'この問題は終わりです。'
+                              ? AppLocalizations.of(context)!.finishedAnswer
                               : beforeAnswer.value.isEmpty
                                   ? availableAnswers.value.isEmpty
-                                      ? 'もっと質問しましょう！'
-                                      : '回答を選択'
+                                      ? AppLocalizations.of(context)!
+                                          .moreQuestion
+                                      : AppLocalizations.of(context)!
+                                          .selectAnswer
                                   : beforeAnswer.value,
                           style: TextStyle(
                             color: Colors.black54,
@@ -275,7 +278,8 @@ class QuizAnswer extends HookWidget {
                                   enableAnswerButtonFlg.value = false;
                                   selectedAnswer.value = null;
                                   context.read(beforeWordProvider).state =
-                                      'この問題は終わりです。';
+                                      AppLocalizations.of(context)!
+                                          .finishedAnswer;
                                   context.read(allAnswersProvider).state = [];
                                   context.read(displayReplyFlgProvider).state =
                                       false;
@@ -325,7 +329,7 @@ class QuizAnswer extends HookWidget {
                                   );
                                 }
                           : () => {},
-                      child: const Text('回答！'),
+                      child: Text(AppLocalizations.of(context)!.answerButton),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.only(
                           right: 11,

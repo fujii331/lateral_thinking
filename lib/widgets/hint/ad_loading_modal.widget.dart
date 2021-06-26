@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'dart:math';
 
 class AdLoadingModal extends StatelessWidget {
@@ -15,7 +17,7 @@ class AdLoadingModal extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 25),
             child: Text(
-              '読み込み中...',
+              AppLocalizations.of(context)!.nowLoading,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 20,

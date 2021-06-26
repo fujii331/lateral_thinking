@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import './quiz_item.widget.dart';
 import './quiz_item_ad.widget.dart';
@@ -95,7 +96,7 @@ class QuizListDetail extends HookWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(15),
                           child: Text(
-                            'タップして問題を開放！',
+                            AppLocalizations.of(context)!.getNewQuiz,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: height > 620 ? 22 : 20,

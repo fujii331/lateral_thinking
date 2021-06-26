@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import './screens/title.screen.dart';
 import './screens/lecture_tab.screen.dart';
@@ -57,7 +58,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '謎解きの王様',
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      title: 'King of Lateral thinking',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         canvasColor: Colors.grey.shade100,

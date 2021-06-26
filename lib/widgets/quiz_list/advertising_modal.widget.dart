@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'dart:io';
 import 'dart:async';
@@ -49,24 +50,24 @@ class AdvertisingModal extends HookWidget {
 
     final rewardAd = RewardedAd(
       adUnitId: Platform.isAndroid
-          ? ANDROID_OPEN_QUESTION_REWQRD_ADVID
+          ? TEST_ANDROID_REWQRD_ADVID
           : IOS_OPEN_QUESTION_REWQRD_ADVID,
       request: AdRequest(),
       listener: AdListener(
         onAdLoaded: (Ad ad) {
           loaded.value = true;
-          print('リワード広告を読み込みました！');
+          // print('リワード広告を読み込みました！');
         },
         onAdFailedToLoad: (Ad ad, LoadAdError error) {
           ad.dispose();
-          print('リワード広告の読み込みに失敗しました。: $error');
+          // print('リワード広告の読み込みに失敗しました。: $error');
         },
         onAdOpened: (Ad ad) {
-          print('リワード広告が開かれました。');
+          // print('リワード広告が開かれました。');
         },
         onAdClosed: (Ad ad) => {
           ad.dispose(),
-          print('リワード広告が閉じられました。'),
+          // print('リワード広告が閉じられました。'),
           Navigator.pop(context),
           Navigator.pop(context),
           AwesomeDialog(
@@ -75,13 +76,13 @@ class AdvertisingModal extends HookWidget {
             headerAnimationLoop: false,
             animType: AnimType.SCALE,
             body: ReplyModal(
-              '問題を手に入れられませんでした。',
+              AppLocalizations.of(context)!.gotNoQuiz,
             ),
           )..show(),
         },
-        onApplicationExit: (Ad ad) => print('ユーザーがアプリを離れました。'),
+        // onApplicationExit: (Ad ad) => print('ユーザーがアプリを離れました。'),
         onRewardedAdUserEarnedReward: (RewardedAd ad, RewardItem reward) => {
-          print('報酬を獲得しました: $reward'),
+          // print('報酬を獲得しました: $reward'),
           _setOpeningNumber(quizId, context),
           Navigator.pop(context),
           Navigator.pop(context),
@@ -91,7 +92,7 @@ class AdvertisingModal extends HookWidget {
             headerAnimationLoop: false,
             animType: AnimType.SCALE,
             body: ReplyModal(
-              '新たな問題で遊べるようになりました！',
+              AppLocalizations.of(context)!.gotQuiz,
             ),
           )..show(),
         },
@@ -112,7 +113,7 @@ class AdvertisingModal extends HookWidget {
               vertical: 10,
             ),
             child: Text(
-              '短い動画を見て3つの問題を取得しますか？',
+              AppLocalizations.of(context)!.getQuiz,
               style: TextStyle(
                 fontSize: 20.0,
                 fontFamily: 'SawarabiGothic',
@@ -131,7 +132,7 @@ class AdvertisingModal extends HookWidget {
                     soundEffect.play('sounds/cancel.mp3', isNotification: true),
                     Navigator.pop(context)
                   },
-                  child: const Text('見ない'),
+                  child: Text(AppLocalizations.of(context)!.noButton),
                   style: ElevatedButton.styleFrom(
                     primary: Colors.red[500],
                     textStyle: Theme.of(context).textTheme.button,
@@ -142,7 +143,7 @@ class AdvertisingModal extends HookWidget {
                 ),
                 const SizedBox(width: 30),
                 ElevatedButton(
-                  child: const Text('見る'),
+                  child: Text(AppLocalizations.of(context)!.yesButton),
                   style: ElevatedButton.styleFrom(
                     primary: Colors.blue[700],
                     textStyle: Theme.of(context).textTheme.button,
@@ -174,7 +175,7 @@ class AdvertisingModal extends HookWidget {
                           headerAnimationLoop: false,
                           animType: AnimType.SCALE,
                           body: ReplyModal(
-                            '動画の読み込みに失敗しました。\n再度お試しください。',
+                            AppLocalizations.of(context)!.failedToLoad,
                           ),
                         )..show(),
                       },

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:math';
+import 'package:matcher/matcher.dart';
 
 import '../../providers/quiz.provider.dart';
 import '../../models/quiz.model.dart';
@@ -81,6 +83,23 @@ class QuizInputWords extends HookWidget {
       }
     }
 
+    // if (!existFlg) {
+    //   context.read(askingQuestionsProvider).state = [];
+    // } else {
+    //   List<Question> createdQuestions = [];
+
+    //   remainingQuestions.forEach((question) {
+    //     if (question.asking
+    //         .split(subject)[1]
+    //         .split(relatedWord)[1]
+    //         .isNotEmpty) {
+    //       createdQuestions.add(question);
+    //     }
+    //   });
+
+    //   context.read(askingQuestionsProvider).state = createdQuestions;
+    // }
+
     context.read(askingQuestionsProvider).state = existFlg
         ? remainingQuestions
             .where((question) =>
@@ -95,13 +114,16 @@ class QuizInputWords extends HookWidget {
     if (context.read(askingQuestionsProvider).state.isEmpty) {
       final randomNumber = new Random().nextInt(5);
       if (randomNumber == 0) {
-        context.read(beforeWordProvider).state = '難しければ右上のヒントボタンを！';
+        context.read(beforeWordProvider).state =
+            AppLocalizations.of(context)!.seekHint;
       } else {
-        context.read(beforeWordProvider).state = '質問が見つかりませんでした。';
+        context.read(beforeWordProvider).state =
+            AppLocalizations.of(context)!.noQuestions;
       }
     } else {
       context.read(selectedQuestionProvider).state = dummyQuestion;
-      context.read(beforeWordProvider).state = '↓質問を選択';
+      context.read(beforeWordProvider).state =
+          AppLocalizations.of(context)!.selectQuestion;
     }
   }
 
@@ -154,7 +176,7 @@ class QuizInputWords extends HookWidget {
           hint < 1
               ? _wordForQuestion(
                   context,
-                  '主語',
+                  AppLocalizations.of(context)!.subject,
                   subjectController,
                   subjectFocusNode,
                 )
@@ -162,7 +184,7 @@ class QuizInputWords extends HookWidget {
                   context,
                   selectedSubject,
                   selectedSubjectProvider,
-                  '主語',
+                  AppLocalizations.of(context)!.subject,
                   hint,
                   quiz.subjects,
                   subjectController,
@@ -171,7 +193,7 @@ class QuizInputWords extends HookWidget {
                   askingQuestions,
                 ),
           Text(
-            'は',
+            AppLocalizations.of(context)!.afterSubject,
             style: TextStyle(
               fontSize: 20.0,
               color: Colors.white,
@@ -182,7 +204,7 @@ class QuizInputWords extends HookWidget {
           hint < 1
               ? _wordForQuestion(
                   context,
-                  '関連語',
+                  AppLocalizations.of(context)!.relatedWord,
                   relatedWordController,
                   relatedWordFocusNode,
                 )
@@ -190,7 +212,7 @@ class QuizInputWords extends HookWidget {
                   context,
                   selectedRelatedWord,
                   selectedRelatedWordProvider,
-                  '関連語',
+                  AppLocalizations.of(context)!.relatedWord,
                   hint,
                   quiz.relatedWords.take(quiz.hintDisplayWordId).toList(),
                   relatedWordController,

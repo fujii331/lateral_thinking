@@ -1,0 +1,393 @@
+{
+  "@@locale": "en",
+
+  "title": "King of Lateral thinking",
+      "@title": {
+        "description": "title label"
+      },
+
+  "subTitle": "Yes/No puzzle",
+      "@subTitle": {
+        "description": "sub title label"
+      },
+
+  "playButton": "Play",
+      "@playButton": {
+        "description": "play button"
+      },
+
+  "playMethodButton": "How to play",
+      "@playMethodButton": {
+        "description": "how to play button"
+      },
+
+  "playMethodBottom1": "First",
+      "@playMethodBottom1": {
+        "description": "playMethodBottom1"
+      },
+
+  "playMethodBottom2": "Ask",
+      "@playMethodBottom2": {
+        "description": "playMethodBottom2"
+      },
+
+  "playMethodBottom3": "reply",
+      "@playMethodBottom3": {
+        "description": "playMethodBottom3"
+      },
+
+  "playMethodBottom4": "Q list",
+      "@playMethodBottom4": {
+        "description": "playMethodBottom4"
+      },
+
+  "playMethodBottom5": "Answer",
+      "@playMethodBottom5": {
+        "description": "playMethodBottom5"
+      },
+
+  "playMethodBottom6": "Fault",
+      "@playMethodBottom6": {
+        "description": "playMethodBottom6"
+      },
+
+  "playMethodBottom7": "Success",
+      "@playMethodBottom7": {
+        "description": "playMethodBottom7"
+      },
+
+  "playMethodBottom8": "Hint",
+      "@playMethodBottom8": {
+        "description": "playMethodBottom8"
+      },
+
+  "playMethodBottom9": "End",
+      "@playMethodBottom9": {
+        "description": "playMethodBottom9"
+      },
+
+  "listTitle": "Quiz List",
+      "@listTitle": {
+        "description": "list title"
+      },
+
+  "listPrefix": "Q",
+      "@listPrefix": {
+        "description": "list prefix before number"
+      },
+
+  "listPageTitle1": "- First gate -",
+      "@listPageTitle1": {
+        "description": "list page 1 title"
+      },
+      
+  "listPageTitle2": "- Guests room -",
+      "@listPageTitle2": {
+        "description": "list page 2 title"
+      },
+
+  "listPageTitle3": "- Sweet kitchen -",
+      "@listPageTitle3": {
+        "description": "list page 3 title"
+      },
+
+  "listPageTitle4": "- Noisy dining room -",
+      "@listPageTitle4": {
+        "description": "list page 4 title"
+      },
+
+  "listPageTitle5": "- Large bedroom -",
+      "@listPageTitle5": {
+        "description": "list page 5 title"
+      },
+
+  "listPageTitle6": "- Busy office -",
+      "@listPageTitle6": {
+        "description": "list page 6 title"
+      },
+
+  "listPageTitle7": "- King's living room -",
+      "@listPageTitle7": {
+        "description": "list page 7 title"
+      },
+
+  "listPageTitle8": "- Underground cave -",
+      "@listPageTitle8": {
+        "description": "list page 8 title"
+      },
+
+  "listPageTitle9": "- Elegant courtyard -",
+      "@listPageTitle9": {
+        "description": "list page 9 title"
+      },
+
+  "listPageTitle10": "- Open rooftop -",
+      "@listPageTitle10": {
+        "description": "list page 10 title"
+      },
+
+  "listPageTitle11": "- Poets room -",
+      "@listPageTitle11": {
+        "description": "list page 11 title"
+      },
+
+  "listPageTitle12": "- Throne room -",
+      "@listPageTitle12": {
+        "description": "list page 12 title"
+      },  
+
+  "getNewQuiz": "Get new quiz!",
+      "@getNewQuiz": {
+        "description": "get new quiz"
+      },
+  
+  "quizItemNoneText": "Coming soon!",
+      "@quizItemNoneText": {
+        "description": "quizItemNoneText"
+      },
+  
+  "bottomQuiz": "Quiz",
+      "@bottomQuiz": {
+        "description": "bottomQuiz"
+      },
+
+  "bottomQuestioned": "Asked",
+      "@bottomQuestioned": {
+        "description": "bottomQuestioned"
+      },
+
+  "bottomAnswer": "Answer",
+      "@bottomAnswer": {
+        "description": "bottomAnswer"
+      },
+
+  "afterSubject": "..",
+      "@afterSubject": {
+        "description": "after subject word"
+      },
+
+  "subject": "Subject",
+      "@subject": {
+        "description": "subject"
+      },
+
+  "relatedWord": "Related",
+      "@relatedWord": {
+        "description": "related word"
+      },
+
+  "questionButton": "Question！",
+      "@questionButton": {
+        "description": "question！"
+      },
+  
+  "questionedWord": "By asking a question, the questions and answers you questioned will be added here.",
+      "@questionedWord": {
+        "description": "By asking a question, the questions and answers you questioned will be added here."
+      },
+
+  "answerTitle": "Answer derived from the questions",
+      "@answerTitle": {
+        "description": "Execute the answer derived from the questions"
+      },
+
+  "nowLoading": "Now loading...",
+      "@nowLoading": {
+        "description": "loading"
+      },
+
+  "notGetHint": "Could not get the hint.",
+      "@notGetHint": {
+        "description": "notGetHint"
+      },
+
+  "selectQuestion": "↓ Select a question.",
+      "@selectQuestion": {
+        "description": "selectQuestion"
+      },
+
+  "notExistQuestion": "You got all the questions.",
+      "@notExistQuestion": {
+        "description": "notExistQuestion"
+      },
+
+  "openedHint1": "You can now select the subject and related word.",
+      "@openHint1": {
+        "description": "openHint1"
+      },
+
+  "openedHint2": "You can now select questions.",
+      "@openHint2": {
+        "description": "openHint2"
+      },
+
+  "openedHint3": "You can now select only the questions that lead to the correct answer.",
+      "@openHint3": {
+        "description": "openHint3"
+      },
+
+  "getHintPrefix": "Would you like to watch a short video and get a hint",
+      "@getHintPrefix": {
+        "description": "getHintPrefix"
+      },
+
+  "getHintSuffix": "?",
+      "@getHintSuffix": {
+        "description": "getHintSuffix"
+      },
+
+  "noHintExist": "No more hints.",
+      "@noHintExist": {
+        "description": "noHintExist"
+      },
+
+  "getHint1": "You will be able to select the subject and related word.",
+      "@getHint1": {
+        "description": "getHint1"
+      },
+
+  "getHint2": "You will be able to select questions.",
+      "@getHint2": {
+        "description": "getHint2"
+      },
+
+  "getHint3": "You will be able to select only the questions that lead to the correct answer.",
+      "@getHint3": {
+        "description": "getHint3"
+      },
+
+  "gotAllHint": "The answer is right there!",
+      "@gotAllHint": {
+        "description": "gotAllHint"
+      },
+
+  "noButton": "No",
+      "@NoButton": {
+        "description": "NoButton"
+      },
+
+  "yesButton": "Yes",
+      "@YesButton": {
+        "description": "YesButton"
+      },
+
+  "failedToLoad": "Failed to load the video.\nPlease try again.",
+      "@failedToLoad": {
+        "description": "failedToLoad"
+      },
+
+  "boyaName": "Boya-kun",
+      "@failedToLoad": {
+        "description": "boyaName"
+      },
+
+  "lectureFirst1": "Thank you for downloading this app!\n",
+      "@lectureFirst1": {
+        "description": "lectureFirst1"
+      },
+
+  "lectureFirst2": "'King of Lateral thinking Yes/No puzzle'",
+      "@lectureFirst2": {
+        "description": "lectureFirst2"
+      },
+
+  "lectureFirst3": "is a lateral thinking quiz app represented by sea turtle soup, created so that you can play alone.",
+      "@lectureFirst3": {
+        "description": "lectureFirst3"
+      },
+
+  "lectureFirst4": "\n※ Lateral Thinking Quiz: A game in which you ask questions that can be answered with YES or NO and infer the answers.",
+      "@lectureFirst4": {
+        "description": "lectureFirst4"
+      },
+
+  "lectureFirst5": "\nIn this game, 'Boya-kun' who got lost in the castle is in trouble because the king gives various quizzes, so please help him. \n\nNow, let's move to the explanation by pressing the button below or swiping to switch the screen.",
+      "@lectureFirst5": {
+        "description": "lectureFirst5"
+      },
+
+  "lectureLast1": "・The question always includes the words you enter, so imagine it from the question text.\n\n・You may be able to ask a question by changing the subject of the same related word.\n\n・Choosing the word 'related' as a related word often provides clear and useful information that will help you. \nex)\nIs the daughter related?\n\n・If you choose the word 'ordinary people' as the subject, you may be able to ask what about the general public.\nex)\nSubject: ordinary people\nRelated word: happen\nQuestion: For ordinary people Does it happen?\n",
+      "@lectureLast1": {
+        "description": "lectureLast1"
+      },
+
+  "lectureLast2": "Let's enjoy the King of Lateral thinking!",
+      "@lectureLast2": {
+        "description": "lectureLast2"
+      },
+
+  "correctAnswer": "Well done! Is the correct answer!",
+      "@correctAnswer": {
+        "description": "correctAnswer"
+      },
+
+  "back": "Back",
+      "@back": {
+        "description": "back"
+      },
+
+  "ask": "Ask!",
+      "@ask": {
+        "description": "ask"
+      },
+
+  "questionedList": "By asking a question, questions and answers will be added here.",
+      "@questionedList": {
+        "description": "questionedList"
+      },
+
+  "answerMessage": "Execute the answer derived from the previous questions",
+      "@answerMessage": {
+        "description": "answerMessage"
+      },
+
+  "finishedAnswer": "This quiz is over.",
+      "@finishedAnswer": {
+        "description": "finishedAnswer"
+      },
+
+  "moreQuestion": "Ask more questions!",
+      "@moreQuestion": {
+        "description": "moreQuestion"
+      },
+
+  "selectAnswer": "↓ Select an answer.",
+      "@SelectAnswer": {
+        "description": "SelectAnswer"
+      },
+
+  "seekHint": "If it is difficult, click the hint button!",
+      "@seekHint": {
+        "description": "seekHint"
+      },
+
+  "noQuestions": "The question was not found.",
+      "@noQuestions": {
+        "description": "noQuestions"
+      },
+
+  "getQuiz": "Do you get 3 quizzes by watching a short video?",
+      "@getQuiz": {
+        "description": "getQuiz"
+      },
+
+  "getQuiz": "Do you get 3 quizzes by watching a short video?",
+      "@getQuiz": {
+        "description": "getQuiz"
+      },
+
+  "gotQuiz": "You can now play with new quizzes!",
+      "@gotQuiz": {
+        "description": "gotQuiz"
+      },
+
+  "gotNoQuiz": "You didn't get new quizzes.",
+      "@gotNoQuiz": {
+        "description": "gotNoQuiz"
+      },
+
+  "answerButton": "Answer!",
+      "@answerButton": {
+        "description": "answer!"
+      }
+}

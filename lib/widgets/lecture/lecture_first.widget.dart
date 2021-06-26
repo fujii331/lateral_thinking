@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../background.widget.dart';
 
@@ -21,7 +22,7 @@ class LectureFirst extends StatelessWidget {
               ),
             ),
             Text(
-              '坊やくん',
+              AppLocalizations.of(context)!.boyaName,
               style: TextStyle(
                 fontSize: 26.0,
                 color: Colors.white,
@@ -44,7 +45,7 @@ class LectureFirst extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      'アプリをダウンロードしていただきありがとうございます！\n',
+                      AppLocalizations.of(context)!.lectureFirst1,
                       style: TextStyle(
                         fontSize: 17.0,
                         color: Colors.white,
@@ -53,7 +54,7 @@ class LectureFirst extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '「謎解きの王様　一人用水平思考クイズ」',
+                      AppLocalizations.of(context)!.lectureFirst2,
                       style: TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.bold,
@@ -62,7 +63,7 @@ class LectureFirst extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'は、ウミガメのスープに代表される水平思考クイズを、一人で遊べるように作成したものです。',
+                      AppLocalizations.of(context)!.lectureFirst3,
                       style: TextStyle(
                         fontSize: 17.0,
                         color: Colors.white,
@@ -71,7 +72,7 @@ class LectureFirst extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '\n※水平思考クイズ：YESかNOで答えられる質問を行い、答えを推理していくゲーム',
+                      AppLocalizations.of(context)!.lectureFirst4,
                       style: TextStyle(
                         fontSize: 15.0,
                         color: Colors.white,
@@ -80,7 +81,7 @@ class LectureFirst extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '\nこのゲームでは、城に迷い込んだ「坊やくん」が謎好きの王様にいろいろな謎を出題されて困っているので、彼を手伝ってあげてください。\n\nでは、下のボタンを押す、またはスワイプ操作で画面を切り替えて操作説明に移りましょう。',
+                      AppLocalizations.of(context)!.lectureFirst5,
                       style: TextStyle(
                         fontSize: 17.0,
                         color: Colors.white,
