@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:lottie/lottie.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 import 'dart:io';
 
@@ -10,6 +11,8 @@ import './quiz_list.screen.dart';
 import './lecture_tab.screen.dart';
 import '../providers/quiz.provider.dart';
 import '../text.dart';
+import '../should_update.service.dart';
+import '../widgets/update_version_modal.widget.dart';
 
 class TitleScreen extends HookWidget {
   void toQuizList(BuildContext ctx) {
@@ -31,9 +34,21 @@ class TitleScreen extends HookWidget {
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
 
     useEffect(() {
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance!.addPostFrameCallback((_) async {
         if (Localizations.localeOf(context).toString() == 'ja') {
           context.read(enModeFlgProvider).state = false;
+        }
+        if (await shouldUpdate()) {
+          soundEffect.play('sounds/hint.mp3', isNotification: true);
+          AwesomeDialog(
+            context: context,
+            dialogType: DialogType.INFO_REVERSED,
+            headerAnimationLoop: false,
+            animType: AnimType.BOTTOMSLIDE,
+            width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
+            dismissOnTouchOutside: false,
+            body: UpdateVersionModal(),
+          )..show();
         }
       });
       return null;

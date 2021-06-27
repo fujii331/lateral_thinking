@@ -9,8 +9,8 @@ import './quiz_item_ad.widget.dart';
 import './quiz_item_none.widget.dart';
 import './advertising_modal.widget.dart';
 import '../../providers/quiz.provider.dart';
-import '../../quiz_data.dart';
-import '../../quiz_data_en.dart';
+import '../../data/quiz_data.dart';
+import '../../data/quiz_data_en.dart';
 import '../../text.dart';
 
 class QuizListDetail extends HookWidget {
