@@ -89,6 +89,7 @@ class AdvertisingModal extends HookWidget {
             width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
             body: ReplyModal(
               enModeFlg ? EN_TEXT['gotNoQuiz']! : JA_TEXT['gotNoQuiz']!,
+              0,
             ),
           )..show(),
         },
@@ -110,6 +111,7 @@ class AdvertisingModal extends HookWidget {
             width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
             body: ReplyModal(
               enModeFlg ? EN_TEXT['gotQuiz']! : JA_TEXT['gotQuiz']!,
+              quizId,
             ),
           )..show(),
         },
@@ -202,6 +204,7 @@ class AdvertisingModal extends HookWidget {
                             enModeFlg
                                 ? EN_TEXT['failedToLoad']!
                                 : JA_TEXT['failedToLoad']!,
+                            0,
                           ),
                         )..show(),
                       },

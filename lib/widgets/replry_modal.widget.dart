@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:app_review/app_review.dart';
 
 import '../providers/quiz.provider.dart';
 
 class ReplyModal extends HookWidget {
   final String reply;
+  final int reviewNo;
 
-  ReplyModal(this.reply);
+  ReplyModal(
+    this.reply,
+    this.reviewNo,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +48,18 @@ class ReplyModal extends HookWidget {
             child: ElevatedButton(
               onPressed: () => {
                 soundEffect.play('sounds/cancel.mp3', isNotification: true),
-                Navigator.pop(context)
+                Navigator.pop(context),
+                if (reviewNo == 15 || reviewNo == 30)
+                  {
+                    // 別の方法
+                    // LaunchReview.launch(
+                    //   androidAppId: "io.github.naoto613.lateral_thinking",
+                    //   iOSAppId: "1572443299",
+                    // ),
+                    AppReview.requestReview.then(
+                      (_) {},
+                    ),
+                  },
               },
               child: const Text('閉じる'),
               style: ElevatedButton.styleFrom(

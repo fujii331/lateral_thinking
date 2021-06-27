@@ -19,7 +19,7 @@ class UpdateVersionModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isJapanese = Localizations.localeOf(context).toString() == 'ja';
-    const APP_STORE_URL = 'https://apps.apple.com/jp/app/id1572443299';
+    const APP_STORE_URL = 'https://apps.apple.com/app/id1572443299';
     const PLAY_STORE_URL =
         'https://play.google.com/store/apps/details?id=io.github.naoto613.lateral_thinking';
 

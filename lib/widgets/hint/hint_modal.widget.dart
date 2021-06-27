@@ -81,6 +81,7 @@ class HintModal extends HookWidget {
             width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
             body: ReplyModal(
               enModeFlg ? EN_TEXT['notGetHint']! : JA_TEXT['notGetHint']!,
+              0,
             ),
           )..show(),
         },
@@ -146,6 +147,7 @@ class HintModal extends HookWidget {
                       : enModeFlg
                           ? EN_TEXT['openedHint3']!
                           : JA_TEXT['openedHint3']!,
+              0,
             ),
           )..show(),
         },
@@ -295,6 +297,7 @@ class HintModal extends HookWidget {
                                   enModeFlg
                                       ? EN_TEXT['failedToLoad']!
                                       : JA_TEXT['failedToLoad']!,
+                                  0,
                                 ),
                               )..show(),
                             },
