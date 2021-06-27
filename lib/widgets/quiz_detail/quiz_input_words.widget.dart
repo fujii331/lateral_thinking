@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:math';
-import 'package:matcher/matcher.dart';
 
 import '../../providers/quiz.provider.dart';
 import '../../models/quiz.model.dart';
+import '../../text.dart';
 
 class QuizInputWords extends HookWidget {
   final Quiz quiz;
@@ -30,6 +29,7 @@ class QuizInputWords extends HookWidget {
     List<Question> remainingQuestions,
     Question selectedQuestion,
     List<Question> askingQuestions,
+    bool enModeFlg,
   ) {
     final enteredSubject = subjectController.text;
     final enteredRelatedWord = relatedWordController.text;
@@ -52,6 +52,7 @@ class QuizInputWords extends HookWidget {
       quiz.subjects,
       quiz.relatedWords,
       askingQuestions,
+      enModeFlg,
     );
   }
 
@@ -63,6 +64,7 @@ class QuizInputWords extends HookWidget {
     List<String> allSubjects,
     List<String> allRelatedWords,
     List<Question> askingQuestions,
+    bool enModeFlg,
   ) {
     bool existFlg = false;
 
@@ -83,31 +85,33 @@ class QuizInputWords extends HookWidget {
       }
     }
 
-    // if (!existFlg) {
-    //   context.read(askingQuestionsProvider).state = [];
-    // } else {
-    //   List<Question> createdQuestions = [];
+    if (enModeFlg) {
+      if (!existFlg) {
+        context.read(askingQuestionsProvider).state = [];
+      } else {
+        List<Question> createdQuestions = [];
 
-    //   remainingQuestions.forEach((question) {
-    //     if (question.asking
-    //         .split(subject)[1]
-    //         .split(relatedWord)[1]
-    //         .isNotEmpty) {
-    //       createdQuestions.add(question);
-    //     }
-    //   });
+        remainingQuestions.forEach((question) {
+          if (question.asking.indexOf(subject) != -1 &&
+              question.asking.indexOf(subject) <
+                  question.asking.indexOf(relatedWord)) {
+            createdQuestions.add(question);
+          }
+        });
 
-    //   context.read(askingQuestionsProvider).state = createdQuestions;
-    // }
-
-    context.read(askingQuestionsProvider).state = existFlg
-        ? remainingQuestions
-            .where((question) =>
-                question.asking.startsWith(subject) &&
-                (!question.asking.startsWith(relatedWord) &&
-                    question.asking.contains(relatedWord)))
-            .toList()
-        : [];
+        print(createdQuestions);
+        context.read(askingQuestionsProvider).state = createdQuestions;
+      }
+    } else {
+      context.read(askingQuestionsProvider).state = existFlg
+          ? remainingQuestions
+              .where((question) =>
+                  question.asking.startsWith(subject) &&
+                  (!question.asking.startsWith(relatedWord) &&
+                      question.asking.contains(relatedWord)))
+              .toList()
+          : [];
+    }
 
     context.read(displayReplyFlgProvider).state = false;
 
@@ -115,15 +119,15 @@ class QuizInputWords extends HookWidget {
       final randomNumber = new Random().nextInt(5);
       if (randomNumber == 0) {
         context.read(beforeWordProvider).state =
-            AppLocalizations.of(context)!.seekHint;
+            enModeFlg ? EN_TEXT['seekHint']! : JA_TEXT['seekHint']!;
       } else {
         context.read(beforeWordProvider).state =
-            AppLocalizations.of(context)!.noQuestions;
+            enModeFlg ? EN_TEXT['noQuestions']! : JA_TEXT['noQuestions']!;
       }
     } else {
       context.read(selectedQuestionProvider).state = dummyQuestion;
       context.read(beforeWordProvider).state =
-          AppLocalizations.of(context)!.selectQuestion;
+          enModeFlg ? EN_TEXT['selectQuestion']! : JA_TEXT['selectQuestion']!;
     }
   }
 
@@ -141,6 +145,8 @@ class QuizInputWords extends HookWidget {
     final String? selectedRelatedWord =
         useProvider(selectedRelatedWordProvider).state;
 
+    final bool enModeFlg = useProvider(enModeFlgProvider).state;
+
     subjectFocusNode.addListener(() {
       if (!subjectFocusNode.hasFocus) {
         _submitData(
@@ -149,6 +155,7 @@ class QuizInputWords extends HookWidget {
           remainingQuestions,
           selectedQuestion,
           askingQuestions,
+          enModeFlg,
         );
       }
     });
@@ -161,6 +168,7 @@ class QuizInputWords extends HookWidget {
           remainingQuestions,
           selectedQuestion,
           askingQuestions,
+          enModeFlg,
         );
       }
     });
@@ -169,76 +177,94 @@ class QuizInputWords extends HookWidget {
       padding: EdgeInsets.only(
         top: MediaQuery.of(context).size.height * .35 < 210 ? 6 : 12,
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          // 主語の入力
-          hint < 1
-              ? _wordForQuestion(
-                  context,
-                  AppLocalizations.of(context)!.subject,
-                  subjectController,
-                  subjectFocusNode,
-                )
-              : _wordSelectForQuestion(
-                  context,
-                  selectedSubject,
-                  selectedSubjectProvider,
-                  AppLocalizations.of(context)!.subject,
-                  hint,
-                  quiz.subjects,
-                  subjectController,
-                  remainingQuestions,
-                  selectedQuestion,
-                  askingQuestions,
-                ),
-          Text(
-            AppLocalizations.of(context)!.afterSubject,
-            style: TextStyle(
-              fontSize: 20.0,
-              color: Colors.white,
-              fontFamily: 'NotoSerifJP',
+      child: Container(
+        width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            // 主語の入力
+            hint < 1
+                ? _wordForQuestion(
+                    context,
+                    enModeFlg ? EN_TEXT['subject']! : JA_TEXT['subject']!,
+                    subjectController,
+                    subjectFocusNode,
+                    enModeFlg,
+                  )
+                : _wordSelectForQuestion(
+                    context,
+                    selectedSubject,
+                    selectedSubjectProvider,
+                    enModeFlg ? EN_TEXT['subject']! : JA_TEXT['subject']!,
+                    hint,
+                    quiz.subjects,
+                    subjectController,
+                    remainingQuestions,
+                    selectedQuestion,
+                    askingQuestions,
+                    enModeFlg,
+                  ),
+            Text(
+              enModeFlg ? EN_TEXT['afterSubject']! : JA_TEXT['afterSubject']!,
+              style: TextStyle(
+                fontSize: 20.0,
+                color: Colors.white,
+                fontFamily: 'NotoSerifJP',
+              ),
             ),
-          ),
-          // 関連語の入力
-          hint < 1
-              ? _wordForQuestion(
-                  context,
-                  AppLocalizations.of(context)!.relatedWord,
-                  relatedWordController,
-                  relatedWordFocusNode,
-                )
-              : _wordSelectForQuestion(
-                  context,
-                  selectedRelatedWord,
-                  selectedRelatedWordProvider,
-                  AppLocalizations.of(context)!.relatedWord,
-                  hint,
-                  quiz.relatedWords.take(quiz.hintDisplayWordId).toList(),
-                  relatedWordController,
-                  remainingQuestions,
-                  selectedQuestion,
-                  askingQuestions,
-                ),
-          Text(
-            '...？',
-            style: TextStyle(
-              fontSize: 20.0,
-              color: Colors.white,
-              fontFamily: 'NotoSerifJP',
+            // 関連語の入力
+            hint < 1
+                ? _wordForQuestion(
+                    context,
+                    enModeFlg
+                        ? EN_TEXT['relatedWord']!
+                        : JA_TEXT['relatedWord']!,
+                    relatedWordController,
+                    relatedWordFocusNode,
+                    enModeFlg,
+                  )
+                : _wordSelectForQuestion(
+                    context,
+                    selectedRelatedWord,
+                    selectedRelatedWordProvider,
+                    enModeFlg
+                        ? EN_TEXT['relatedWord']!
+                        : JA_TEXT['relatedWord']!,
+                    hint,
+                    quiz.relatedWords.take(quiz.hintDisplayWordId).toList(),
+                    relatedWordController,
+                    remainingQuestions,
+                    selectedQuestion,
+                    askingQuestions,
+                    enModeFlg,
+                  ),
+            Text(
+              '...？',
+              style: TextStyle(
+                fontSize: 20.0,
+                color: Colors.white,
+                fontFamily: 'NotoSerifJP',
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget _wordForQuestion(BuildContext context, String text,
-      TextEditingController controller, FocusNode _focusNode) {
+  Widget _wordForQuestion(
+    BuildContext context,
+    String text,
+    TextEditingController controller,
+    FocusNode _focusNode,
+    bool enModeFlg,
+  ) {
     final height = MediaQuery.of(context).size.height * .35;
 
     return Container(
-      width: MediaQuery.of(context).size.width * .30,
+      width: MediaQuery.of(context).size.width * .86 > 650
+          ? 250
+          : MediaQuery.of(context).size.width * .30,
       height: height < 210 ? 50 : null,
       child: TextField(
         textAlignVertical: height < 210 ? TextAlignVertical.bottom : null,
@@ -261,7 +287,9 @@ class QuizInputWords extends HookWidget {
           ),
         ),
         inputFormatters: <TextInputFormatter>[
-          LengthLimitingTextInputFormatter(10),
+          LengthLimitingTextInputFormatter(
+            enModeFlg ? 30 : 10,
+          ),
         ],
         controller: controller,
         focusNode: _focusNode,
@@ -280,6 +308,7 @@ class QuizInputWords extends HookWidget {
     List<Question> remainingQuestions,
     Question selectedQuestion,
     List<Question> askingQuestions,
+    bool enModeFlg,
   ) {
     final height = MediaQuery.of(context).size.height * .35;
 
@@ -288,7 +317,9 @@ class QuizInputWords extends HookWidget {
         vertical: 7,
         horizontal: 10,
       ),
-      width: MediaQuery.of(context).size.width * .305,
+      width: MediaQuery.of(context).size.width * .86 > 650
+          ? 250
+          : MediaQuery.of(context).size.width * .305,
       height: height < 210 ? 50 : 63,
       decoration: BoxDecoration(
         color: hint < 2 ? Colors.white : Colors.grey[400],
@@ -327,6 +358,7 @@ class QuizInputWords extends HookWidget {
             remainingQuestions,
             selectedQuestion,
             askingQuestions,
+            enModeFlg,
           );
         },
       ),

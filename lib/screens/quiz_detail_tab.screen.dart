@@ -3,7 +3,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../widgets/quiz_detail/quiz_detail.widget.dart';
 import '../widgets/quiz_detail/questioned.widget.dart';
@@ -12,6 +11,7 @@ import '../widgets/hint/hint_modal.widget.dart';
 import '../providers/quiz.provider.dart';
 
 import '../models/quiz.model.dart';
+import '../text.dart';
 
 class QuizDetailTabScreen extends HookWidget {
   static const routeName = '/quiz-detail-tab';
@@ -24,6 +24,7 @@ class QuizDetailTabScreen extends HookWidget {
     final screenNo = useState<int>(0);
     final pageController = usePageController(initialPage: 0, keepPage: true);
     final List<Answer> allAnswers = useProvider(allAnswersProvider).state;
+    final bool enModeFlg = useProvider(enModeFlgProvider).state;
 
     return Scaffold(
       appBar: AppBar(
@@ -45,6 +46,9 @@ class QuizDetailTabScreen extends HookWidget {
                       dialogType: DialogType.QUESTION,
                       headerAnimationLoop: false,
                       animType: AnimType.BOTTOMSLIDE,
+                      width: MediaQuery.of(context).size.width * .86 > 650
+                          ? 650
+                          : null,
                       body: HintModal(quiz),
                     )..show();
                   },
@@ -59,15 +63,18 @@ class QuizDetailTabScreen extends HookWidget {
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.school),
-            label: AppLocalizations.of(context)!.bottomQuiz,
+            label: enModeFlg ? EN_TEXT['bottomQuiz']! : JA_TEXT['bottomQuiz']!,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.check_box),
-            label: AppLocalizations.of(context)!.bottomQuestioned,
+            label: enModeFlg
+                ? EN_TEXT['bottomQuestioned']!
+                : JA_TEXT['bottomQuestioned']!,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.comment),
-            label: AppLocalizations.of(context)!.bottomAnswer,
+            label:
+                enModeFlg ? EN_TEXT['bottomAnswer']! : JA_TEXT['bottomAnswer']!,
           ),
         ],
         onTap: (int selectIndex) {

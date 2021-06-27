@@ -4,7 +4,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'dart:io';
 import 'dart:async';
@@ -17,6 +16,7 @@ import './ad_loading_modal.widget.dart';
 
 import '../../models/quiz.model.dart';
 import '../../advertising.dart';
+import '../../text.dart';
 
 class HintModal extends HookWidget {
   final Quiz quiz;
@@ -42,6 +42,7 @@ class HintModal extends HookWidget {
     final int hint = useProvider(hintProvider).state;
     final loaded = useState(false);
     final nowLoading = useState(false);
+    final bool enModeFlg = useProvider(enModeFlgProvider).state;
 
     final List<Question> askedQuestions =
         useProvider(askedQuestionsProvider).state;
@@ -52,7 +53,7 @@ class HintModal extends HookWidget {
 
     final rewardAd = RewardedAd(
       adUnitId: Platform.isAndroid
-          ? TEST_ANDROID_REWQRD_ADVID
+          ? ANDROID_HINT_REWQRD_ADVID
           : IOS_HINT_REWQRD_ADVID,
       request: AdRequest(),
       listener: AdListener(
@@ -77,8 +78,9 @@ class HintModal extends HookWidget {
             dialogType: DialogType.ERROR,
             headerAnimationLoop: false,
             animType: AnimType.SCALE,
+            width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
             body: ReplyModal(
-              AppLocalizations.of(context)!.notGetHint,
+              enModeFlg ? EN_TEXT['notGetHint']! : JA_TEXT['notGetHint']!,
             ),
           )..show(),
         },
@@ -90,8 +92,9 @@ class HintModal extends HookWidget {
           context.read(displayReplyFlgProvider).state = false,
           if (hint >= 1)
             {
-              context.read(beforeWordProvider).state =
-                  AppLocalizations.of(context)!.selectQuestion,
+              context.read(beforeWordProvider).state = enModeFlg
+                  ? EN_TEXT['selectQuestion']!
+                  : JA_TEXT['selectQuestion']!,
               if (hint == 1)
                 {
                   context.read(askingQuestionsProvider).state = _shuffle(quiz
@@ -111,8 +114,9 @@ class HintModal extends HookWidget {
                 },
               if (context.read(askingQuestionsProvider).state.isEmpty)
                 {
-                  context.read(beforeWordProvider).state =
-                      AppLocalizations.of(context)!.notExistQuestion,
+                  context.read(beforeWordProvider).state = enModeFlg
+                      ? EN_TEXT['notExistQuestion']!
+                      : JA_TEXT['notExistQuestion']!,
                 },
             }
           else
@@ -129,12 +133,19 @@ class HintModal extends HookWidget {
             dialogType: DialogType.SUCCES,
             headerAnimationLoop: false,
             animType: AnimType.SCALE,
+            width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
             body: ReplyModal(
               hint == 0
-                  ? AppLocalizations.of(context)!.openedHint1
+                  ? enModeFlg
+                      ? EN_TEXT['openedHint1']!
+                      : JA_TEXT['openedHint1']!
                   : hint == 1
-                      ? AppLocalizations.of(context)!.openedHint2
-                      : AppLocalizations.of(context)!.openedHint3,
+                      ? enModeFlg
+                          ? EN_TEXT['openedHint2']!
+                          : JA_TEXT['openedHint2']!
+                      : enModeFlg
+                          ? EN_TEXT['openedHint3']!
+                          : JA_TEXT['openedHint3']!,
             ),
           )..show(),
         },
@@ -155,11 +166,17 @@ class HintModal extends HookWidget {
               vertical: 10,
             ),
             child: Text(
-              hint < 3
-                  ? AppLocalizations.of(context)!.getHintPrefix +
-                      (hint + 1).toString() +
-                      AppLocalizations.of(context)!.getHintSuffix
-                  : AppLocalizations.of(context)!.noHintExist,
+              enModeFlg
+                  ? hint < 3
+                      ? EN_TEXT['getHintPrefix']! +
+                          (hint + 1).toString() +
+                          EN_TEXT['getHintSuffix']!
+                      : EN_TEXT['noHintExist']!
+                  : hint < 3
+                      ? JA_TEXT['getHintPrefix']! +
+                          (hint + 1).toString() +
+                          JA_TEXT['getHintSuffix']!
+                      : JA_TEXT['noHintExist']!,
               style: TextStyle(
                 fontSize: 20.0,
                 fontWeight: FontWeight.bold,
@@ -196,12 +213,20 @@ class HintModal extends HookWidget {
               ),
               child: Text(
                 hint < 1
-                    ? AppLocalizations.of(context)!.getHint1
+                    ? enModeFlg
+                        ? EN_TEXT['getHint1']!
+                        : JA_TEXT['getHint1']!
                     : hint == 1
-                        ? AppLocalizations.of(context)!.getHint2
+                        ? enModeFlg
+                            ? EN_TEXT['getHint2']!
+                            : JA_TEXT['getHint2']!
                         : hint == 2
-                            ? AppLocalizations.of(context)!.getHint3
-                            : AppLocalizations.of(context)!.gotAllHint,
+                            ? enModeFlg
+                                ? EN_TEXT['getHint3']!
+                                : JA_TEXT['getHint3']!
+                            : enModeFlg
+                                ? EN_TEXT['gotAllHint']!
+                                : JA_TEXT['gotAllHint']!,
                 style: TextStyle(
                   fontSize: 18.0,
                   fontFamily: 'SawarabiGothic',
@@ -222,7 +247,8 @@ class HintModal extends HookWidget {
                     soundEffect.play('sounds/cancel.mp3', isNotification: true),
                     Navigator.pop(context)
                   },
-                  child: Text(AppLocalizations.of(context)!.noButton),
+                  child: Text(
+                      enModeFlg ? EN_TEXT['noButton']! : JA_TEXT['noButton']!),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.only(
                       right: 14,
@@ -261,14 +287,22 @@ class HintModal extends HookWidget {
                                 dialogType: DialogType.ERROR,
                                 headerAnimationLoop: false,
                                 animType: AnimType.SCALE,
+                                width: MediaQuery.of(context).size.width * .86 >
+                                        650
+                                    ? 650
+                                    : null,
                                 body: ReplyModal(
-                                  AppLocalizations.of(context)!.failedToLoad,
+                                  enModeFlg
+                                      ? EN_TEXT['failedToLoad']!
+                                      : JA_TEXT['failedToLoad']!,
                                 ),
                               )..show(),
                             },
                         }
                       : {},
-                  child: Text(AppLocalizations.of(context)!.yesButton),
+                  child: Text(
+                    enModeFlg ? EN_TEXT['yesButton']! : JA_TEXT['yesButton']!,
+                  ),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.only(
                       right: 14,

@@ -15,6 +15,7 @@ class QuizSentence extends StatelessWidget {
           : height * .35 > 320
               ? 320
               : height * .40,
+      width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
       margin: EdgeInsets.all(5),
       decoration: BoxDecoration(
         color: Colors.white,

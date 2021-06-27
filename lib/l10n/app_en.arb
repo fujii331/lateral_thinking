@@ -188,7 +188,7 @@
 
   "answerTitle": "Answer derived from the questions",
       "@answerTitle": {
-        "description": "Execute the answer derived from the questions"
+        "description": "Let's answer from ever questions."
       },
 
   "nowLoading": "Now loading...",
@@ -277,7 +277,7 @@
       },
 
   "boyaName": "Boya-kun",
-      "@failedToLoad": {
+      "@boyaName": {
         "description": "boyaName"
       },
 
@@ -306,7 +306,7 @@
         "description": "lectureFirst5"
       },
 
-  "lectureLast1": "・The question always includes the words you enter, so imagine it from the question text.\n\n・You may be able to ask a question by changing the subject of the same related word.\n\n・Choosing the word 'related' as a related word often provides clear and useful information that will help you. \nex)\nIs the daughter related?\n\n・If you choose the word 'ordinary people' as the subject, you may be able to ask what about the general public.\nex)\nSubject: ordinary people\nRelated word: happen\nQuestion: For ordinary people Does it happen?\n",
+  "lectureLast1": "・The question always includes the words you enter, so imagine it from the question text.\n\n・You may be able to ask a question by changing the subject of the same related word.\n\n・Choosing the word 'related' as a related word often provides clear and useful information that will help you. \nex)\nIs 'one day' related?\n\n・If you choose the word 'ordinary people' as the subject, you may be able to ask what about the general public.\nex)\nSubject: ordinary people\nRelated word: alone\nQuestion: Do ordinary people participate in it alone?\n",
       "@lectureLast1": {
         "description": "lectureLast1"
       },
@@ -336,7 +336,7 @@
         "description": "questionedList"
       },
 
-  "answerMessage": "Execute the answer derived from the previous questions",
+  "answerMessage": "Let's answer from ever questions.",
       "@answerMessage": {
         "description": "answerMessage"
       },
@@ -364,11 +364,6 @@
   "noQuestions": "The question was not found.",
       "@noQuestions": {
         "description": "noQuestions"
-      },
-
-  "getQuiz": "Do you get 3 quizzes by watching a short video?",
-      "@getQuiz": {
-        "description": "getQuiz"
       },
 
   "getQuiz": "Do you get 3 quizzes by watching a short video?",

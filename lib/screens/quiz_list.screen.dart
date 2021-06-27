@@ -4,51 +4,58 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lateral_thinking/widgets/quiz_list/quiz_list_detail_title.widget.dart';
 import 'package:lateral_thinking/widgets/quiz_list/quiz_list_pagination.widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../widgets/quiz_list/quiz_list_detail.widget.dart';
 import '../providers/quiz.provider.dart';
 import '../widgets/background.widget.dart';
+import '../text.dart';
 
 class QuizListScreen extends HookWidget {
   static const routeName = '/quiz-list';
 
-  void _getOpeningNumber(BuildContext context) async {
+  void _getOpeningNumber(BuildContext context, bool enModeFlg) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    context.read(openingNumberProvider).state =
-        prefs.getInt('openingNumber') ?? 9;
+    if (enModeFlg) {
+      context.read(openingNumberProvider).state =
+          prefs.getInt('openingNumberEn') ?? 9;
+    } else {
+      context.read(openingNumberProvider).state =
+          prefs.getInt('openingNumber') ?? 9;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final screenNo = useState<int>(0);
 
-    _getOpeningNumber(context);
-
     final int openingNumber = useProvider(openingNumberProvider).state;
 
     final int numOfPages = ((openingNumber + 1) / 6).ceil();
-    // Localeの方法
-    Locale locale = Localizations.localeOf(context);
+    final bool enModeFlg = useProvider(enModeFlgProvider).state;
+
+    _getOpeningNumber(context, enModeFlg);
+
     final List<String> titles = [
-      AppLocalizations.of(context)!.listPageTitle1,
-      AppLocalizations.of(context)!.listPageTitle2,
-      AppLocalizations.of(context)!.listPageTitle3,
-      AppLocalizations.of(context)!.listPageTitle4,
-      AppLocalizations.of(context)!.listPageTitle5,
-      AppLocalizations.of(context)!.listPageTitle6,
-      AppLocalizations.of(context)!.listPageTitle7,
-      AppLocalizations.of(context)!.listPageTitle8,
-      AppLocalizations.of(context)!.listPageTitle9,
-      AppLocalizations.of(context)!.listPageTitle10,
-      AppLocalizations.of(context)!.listPageTitle11,
-      AppLocalizations.of(context)!.listPageTitle12,
+      enModeFlg ? EN_TEXT['listPageTitle1']! : JA_TEXT['listPageTitle1']!,
+      enModeFlg ? EN_TEXT['listPageTitle2']! : JA_TEXT['listPageTitle2']!,
+      enModeFlg ? EN_TEXT['listPageTitle3']! : JA_TEXT['listPageTitle3']!,
+      enModeFlg ? EN_TEXT['listPageTitle4']! : JA_TEXT['listPageTitle4']!,
+      enModeFlg ? EN_TEXT['listPageTitle5']! : JA_TEXT['listPageTitle5']!,
+      enModeFlg ? EN_TEXT['listPageTitle6']! : JA_TEXT['listPageTitle6']!,
+      enModeFlg ? EN_TEXT['listPageTitle7']! : JA_TEXT['listPageTitle7']!,
+      enModeFlg ? EN_TEXT['listPageTitle8']! : JA_TEXT['listPageTitle8']!,
+      enModeFlg ? EN_TEXT['listPageTitle9']! : JA_TEXT['listPageTitle9']!,
+      enModeFlg ? EN_TEXT['listPageTitle10']! : JA_TEXT['listPageTitle10']!,
+      enModeFlg ? EN_TEXT['listPageTitle11']! : JA_TEXT['listPageTitle11']!,
+      enModeFlg ? EN_TEXT['listPageTitle12']! : JA_TEXT['listPageTitle12']!,
     ];
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.listTitle),
+        title: Text(
+          enModeFlg ? EN_TEXT['listTitle']! : JA_TEXT['listTitle']!,
+        ),
         centerTitle: true,
         backgroundColor: Colors.blueGrey[900]?.withOpacity(0.9),
       ),

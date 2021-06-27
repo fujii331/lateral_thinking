@@ -3,7 +3,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'dart:io';
 
@@ -13,6 +12,7 @@ import '../../models/quiz.model.dart';
 import 'correct_answer_modal.widget.dart';
 import '../../advertising.dart';
 import './answering_modal.widget.dart';
+import '../../text.dart';
 
 class QuizAnswer extends HookWidget {
   void getAnswerChoices(
@@ -122,9 +122,11 @@ class QuizAnswer extends HookWidget {
     final loaded = useState(false);
     final nowLoading = useState(false);
 
+    final bool enModeFlg = useProvider(enModeFlgProvider).state;
+
     final InterstitialAd myInterstitial = InterstitialAd(
       adUnitId: Platform.isAndroid
-          ? TEST_ANDROID_INTERSTITIAL_ADVID
+          ? ANDROID_ANSWER_INTERSTITIAL_ADVID
           : IOS_ANSWER_INTERSTITIAL_ADVID,
       request: AdRequest(),
       listener: AdListener(
@@ -167,7 +169,9 @@ class QuizAnswer extends HookWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    AppLocalizations.of(context)!.answerMessage,
+                    enModeFlg
+                        ? EN_TEXT['answerMessage']!
+                        : JA_TEXT['answerMessage']!,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: height > 210 ? 28.0 : 22.0,
@@ -198,13 +202,17 @@ class QuizAnswer extends HookWidget {
                         isExpanded: true,
                         hint: Text(
                           allAnswers.isEmpty
-                              ? AppLocalizations.of(context)!.finishedAnswer
+                              ? enModeFlg
+                                  ? EN_TEXT['finishedAnswer']!
+                                  : JA_TEXT['finishedAnswer']!
                               : beforeAnswer.value.isEmpty
                                   ? availableAnswers.value.isEmpty
-                                      ? AppLocalizations.of(context)!
-                                          .moreQuestion
-                                      : AppLocalizations.of(context)!
-                                          .selectAnswer
+                                      ? enModeFlg
+                                          ? EN_TEXT['moreQuestion']!
+                                          : JA_TEXT['moreQuestion']!
+                                      : enModeFlg
+                                          ? EN_TEXT['selectAnswer']!
+                                          : JA_TEXT['selectAnswer']!
                                   : beforeAnswer.value,
                           style: TextStyle(
                             color: Colors.black54,
@@ -234,6 +242,7 @@ class QuizAnswer extends HookWidget {
                       onPressed: enableAnswerButtonFlg.value
                           ? correctAnswerIds.contains(selectedAnswer.value!.id)
                               ? () async {
+                                  enableAnswerButtonFlg.value = false;
                                   soundEffect.play('sounds/quiz_button.mp3',
                                       isNotification: true);
 
@@ -278,8 +287,10 @@ class QuizAnswer extends HookWidget {
                                   enableAnswerButtonFlg.value = false;
                                   selectedAnswer.value = null;
                                   context.read(beforeWordProvider).state =
-                                      AppLocalizations.of(context)!
-                                          .finishedAnswer;
+                                      enModeFlg
+                                          ? EN_TEXT['finishedAnswer']!
+                                          : JA_TEXT['finishedAnswer']!;
+
                                   context.read(allAnswersProvider).state = [];
                                   context.read(displayReplyFlgProvider).state =
                                       false;
@@ -296,6 +307,7 @@ class QuizAnswer extends HookWidget {
                                   );
                                 }
                               : () async {
+                                  enableAnswerButtonFlg.value = false;
                                   soundEffect.play('sounds/quiz_button.mp3',
                                       isNotification: true);
                                   await new Future.delayed(
@@ -312,6 +324,7 @@ class QuizAnswer extends HookWidget {
                                   await new Future.delayed(
                                     new Duration(milliseconds: 3400),
                                   );
+                                  enableAnswerButtonFlg.value = true;
 
                                   soundEffect.play('sounds/wrong_answer.mp3',
                                       isNotification: true);
@@ -329,7 +342,9 @@ class QuizAnswer extends HookWidget {
                                   );
                                 }
                           : () => {},
-                      child: Text(AppLocalizations.of(context)!.answerButton),
+                      child: Text(enModeFlg
+                          ? EN_TEXT['answerButton']!
+                          : JA_TEXT['answerButton']!),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.only(
                           right: 11,

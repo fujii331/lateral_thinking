@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../background.widget.dart';
 import '../../providers/quiz.provider.dart';
 import '../../models/quiz.model.dart';
+import '../../text.dart';
 
 class Questioned extends HookWidget {
   @override
@@ -13,6 +13,7 @@ class Questioned extends HookWidget {
     final height = MediaQuery.of(context).size.height * .35;
     final List<Question> askedQuestions =
         useProvider(askedQuestionsProvider).state;
+    final bool enModeFlg = useProvider(enModeFlgProvider).state;
 
     return Stack(
       children: <Widget>[
@@ -35,7 +36,9 @@ class Questioned extends HookWidget {
                   ? Container(
                       padding: const EdgeInsets.all(10),
                       child: Text(
-                        AppLocalizations.of(context)!.questionedList,
+                        enModeFlg
+                            ? EN_TEXT['questionedList']!
+                            : JA_TEXT['questionedList']!,
                         style: TextStyle(
                           fontSize: height > 210 ? 18 : 16,
                           color: Colors.black54,

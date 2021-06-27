@@ -3,7 +3,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import './quiz_item.widget.dart';
 import './quiz_item_ad.widget.dart';
@@ -11,6 +10,8 @@ import './quiz_item_none.widget.dart';
 import './advertising_modal.widget.dart';
 import '../../providers/quiz.provider.dart';
 import '../../quiz_data.dart';
+import '../../quiz_data_en.dart';
+import '../../text.dart';
 
 class QuizListDetail extends HookWidget {
   final int openingNumber;
@@ -27,6 +28,8 @@ class QuizListDetail extends HookWidget {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
+    final bool enModeFlg = useProvider(enModeFlgProvider).state;
+    final quizData = enModeFlg ? QUIZ_DATA_EN : QUIZ_DATA;
 
     return Container(
       height: height > 610
@@ -44,10 +47,10 @@ class QuizListDetail extends HookWidget {
             itemBuilder: (ctx, index) {
               int quizNumber = index + 6 * (screenNo.value);
               return quizNumber < openingNumber
-                  ? QuizItem(QUIZ_DATA[quizNumber])
-                  : openingNumber < QUIZ_DATA.length
-                      ? QuizItemAd(QUIZ_DATA[quizNumber])
-                      : quizNumber == QUIZ_DATA.length
+                  ? QuizItem(quizData[quizNumber])
+                  : openingNumber < quizData.length
+                      ? QuizItemAd(quizData[quizNumber])
+                      : quizNumber == quizData.length
                           ? QuizItemNone(openingNumber + 1)
                           : Container();
             },
@@ -56,7 +59,7 @@ class QuizListDetail extends HookWidget {
                     ? 3
                     : 6,
           ),
-          screenNo.value + 1 == numOfPages && openingNumber != QUIZ_DATA.length
+          screenNo.value + 1 == numOfPages && openingNumber != quizData.length
               ? Opacity(
                   opacity: 0.8,
                   child: Container(
@@ -80,6 +83,9 @@ class QuizListDetail extends HookWidget {
                           dialogType: DialogType.QUESTION,
                           headerAnimationLoop: false,
                           animType: AnimType.BOTTOMSLIDE,
+                          width: MediaQuery.of(context).size.width * .86 > 650
+                              ? 650
+                              : null,
                           body: AdvertisingModal(openingNumber),
                         )..show(),
                       },
@@ -96,7 +102,9 @@ class QuizListDetail extends HookWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(15),
                           child: Text(
-                            AppLocalizations.of(context)!.getNewQuiz,
+                            enModeFlg
+                                ? EN_TEXT['getNewQuiz']!
+                                : JA_TEXT['getNewQuiz']!,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: height > 620 ? 22 : 20,

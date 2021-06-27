@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class QuizItemNone extends StatelessWidget {
+import '../../providers/quiz.provider.dart';
+import '../../text.dart';
+
+class QuizItemNone extends HookWidget {
   final int quizNum;
 
   QuizItemNone(this.quizNum);
@@ -9,6 +13,7 @@ class QuizItemNone extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
+    final bool enModeFlg = useProvider(enModeFlgProvider).state;
 
     return Container(
       height: height > 620 ? 52 : 45,
@@ -32,7 +37,9 @@ class QuizItemNone extends StatelessWidget {
               left: 5,
               right: 5),
           child: Text(
-            AppLocalizations.of(context)!.listPrefix + quizNum.toString(),
+            enModeFlg
+                ? EN_TEXT['listPrefix']! + quizNum.toString()
+                : JA_TEXT['listPrefix']! + quizNum.toString(),
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,
@@ -46,7 +53,9 @@ class QuizItemNone extends StatelessWidget {
               bottom: height > 620 ? 10 : 15,
               right: 5),
           child: Text(
-            AppLocalizations.of(context)!.quizItemNoneText,
+            enModeFlg
+                ? EN_TEXT['quizItemNoneText']!
+                : JA_TEXT['quizItemNoneText']!,
             style: TextStyle(
               color: Colors.white60,
               fontSize: 20,

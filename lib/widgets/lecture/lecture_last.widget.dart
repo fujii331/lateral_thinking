@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../background.widget.dart';
+import '../../providers/quiz.provider.dart';
+import '../../text.dart';
 
-class LectureLast extends StatelessWidget {
+class LectureLast extends HookWidget {
+  final bool enModeFlg = useProvider(enModeFlgProvider).state;
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -33,7 +38,9 @@ class LectureLast extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      AppLocalizations.of(context)!.lectureLast1,
+                      enModeFlg
+                          ? EN_TEXT['lectureLast1']!
+                          : JA_TEXT['lectureLast1']!,
                       style: TextStyle(
                         fontSize: 18.0,
                         color: Colors.white,
@@ -42,7 +49,9 @@ class LectureLast extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      AppLocalizations.of(context)!.lectureLast2,
+                      enModeFlg
+                          ? EN_TEXT['lectureLast2']!
+                          : JA_TEXT['lectureLast2']!,
                       style: TextStyle(
                         fontSize: 20.0,
                         color: Colors.white,

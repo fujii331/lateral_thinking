@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'dart:io';
 import 'dart:async';
@@ -15,17 +14,28 @@ import '../hint/ad_loading_modal.widget.dart';
 
 import '../../providers/quiz.provider.dart';
 import '../../advertising.dart';
+import '../../text.dart';
 
 class AdvertisingModal extends HookWidget {
   final int quizId;
 
   AdvertisingModal(this.quizId);
 
-  void _setOpeningNumber(int quizNumber, BuildContext context) async {
+  void _setOpeningNumber(
+    int quizNumber,
+    BuildContext context,
+    bool enModeFlg,
+  ) async {
     int openQuizNumber = quizNumber + 3;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt('openingNumber', openQuizNumber);
+
+    if (enModeFlg) {
+      prefs.setInt('openingNumberEn', openQuizNumber);
+    } else {
+      prefs.setInt('openingNumber', openQuizNumber);
+    }
+
     context.read(openingNumberProvider).state = openQuizNumber;
   }
 
@@ -47,10 +57,11 @@ class AdvertisingModal extends HookWidget {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
     final loaded = useState(false);
     final nowLoading = useState(false);
+    final bool enModeFlg = useProvider(enModeFlgProvider).state;
 
     final rewardAd = RewardedAd(
       adUnitId: Platform.isAndroid
-          ? TEST_ANDROID_REWQRD_ADVID
+          ? ANDROID_OPEN_QUESTION_REWQRD_ADVID
           : IOS_OPEN_QUESTION_REWQRD_ADVID,
       request: AdRequest(),
       listener: AdListener(
@@ -75,15 +86,20 @@ class AdvertisingModal extends HookWidget {
             dialogType: DialogType.ERROR,
             headerAnimationLoop: false,
             animType: AnimType.SCALE,
+            width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
             body: ReplyModal(
-              AppLocalizations.of(context)!.gotNoQuiz,
+              enModeFlg ? EN_TEXT['gotNoQuiz']! : JA_TEXT['gotNoQuiz']!,
             ),
           )..show(),
         },
         // onApplicationExit: (Ad ad) => print('ユーザーがアプリを離れました。'),
         onRewardedAdUserEarnedReward: (RewardedAd ad, RewardItem reward) => {
           // print('報酬を獲得しました: $reward'),
-          _setOpeningNumber(quizId, context),
+          _setOpeningNumber(
+            quizId,
+            context,
+            enModeFlg,
+          ),
           Navigator.pop(context),
           Navigator.pop(context),
           AwesomeDialog(
@@ -91,8 +107,9 @@ class AdvertisingModal extends HookWidget {
             dialogType: DialogType.SUCCES,
             headerAnimationLoop: false,
             animType: AnimType.SCALE,
+            width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
             body: ReplyModal(
-              AppLocalizations.of(context)!.gotQuiz,
+              enModeFlg ? EN_TEXT['gotQuiz']! : JA_TEXT['gotQuiz']!,
             ),
           )..show(),
         },
@@ -113,7 +130,7 @@ class AdvertisingModal extends HookWidget {
               vertical: 10,
             ),
             child: Text(
-              AppLocalizations.of(context)!.getQuiz,
+              enModeFlg ? EN_TEXT['getQuiz']! : JA_TEXT['getQuiz']!,
               style: TextStyle(
                 fontSize: 20.0,
                 fontFamily: 'SawarabiGothic',
@@ -132,7 +149,9 @@ class AdvertisingModal extends HookWidget {
                     soundEffect.play('sounds/cancel.mp3', isNotification: true),
                     Navigator.pop(context)
                   },
-                  child: Text(AppLocalizations.of(context)!.noButton),
+                  child: Text(
+                    enModeFlg ? EN_TEXT['noButton']! : JA_TEXT['noButton']!,
+                  ),
                   style: ElevatedButton.styleFrom(
                     primary: Colors.red[500],
                     textStyle: Theme.of(context).textTheme.button,
@@ -143,7 +162,9 @@ class AdvertisingModal extends HookWidget {
                 ),
                 const SizedBox(width: 30),
                 ElevatedButton(
-                  child: Text(AppLocalizations.of(context)!.yesButton),
+                  child: Text(
+                    enModeFlg ? EN_TEXT['yesButton']! : JA_TEXT['yesButton']!,
+                  ),
                   style: ElevatedButton.styleFrom(
                     primary: Colors.blue[700],
                     textStyle: Theme.of(context).textTheme.button,
@@ -174,8 +195,13 @@ class AdvertisingModal extends HookWidget {
                           dialogType: DialogType.ERROR,
                           headerAnimationLoop: false,
                           animType: AnimType.SCALE,
+                          width: MediaQuery.of(context).size.width * .86 > 650
+                              ? 650
+                              : null,
                           body: ReplyModal(
-                            AppLocalizations.of(context)!.failedToLoad,
+                            enModeFlg
+                                ? EN_TEXT['failedToLoad']!
+                                : JA_TEXT['failedToLoad']!,
                           ),
                         )..show(),
                       },

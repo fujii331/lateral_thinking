@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../models/quiz.model.dart';
 import '../../screens/quiz_detail_tab.screen.dart';
 import '../../providers/quiz.provider.dart';
+import '../../text.dart';
 
 class QuizItem extends HookWidget {
   final Quiz quiz;
@@ -38,6 +38,7 @@ class QuizItem extends HookWidget {
   Widget build(BuildContext context) {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
     final height = MediaQuery.of(context).size.height;
+    final bool enModeFlg = useProvider(enModeFlgProvider).state;
 
     return Container(
       height: height > 620 ? 52 : 45,
@@ -61,7 +62,9 @@ class QuizItem extends HookWidget {
               left: 5,
               right: 5),
           child: Text(
-            AppLocalizations.of(context)!.listPrefix + quiz.id.toString(),
+            enModeFlg
+                ? EN_TEXT['listPrefix']! + quiz.id.toString()
+                : JA_TEXT['listPrefix']! + quiz.id.toString(),
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,

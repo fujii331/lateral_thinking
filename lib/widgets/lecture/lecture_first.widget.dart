@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../background.widget.dart';
+import '../../providers/quiz.provider.dart';
+import '../../text.dart';
 
-class LectureFirst extends StatelessWidget {
+class LectureFirst extends HookWidget {
   @override
   Widget build(BuildContext context) {
+    final bool enModeFlg = useProvider(enModeFlgProvider).state;
+
     return Stack(
       children: <Widget>[
         background(),
@@ -22,7 +27,7 @@ class LectureFirst extends StatelessWidget {
               ),
             ),
             Text(
-              AppLocalizations.of(context)!.boyaName,
+              enModeFlg ? EN_TEXT['boyaName']! : JA_TEXT['boyaName']!,
               style: TextStyle(
                 fontSize: 26.0,
                 color: Colors.white,
@@ -45,7 +50,9 @@ class LectureFirst extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      AppLocalizations.of(context)!.lectureFirst1,
+                      enModeFlg
+                          ? EN_TEXT['lectureFirst1']!
+                          : JA_TEXT['lectureFirst1']!,
                       style: TextStyle(
                         fontSize: 17.0,
                         color: Colors.white,
@@ -54,7 +61,9 @@ class LectureFirst extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      AppLocalizations.of(context)!.lectureFirst2,
+                      enModeFlg
+                          ? EN_TEXT['lectureFirst2']!
+                          : JA_TEXT['lectureFirst2']!,
                       style: TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.bold,
@@ -63,7 +72,9 @@ class LectureFirst extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      AppLocalizations.of(context)!.lectureFirst3,
+                      enModeFlg
+                          ? EN_TEXT['lectureFirst3']!
+                          : JA_TEXT['lectureFirst3']!,
                       style: TextStyle(
                         fontSize: 17.0,
                         color: Colors.white,
@@ -72,7 +83,9 @@ class LectureFirst extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      AppLocalizations.of(context)!.lectureFirst4,
+                      enModeFlg
+                          ? EN_TEXT['lectureFirst4']!
+                          : JA_TEXT['lectureFirst4']!,
                       style: TextStyle(
                         fontSize: 15.0,
                         color: Colors.white,
@@ -81,7 +94,9 @@ class LectureFirst extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      AppLocalizations.of(context)!.lectureFirst5,
+                      enModeFlg
+                          ? EN_TEXT['lectureFirst5']!
+                          : JA_TEXT['lectureFirst5']!,
                       style: TextStyle(
                         fontSize: 17.0,
                         color: Colors.white,

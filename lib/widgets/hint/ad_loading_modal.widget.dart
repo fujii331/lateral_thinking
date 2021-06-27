@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'dart:math';
+import '../../providers/quiz.provider.dart';
+import '../../text.dart';
 
-class AdLoadingModal extends StatelessWidget {
+class AdLoadingModal extends HookWidget {
   final randomNumber = new Random().nextInt(3);
 
   @override
   Widget build(BuildContext context) {
+    final bool enModeFlg = useProvider(enModeFlgProvider).state;
+
     return Theme(
       data: Theme.of(context)
           .copyWith(dialogBackgroundColor: Colors.white.withOpacity(0.0)),
@@ -17,7 +22,7 @@ class AdLoadingModal extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 25),
             child: Text(
-              AppLocalizations.of(context)!.nowLoading,
+              enModeFlg ? EN_TEXT['nowLoading']! : JA_TEXT['nowLoading']!,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 20,

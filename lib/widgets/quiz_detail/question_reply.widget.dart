@@ -16,7 +16,7 @@ class QuestionReply extends StatelessWidget {
       ),
       child: Container(
         height: size.height * .35 < 200 ? 66 : 80,
-        width: size.width * .86,
+        width: size.width * .86 > 650 ? 650 : size.width * .86,
         padding: EdgeInsets.symmetric(
           vertical: 6,
           horizontal: 10,
