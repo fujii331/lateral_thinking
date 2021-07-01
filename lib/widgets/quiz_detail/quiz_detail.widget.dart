@@ -13,11 +13,14 @@ import '../../providers/quiz.provider.dart';
 
 class QuizDetail extends HookWidget {
   final Quiz quiz;
+  final TextEditingController subjectController;
+  final TextEditingController relatedWordController;
 
-  QuizDetail(this.quiz);
-
-  final subjectController = useTextEditingController();
-  final relatedWordController = useTextEditingController();
+  QuizDetail(
+    this.quiz,
+    this.subjectController,
+    this.relatedWordController,
+  );
 
   @override
   Widget build(BuildContext context) {

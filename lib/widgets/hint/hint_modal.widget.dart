@@ -20,8 +20,14 @@ import '../../text.dart';
 
 class HintModal extends HookWidget {
   final Quiz quiz;
+  final TextEditingController subjectController;
+  final TextEditingController relatedWordController;
 
-  HintModal(this.quiz);
+  HintModal(
+    this.quiz,
+    this.subjectController,
+    this.relatedWordController,
+  );
 
   Future loading(BuildContext context, ValueNotifier loaded,
       RewardedAd rewardAd, ValueNotifier nowLoading) async {
@@ -122,6 +128,8 @@ class HintModal extends HookWidget {
             }
           else
             {
+              subjectController.text = '',
+              relatedWordController.text = '',
               context.read(beforeWordProvider).state = '',
               context.read(askingQuestionsProvider).state = [],
               context.read(selectedSubjectProvider).state = '',

@@ -26,6 +26,9 @@ class QuizDetailTabScreen extends HookWidget {
     final List<Answer> allAnswers = useProvider(allAnswersProvider).state;
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
 
+    final subjectController = useTextEditingController();
+    final relatedWordController = useTextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(quiz.title),
@@ -49,7 +52,11 @@ class QuizDetailTabScreen extends HookWidget {
                       width: MediaQuery.of(context).size.width * .86 > 650
                           ? 650
                           : null,
-                      body: HintModal(quiz),
+                      body: HintModal(
+                        quiz,
+                        subjectController,
+                        relatedWordController,
+                      ),
                     )..show();
                   },
           ),
@@ -91,7 +98,11 @@ class QuizDetailTabScreen extends HookWidget {
           screenNo.value = index;
         },
         children: [
-          QuizDetail(quiz),
+          QuizDetail(
+            quiz,
+            subjectController,
+            relatedWordController,
+          ),
           Questioned(),
           QuizAnswer(),
         ],
