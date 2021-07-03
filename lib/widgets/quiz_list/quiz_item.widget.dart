@@ -22,6 +22,7 @@ class QuizItem extends HookWidget {
     ctx.read(executedAnswerIdsProvider).state = [];
     ctx.read(correctAnswerIdsProvider).state = quiz.correctAnswerIds;
     ctx.read(hintProvider).state = 0;
+    ctx.read(subHintFlgProvider).state = false;
     ctx.read(selectedQuestionProvider).state = dummyQuestion;
 
     ctx.read(replyProvider).state = '';

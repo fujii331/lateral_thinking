@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
@@ -9,35 +8,21 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'dart:io';
 import 'dart:async';
 
-import '../replry_modal.widget.dart';
-import '../hint/ad_loading_modal.widget.dart';
-
 import '../../providers/quiz.provider.dart';
+
+import '../replry_modal.widget.dart';
+import './ad_loading_modal.widget.dart';
+import './opened_sub_hint_modal.widget.dart';
+
 import '../../advertising.dart';
 import '../../text.dart';
 
-class AdvertisingModal extends HookWidget {
-  final int quizId;
+class SubHintModal extends HookWidget {
+  final List<String> subHints;
 
-  AdvertisingModal(this.quizId);
-
-  void _setOpeningNumber(
-    int quizNumber,
-    BuildContext context,
-    bool enModeFlg,
-  ) async {
-    int openQuizNumber = quizNumber + 3;
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    if (enModeFlg) {
-      prefs.setInt('openingNumberEn', openQuizNumber);
-    } else {
-      prefs.setInt('openingNumber', openQuizNumber);
-    }
-
-    context.read(openingNumberProvider).state = openQuizNumber;
-  }
+  SubHintModal(
+    this.subHints,
+  );
 
   Future loading(BuildContext context, ValueNotifier loaded,
       RewardedAd rewardAd, ValueNotifier nowLoading) async {
@@ -61,8 +46,8 @@ class AdvertisingModal extends HookWidget {
 
     final rewardAd = RewardedAd(
       adUnitId: Platform.isAndroid
-          ? ANDROID_OPEN_QUESTION_REWQRD_ADVID
-          : IOS_OPEN_QUESTION_REWQRD_ADVID,
+          ? ANDROID_SUB_HINT_REWQRD_ADVID
+          : IOS_SUB_HINT_REWQRD_ADVID,
       // ? TEST_ANDROID_REWQRD_ADVID
       // : TEST_IOS_REWQRD_ADVID,
       request: AdRequest(),
@@ -90,7 +75,7 @@ class AdvertisingModal extends HookWidget {
             animType: AnimType.SCALE,
             width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
             body: ReplyModal(
-              enModeFlg ? EN_TEXT['gotNoQuiz']! : JA_TEXT['gotNoQuiz']!,
+              enModeFlg ? EN_TEXT['notGetSubHint']! : JA_TEXT['notGetSubHint']!,
               0,
             ),
           )..show(),
@@ -98,22 +83,17 @@ class AdvertisingModal extends HookWidget {
         // onApplicationExit: (Ad ad) => print('ユーザーがアプリを離れました。'),
         onRewardedAdUserEarnedReward: (RewardedAd ad, RewardItem reward) => {
           // print('報酬を獲得しました: $reward'),
-          _setOpeningNumber(
-            quizId,
-            context,
-            enModeFlg,
-          ),
+          context.read(subHintFlgProvider).state = true,
           Navigator.pop(context),
           Navigator.pop(context),
           AwesomeDialog(
             context: context,
-            dialogType: DialogType.SUCCES,
+            dialogType: DialogType.NO_HEADER,
             headerAnimationLoop: false,
             animType: AnimType.SCALE,
             width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
-            body: ReplyModal(
-              enModeFlg ? EN_TEXT['gotQuiz']! : JA_TEXT['gotQuiz']!,
-              quizId,
+            body: OpenedSubHintModal(
+              subHints,
             ),
           )..show(),
         },
@@ -124,7 +104,7 @@ class AdvertisingModal extends HookWidget {
       padding: const EdgeInsets.only(
         left: 20,
         right: 20,
-        bottom: 15,
+        bottom: 25,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -134,17 +114,49 @@ class AdvertisingModal extends HookWidget {
               vertical: 10,
             ),
             child: Text(
-              enModeFlg ? EN_TEXT['getQuiz']! : JA_TEXT['getQuiz']!,
+              enModeFlg
+                  ? EN_TEXT['getSubHintHeader']!
+                  : JA_TEXT['getSubHintHeader']!,
               style: TextStyle(
                 fontSize: 20.0,
+                fontWeight: FontWeight.bold,
                 fontFamily: 'SawarabiGothic',
               ),
             ),
           ),
+          Container(
+            child: Padding(
+              padding: const EdgeInsets.only(
+                top: 20,
+              ),
+              child: Text(
+                enModeFlg ? EN_TEXT['getSubHint']! : JA_TEXT['getSubHint']!,
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontFamily: 'SawarabiGothic',
+                ),
+              ),
+            ),
+          ),
+          Container(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 10,
+              ),
+              child: Text(
+                enModeFlg ? EN_TEXT['getSubHint2']! : JA_TEXT['getSubHint2']!,
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontFamily: 'SawarabiGothic',
+                ),
+              ),
+            ),
+          ),
           Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 10,
-              horizontal: 15,
+            padding: const EdgeInsets.only(
+              left: 5,
+              right: 5,
+              top: 15,
             ),
             child: Wrap(
               children: [
@@ -154,9 +166,12 @@ class AdvertisingModal extends HookWidget {
                     Navigator.pop(context)
                   },
                   child: Text(
-                    enModeFlg ? EN_TEXT['noButton']! : JA_TEXT['noButton']!,
-                  ),
+                      enModeFlg ? EN_TEXT['noButton']! : JA_TEXT['noButton']!),
                   style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.only(
+                      right: 14,
+                      left: 14,
+                    ),
                     primary: Colors.red[500],
                     textStyle: Theme.of(context).textTheme.button,
                     shape: RoundedRectangleBorder(
@@ -166,16 +181,6 @@ class AdvertisingModal extends HookWidget {
                 ),
                 const SizedBox(width: 30),
                 ElevatedButton(
-                  child: Text(
-                    enModeFlg ? EN_TEXT['yesButton']! : JA_TEXT['yesButton']!,
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.blue[700],
-                    textStyle: Theme.of(context).textTheme.button,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
                   onPressed: () async => {
                     soundEffect.play('sounds/tap.mp3', isNotification: true),
                     showDialog<int>(
@@ -192,7 +197,6 @@ class AdvertisingModal extends HookWidget {
                       }
                     else
                       {
-                        Navigator.pop(context),
                         Navigator.pop(context),
                         AwesomeDialog(
                           context: context,
@@ -211,6 +215,20 @@ class AdvertisingModal extends HookWidget {
                         )..show(),
                       },
                   },
+                  child: Text(
+                    enModeFlg ? EN_TEXT['yesButton']! : JA_TEXT['yesButton']!,
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.only(
+                      right: 14,
+                      left: 14,
+                    ),
+                    primary: Colors.blue[700],
+                    textStyle: Theme.of(context).textTheme.button,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                 ),
               ],
             ),

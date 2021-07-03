@@ -61,6 +61,8 @@ class HintModal extends HookWidget {
       adUnitId: Platform.isAndroid
           ? ANDROID_HINT_REWQRD_ADVID
           : IOS_HINT_REWQRD_ADVID,
+      // ? TEST_ANDROID_REWQRD_ADVID
+      // : TEST_IOS_REWQRD_ADVID,
       request: AdRequest(),
       listener: AdListener(
         onAdLoaded: (Ad ad) {

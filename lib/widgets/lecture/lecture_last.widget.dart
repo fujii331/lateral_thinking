@@ -36,6 +36,7 @@ class LectureLast extends HookWidget {
               padding: const EdgeInsets.all(10.0),
               child: SingleChildScrollView(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       enModeFlg

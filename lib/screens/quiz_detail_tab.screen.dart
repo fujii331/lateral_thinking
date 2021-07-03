@@ -9,6 +9,8 @@ import '../widgets/quiz_detail/questioned.widget.dart';
 import '../widgets/quiz_detail/quiz_answer.widget.dart';
 import '../widgets/hint/hint_modal.widget.dart';
 import '../providers/quiz.provider.dart';
+import '../widgets/hint/opened_sub_hint_modal.widget.dart';
+import '../widgets/hint/sub_hint_modal.widget.dart';
 
 import '../models/quiz.model.dart';
 import '../text.dart';
@@ -25,6 +27,7 @@ class QuizDetailTabScreen extends HookWidget {
     final pageController = usePageController(initialPage: 0, keepPage: true);
     final List<Answer> allAnswers = useProvider(allAnswersProvider).state;
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
+    final bool subHintFlg = useProvider(subHintFlgProvider).state;
 
     final subjectController = useTextEditingController();
     final relatedWordController = useTextEditingController();
@@ -35,6 +38,47 @@ class QuizDetailTabScreen extends HookWidget {
         centerTitle: true,
         backgroundColor: Colors.blueGrey[900]?.withOpacity(0.9),
         actions: <Widget>[
+          IconButton(
+              iconSize: 22,
+              icon: Icon(
+                subHintFlg ? Icons.info : Icons.lightbulb,
+                color: Colors.orange.shade400,
+              ),
+              onPressed: allAnswers.isEmpty
+                  ? null
+                  : subHintFlg
+                      ? () {
+                          soundEffect.play('sounds/tap.mp3',
+                              isNotification: true);
+                          AwesomeDialog(
+                            context: context,
+                            dialogType: DialogType.NO_HEADER,
+                            headerAnimationLoop: false,
+                            animType: AnimType.SCALE,
+                            width: MediaQuery.of(context).size.width * .86 > 650
+                                ? 650
+                                : null,
+                            body: OpenedSubHintModal(
+                              quiz.subHints,
+                            ),
+                          )..show();
+                        }
+                      : () {
+                          soundEffect.play('sounds/hint.mp3',
+                              isNotification: true);
+                          AwesomeDialog(
+                            context: context,
+                            dialogType: DialogType.QUESTION,
+                            headerAnimationLoop: false,
+                            animType: AnimType.BOTTOMSLIDE,
+                            width: MediaQuery.of(context).size.width * .86 > 650
+                                ? 650
+                                : null,
+                            body: SubHintModal(
+                              quiz.subHints,
+                            ),
+                          )..show();
+                        }),
           IconButton(
             icon: Icon(
               Icons.lightbulb,

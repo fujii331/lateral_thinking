@@ -5,6 +5,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:app_review/app_review.dart';
 
 import '../providers/quiz.provider.dart';
+import '../../text.dart';
 
 class ReplyModal extends HookWidget {
   final String reply;
@@ -18,6 +19,7 @@ class ReplyModal extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
+    final bool enModeFlg = useProvider(enModeFlgProvider).state;
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -61,7 +63,9 @@ class ReplyModal extends HookWidget {
                     ),
                   },
               },
-              child: const Text('閉じる'),
+              child: Text(
+                enModeFlg ? EN_TEXT['closeButton']! : JA_TEXT['closeButton']!,
+              ),
               style: ElevatedButton.styleFrom(
                 primary: Colors.red[400],
                 textStyle: Theme.of(context).textTheme.button,

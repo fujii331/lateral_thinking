@@ -8,6 +8,7 @@ final allAnswersProvider = StateProvider((ref) => <Answer>[]);
 final executedAnswerIdsProvider = StateProvider((ref) => <int>[]);
 final correctAnswerIdsProvider = StateProvider((ref) => <int>[]);
 final hintProvider = StateProvider((ref) => 0);
+final subHintFlgProvider = StateProvider((ref) => false);
 final openingNumberProvider = StateProvider((ref) => 0);
 final openingNumberEnglishProvider = StateProvider((ref) => 0);
 final enModeFlgProvider = StateProvider((ref) => true);

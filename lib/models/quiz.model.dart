@@ -36,6 +36,7 @@ class Quiz {
   final int hintDisplayWordId;
   final int hintDisplayQuestionId;
   final List<int> correctAnswerQuestionIds;
+  final List<String> subHints;
 
   const Quiz({
     required this.id,
@@ -49,5 +50,6 @@ class Quiz {
     required this.hintDisplayWordId,
     required this.hintDisplayQuestionId,
     required this.correctAnswerQuestionIds,
+    required this.subHints,
   });
 }
