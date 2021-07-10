@@ -14,7 +14,7 @@ Future<bool> shouldUpdate() async {
 
   await remoteConfig.setConfigSettings(RemoteConfigSettings(
     fetchTimeout: const Duration(seconds: 10),
-    minimumFetchInterval: Duration(hours: 2),
+    minimumFetchInterval: Duration(seconds: 0),
   ));
   await remoteConfig.setDefaults(<String, dynamic>{
     configName: currentVersion,

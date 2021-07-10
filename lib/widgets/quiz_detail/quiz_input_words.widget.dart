@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:firebase_database/firebase_database.dart';
+
 import 'dart:math';
 
 import '../../providers/quiz.provider.dart';
@@ -30,20 +32,42 @@ class QuizInputWords extends HookWidget {
     Question selectedQuestion,
     List<Question> askingQuestions,
     bool enModeFlg,
+    ValueNotifier<String> subjectData,
+    ValueNotifier<String> relatedWordData,
+    int hint,
   ) {
     final enteredSubject = subjectController.text;
     final enteredRelatedWord = relatedWordController.text;
 
-    context.read(beforeWordProvider).state = '';
+    if (subjectData.value != enteredSubject ||
+        relatedWordData.value != enteredRelatedWord) {
+      context.read(beforeWordProvider).state = '';
 
-    if (enteredSubject.isEmpty || enteredRelatedWord.isEmpty) {
-      context.read(displayReplyFlgProvider).state = false;
-      context.read(selectedQuestionProvider).state = dummyQuestion;
-      context.read(askingQuestionsProvider).state = [];
+      if (enteredSubject.isEmpty || enteredRelatedWord.isEmpty) {
+        context.read(displayReplyFlgProvider).state = false;
+        context.read(selectedQuestionProvider).state = dummyQuestion;
+        context.read(askingQuestionsProvider).state = [];
 
-      return;
+        return;
+      }
+      if (hint == 0) {
+        FirebaseDatabase.instance
+            .reference()
+            .child('input_words/' +
+                quiz.id.toString() +
+                '/' +
+                enteredSubject +
+                '/' +
+                enteredRelatedWord)
+            .push()
+            .set({
+          'title': quiz.title,
+        });
+      }
+
+      subjectData.value = enteredSubject;
+      relatedWordData.value = enteredRelatedWord;
     }
-
     _checkQuestions(
       context,
       enteredSubject,
@@ -147,6 +171,9 @@ class QuizInputWords extends HookWidget {
 
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
 
+    final subjectData = useState<String>('');
+    final relatedWordData = useState<String>('');
+
     subjectFocusNode.addListener(() {
       if (!subjectFocusNode.hasFocus) {
         _submitData(
@@ -156,6 +183,9 @@ class QuizInputWords extends HookWidget {
           selectedQuestion,
           askingQuestions,
           enModeFlg,
+          subjectData,
+          relatedWordData,
+          hint,
         );
       }
     });
@@ -169,6 +199,9 @@ class QuizInputWords extends HookWidget {
           selectedQuestion,
           askingQuestions,
           enModeFlg,
+          subjectData,
+          relatedWordData,
+          hint,
         );
       }
     });
@@ -203,6 +236,8 @@ class QuizInputWords extends HookWidget {
                     selectedQuestion,
                     askingQuestions,
                     enModeFlg,
+                    subjectData,
+                    relatedWordData,
                   ),
             Text(
               enModeFlg ? EN_TEXT['afterSubject']! : JA_TEXT['afterSubject']!,
@@ -237,6 +272,8 @@ class QuizInputWords extends HookWidget {
                     selectedQuestion,
                     askingQuestions,
                     enModeFlg,
+                    subjectData,
+                    relatedWordData,
                   ),
             Text(
               '...？',
@@ -309,6 +346,8 @@ class QuizInputWords extends HookWidget {
     Question selectedQuestion,
     List<Question> askingQuestions,
     bool enModeFlg,
+    ValueNotifier<String> subjectData,
+    ValueNotifier<String> relatedWordData,
   ) {
     final height = MediaQuery.of(context).size.height * .35;
 
@@ -359,6 +398,9 @@ class QuizInputWords extends HookWidget {
             selectedQuestion,
             askingQuestions,
             enModeFlg,
+            subjectData,
+            relatedWordData,
+            hint,
           );
         },
       ),

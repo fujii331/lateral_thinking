@@ -34,7 +34,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.initState();
     Future(() async {
       bgm = await soundEffect.loop('sounds/bgm.mp3',
-          volume: 0.2, isNotification: true);
+          volume: 0.3, isNotification: true);
     });
     WidgetsBinding.instance!.addObserver(this);
   }
