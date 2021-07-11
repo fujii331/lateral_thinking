@@ -19,9 +19,11 @@ import '../../text.dart';
 
 class SubHintModal extends HookWidget {
   final List<String> subHints;
+  final int quizId;
 
   SubHintModal(
     this.subHints,
+    this.quizId,
   );
 
   Future loading(BuildContext context, ValueNotifier loaded,
@@ -43,6 +45,20 @@ class SubHintModal extends HookWidget {
     final loaded = useState(false);
     final nowLoading = useState(false);
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
+
+    void afterGotReward() => {
+          context.read(subHintFlgProvider).state = true,
+          AwesomeDialog(
+            context: context,
+            dialogType: DialogType.NO_HEADER,
+            headerAnimationLoop: false,
+            animType: AnimType.SCALE,
+            width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
+            body: OpenedSubHintModal(
+              subHints,
+            ),
+          )..show(),
+        };
 
     final rewardAd = RewardedAd(
       adUnitId: Platform.isAndroid
@@ -83,19 +99,9 @@ class SubHintModal extends HookWidget {
         // onApplicationExit: (Ad ad) => print('ユーザーがアプリを離れました。'),
         onRewardedAdUserEarnedReward: (RewardedAd ad, RewardItem reward) => {
           // print('報酬を獲得しました: $reward'),
-          context.read(subHintFlgProvider).state = true,
           Navigator.pop(context),
           Navigator.pop(context),
-          AwesomeDialog(
-            context: context,
-            dialogType: DialogType.NO_HEADER,
-            headerAnimationLoop: false,
-            animType: AnimType.SCALE,
-            width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
-            body: OpenedSubHintModal(
-              subHints,
-            ),
-          )..show(),
+          afterGotReward(),
         },
       ),
     );
@@ -115,8 +121,12 @@ class SubHintModal extends HookWidget {
             ),
             child: Text(
               enModeFlg
-                  ? EN_TEXT['getSubHintHeader']!
-                  : JA_TEXT['getSubHintHeader']!,
+                  ? quizId == 1
+                      ? EN_TEXT['getSubHintHeaderFirst']!
+                      : EN_TEXT['getSubHintHeader']!
+                  : quizId == 1
+                      ? JA_TEXT['getSubHintHeaderFirst']!
+                      : JA_TEXT['getSubHintHeader']!,
               style: TextStyle(
                 fontSize: 20.0,
                 fontWeight: FontWeight.bold,
@@ -124,38 +134,46 @@ class SubHintModal extends HookWidget {
               ),
             ),
           ),
-          Container(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                top: 20,
-              ),
-              child: Text(
-                enModeFlg ? EN_TEXT['getSubHint']! : JA_TEXT['getSubHint']!,
-                style: TextStyle(
-                  fontSize: 18.0,
-                  fontFamily: 'SawarabiGothic',
-                ),
-              ),
+          Padding(
+            padding: const EdgeInsets.only(
+              top: 20,
             ),
-          ),
-          Container(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 10,
-              ),
-              child: Text(
-                enModeFlg ? EN_TEXT['getSubHint2']! : JA_TEXT['getSubHint2']!,
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontFamily: 'SawarabiGothic',
-                ),
+            child: Text(
+              enModeFlg ? EN_TEXT['getSubHint']! : JA_TEXT['getSubHint']!,
+              style: TextStyle(
+                fontSize: 18.0,
+                fontFamily: 'SawarabiGothic',
               ),
             ),
           ),
           Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 10,
+            ),
+            child: Text(
+              enModeFlg ? EN_TEXT['getSubHint2']! : JA_TEXT['getSubHint2']!,
+              style: TextStyle(
+                fontSize: 16.0,
+                fontFamily: 'SawarabiGothic',
+              ),
+            ),
+          ),
+          quizId == 1
+              ? Container(
+                  child: Text(
+                    enModeFlg
+                        ? EN_TEXT['getSubHintFirst']!
+                        : JA_TEXT['getSubHintFirst']!,
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontFamily: 'SawarabiGothic',
+                      color: Colors.orange.shade900,
+                    ),
+                  ),
+                )
+              : Container(),
+          Padding(
             padding: const EdgeInsets.only(
-              left: 5,
-              right: 5,
               top: 15,
             ),
             child: Wrap(
@@ -181,40 +199,49 @@ class SubHintModal extends HookWidget {
                 ),
                 const SizedBox(width: 30),
                 ElevatedButton(
-                  onPressed: () async => {
-                    soundEffect.play('sounds/tap.mp3', isNotification: true),
-                    showDialog<int>(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (BuildContext context) {
-                        return AdLoadingModal();
-                      },
-                    ),
-                    await loading(context, loaded, rewardAd, nowLoading),
-                    if (loaded.value)
-                      {
-                        rewardAd.show(),
-                      }
-                    else
-                      {
-                        Navigator.pop(context),
-                        AwesomeDialog(
-                          context: context,
-                          dialogType: DialogType.ERROR,
-                          headerAnimationLoop: false,
-                          animType: AnimType.SCALE,
-                          width: MediaQuery.of(context).size.width * .86 > 650
-                              ? 650
-                              : null,
-                          body: ReplyModal(
-                            enModeFlg
-                                ? EN_TEXT['failedToLoad']!
-                                : JA_TEXT['failedToLoad']!,
-                            0,
+                  onPressed: () async => quizId == 1
+                      ? {
+                          soundEffect.play('sounds/tap.mp3',
+                              isNotification: true),
+                          Navigator.pop(context),
+                          afterGotReward(),
+                        }
+                      : {
+                          soundEffect.play('sounds/tap.mp3',
+                              isNotification: true),
+                          showDialog<int>(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (BuildContext context) {
+                              return AdLoadingModal();
+                            },
                           ),
-                        )..show(),
-                      },
-                  },
+                          await loading(context, loaded, rewardAd, nowLoading),
+                          if (loaded.value)
+                            {
+                              rewardAd.show(),
+                            }
+                          else
+                            {
+                              Navigator.pop(context),
+                              AwesomeDialog(
+                                context: context,
+                                dialogType: DialogType.ERROR,
+                                headerAnimationLoop: false,
+                                animType: AnimType.SCALE,
+                                width: MediaQuery.of(context).size.width * .86 >
+                                        650
+                                    ? 650
+                                    : null,
+                                body: ReplyModal(
+                                  enModeFlg
+                                      ? EN_TEXT['failedToLoad']!
+                                      : JA_TEXT['failedToLoad']!,
+                                  0,
+                                ),
+                              )..show(),
+                            },
+                        },
                   child: Text(
                     enModeFlg ? EN_TEXT['yesButton']! : JA_TEXT['yesButton']!,
                   ),

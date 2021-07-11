@@ -63,7 +63,7 @@ class OpenedSubHintModal extends HookWidget {
                 Container(
                   width: MediaQuery.of(context).size.width * .86 > 650
                       ? 470
-                      : MediaQuery.of(context).size.width * .56,
+                      : MediaQuery.of(context).size.width * .50,
                   child: Text(
                     subHints[0],
                     style: TextStyle(
@@ -95,7 +95,7 @@ class OpenedSubHintModal extends HookWidget {
                 Container(
                   width: MediaQuery.of(context).size.width * .86 > 650
                       ? 470
-                      : MediaQuery.of(context).size.width * .56,
+                      : MediaQuery.of(context).size.width * .50,
                   child: Text(
                     subHints[1],
                     style: TextStyle(
@@ -128,7 +128,7 @@ class OpenedSubHintModal extends HookWidget {
                 Container(
                   width: MediaQuery.of(context).size.width * .86 > 650
                       ? 470
-                      : MediaQuery.of(context).size.width * .56,
+                      : MediaQuery.of(context).size.width * .50,
                   child: Text(
                     subHints[2],
                     style: TextStyle(

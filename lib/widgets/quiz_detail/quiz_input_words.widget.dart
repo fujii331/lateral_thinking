@@ -16,6 +16,7 @@ class QuizInputWords extends HookWidget {
   final List<Question> askingQuestions;
   final TextEditingController subjectController;
   final TextEditingController relatedWordController;
+  final bool subHintFlg;
 
   QuizInputWords(
     this.quiz,
@@ -23,6 +24,7 @@ class QuizInputWords extends HookWidget {
     this.askingQuestions,
     this.subjectController,
     this.relatedWordController,
+    this.subHintFlg,
   );
 
   void _submitData(
@@ -61,7 +63,7 @@ class QuizInputWords extends HookWidget {
                 enteredRelatedWord)
             .push()
             .set({
-          'title': quiz.title,
+          'title': subHintFlg,
         });
       }
 
@@ -144,6 +146,9 @@ class QuizInputWords extends HookWidget {
       if (randomNumber == 0) {
         context.read(beforeWordProvider).state =
             enModeFlg ? EN_TEXT['seekHint']! : JA_TEXT['seekHint']!;
+      } else if (randomNumber == 1) {
+        context.read(beforeWordProvider).state =
+            enModeFlg ? EN_TEXT['advise']! : JA_TEXT['advise']!;
       } else {
         context.read(beforeWordProvider).state =
             enModeFlg ? EN_TEXT['noQuestions']! : JA_TEXT['noQuestions']!;

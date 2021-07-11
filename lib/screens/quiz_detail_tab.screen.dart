@@ -28,6 +28,9 @@ class QuizDetailTabScreen extends HookWidget {
     final List<Answer> allAnswers = useProvider(allAnswersProvider).state;
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
     final bool subHintFlg = useProvider(subHintFlgProvider).state;
+    final int hint = useProvider(hintProvider).state;
+
+    final workHint = useState<int>(0);
 
     final subjectController = useTextEditingController();
     final relatedWordController = useTextEditingController();
@@ -76,6 +79,7 @@ class QuizDetailTabScreen extends HookWidget {
                                 : null,
                             body: SubHintModal(
                               quiz.subHints,
+                              quiz.id,
                             ),
                           )..show();
                         }),
@@ -88,6 +92,7 @@ class QuizDetailTabScreen extends HookWidget {
                 ? null
                 : () {
                     soundEffect.play('sounds/hint.mp3', isNotification: true);
+                    workHint.value = hint;
                     AwesomeDialog(
                       context: context,
                       dialogType: DialogType.QUESTION,
@@ -100,6 +105,7 @@ class QuizDetailTabScreen extends HookWidget {
                         quiz,
                         subjectController,
                         relatedWordController,
+                        workHint.value,
                       ),
                     )..show();
                   },
@@ -146,6 +152,7 @@ class QuizDetailTabScreen extends HookWidget {
             quiz,
             subjectController,
             relatedWordController,
+            subHintFlg,
           ),
           Questioned(),
           QuizAnswer(),

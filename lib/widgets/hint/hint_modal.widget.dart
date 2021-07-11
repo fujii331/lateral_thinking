@@ -22,11 +22,13 @@ class HintModal extends HookWidget {
   final Quiz quiz;
   final TextEditingController subjectController;
   final TextEditingController relatedWordController;
+  final int workHintValue;
 
   HintModal(
     this.quiz,
     this.subjectController,
     this.relatedWordController,
+    this.workHintValue,
   );
 
   Future loading(BuildContext context, ValueNotifier loaded,
@@ -57,45 +59,28 @@ class HintModal extends HookWidget {
       return askedQuestion.id;
     }).toList();
 
-    final rewardAd = RewardedAd(
-      adUnitId: Platform.isAndroid
-          ? ANDROID_HINT_REWQRD_ADVID
-          : IOS_HINT_REWQRD_ADVID,
-      // ? TEST_ANDROID_REWQRD_ADVID
-      // : TEST_IOS_REWQRD_ADVID,
-      request: AdRequest(),
-      listener: AdListener(
-        onAdLoaded: (Ad ad) {
-          loaded.value = true;
-          // print('リワード広告を読み込みました！');
-        },
-        onAdFailedToLoad: (Ad ad, LoadAdError error) {
-          ad.dispose();
-          // print('リワード広告の読み込みに失敗しました。: $error');
-        },
-        onAdOpened: (Ad ad) {
-          // print('リワード広告が開かれました。');
-        },
-        onAdClosed: (Ad ad) => {
-          ad.dispose(),
-          // print('リワード広告が閉じられました。'),
-          Navigator.pop(context),
-          Navigator.pop(context),
+    void afterGotReward() => {
           AwesomeDialog(
             context: context,
-            dialogType: DialogType.ERROR,
+            dialogType: DialogType.SUCCES,
             headerAnimationLoop: false,
             animType: AnimType.SCALE,
             width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
             body: ReplyModal(
-              enModeFlg ? EN_TEXT['notGetHint']! : JA_TEXT['notGetHint']!,
+              hint == 0
+                  ? enModeFlg
+                      ? EN_TEXT['openedHint1']!
+                      : JA_TEXT['openedHint1']!
+                  : hint == 1
+                      ? enModeFlg
+                          ? EN_TEXT['openedHint2']!
+                          : JA_TEXT['openedHint2']!
+                      : enModeFlg
+                          ? EN_TEXT['openedHint3']!
+                          : JA_TEXT['openedHint3']!,
               0,
             ),
           )..show(),
-        },
-        // onApplicationExit: (Ad ad) => print('ユーザーがアプリを離れました。'),
-        onRewardedAdUserEarnedReward: (RewardedAd ad, RewardItem reward) => {
-          // print('報酬を獲得しました: $reward'),
           context.read(hintProvider).state++,
           context.read(selectedQuestionProvider).state = dummyQuestion,
           context.read(displayReplyFlgProvider).state = false,
@@ -137,29 +122,50 @@ class HintModal extends HookWidget {
               context.read(selectedSubjectProvider).state = '',
               context.read(selectedRelatedWordProvider).state = '',
             },
+        };
+
+    final rewardAd = RewardedAd(
+      adUnitId: Platform.isAndroid
+          ? ANDROID_HINT_REWQRD_ADVID
+          : IOS_HINT_REWQRD_ADVID,
+      // ? TEST_ANDROID_REWQRD_ADVID
+      // : TEST_IOS_REWQRD_ADVID,
+      request: AdRequest(),
+      listener: AdListener(
+        onAdLoaded: (Ad ad) {
+          loaded.value = true;
+          // print('リワード広告を読み込みました！');
+        },
+        onAdFailedToLoad: (Ad ad, LoadAdError error) {
+          ad.dispose();
+          // print('リワード広告の読み込みに失敗しました。: $error');
+        },
+        onAdOpened: (Ad ad) {
+          // print('リワード広告が開かれました。');
+        },
+        onAdClosed: (Ad ad) => {
+          ad.dispose(),
+          // print('リワード広告が閉じられました。'),
           Navigator.pop(context),
           Navigator.pop(context),
           AwesomeDialog(
             context: context,
-            dialogType: DialogType.SUCCES,
+            dialogType: DialogType.ERROR,
             headerAnimationLoop: false,
             animType: AnimType.SCALE,
             width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
             body: ReplyModal(
-              hint == 0
-                  ? enModeFlg
-                      ? EN_TEXT['openedHint1']!
-                      : JA_TEXT['openedHint1']!
-                  : hint == 1
-                      ? enModeFlg
-                          ? EN_TEXT['openedHint2']!
-                          : JA_TEXT['openedHint2']!
-                      : enModeFlg
-                          ? EN_TEXT['openedHint3']!
-                          : JA_TEXT['openedHint3']!,
+              enModeFlg ? EN_TEXT['notGetHint']! : JA_TEXT['notGetHint']!,
               0,
             ),
           )..show(),
+        },
+        // onApplicationExit: (Ad ad) => print('ユーザーがアプリを離れました。'),
+        onRewardedAdUserEarnedReward: (RewardedAd ad, RewardItem reward) => {
+          // print('報酬を獲得しました: $reward'),
+          Navigator.pop(context),
+          Navigator.pop(context),
+          afterGotReward(),
         },
       ),
     );
@@ -179,14 +185,18 @@ class HintModal extends HookWidget {
             ),
             child: Text(
               enModeFlg
-                  ? hint < 3
-                      ? EN_TEXT['getHintPrefix']! +
-                          (hint + 1).toString() +
+                  ? workHintValue < 3
+                      ? (quiz.id == 1
+                              ? EN_TEXT['getHintPrefixFirst']!
+                              : EN_TEXT['getHintPrefix']!) +
+                          (workHintValue + 1).toString() +
                           EN_TEXT['getHintSuffix']!
                       : EN_TEXT['noHintExist']!
-                  : hint < 3
-                      ? JA_TEXT['getHintPrefix']! +
-                          (hint + 1).toString() +
+                  : workHintValue < 3
+                      ? (quiz.id == 1
+                              ? JA_TEXT['getHintPrefixFirst']!
+                              : JA_TEXT['getHintPrefix']!) +
+                          (workHintValue + 1).toString() +
                           JA_TEXT['getHintSuffix']!
                       : JA_TEXT['noHintExist']!,
               style: TextStyle(
@@ -204,15 +214,19 @@ class HintModal extends HookWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Icon(
-                  hint < 1 ? Icons.looks_one_outlined : Icons.looks_one,
+                  workHintValue < 1
+                      ? Icons.looks_one_outlined
+                      : Icons.looks_one,
                   size: 45,
                 ),
                 Icon(
-                  hint < 2 ? Icons.looks_two_outlined : Icons.looks_two,
+                  workHintValue < 2
+                      ? Icons.looks_two_outlined
+                      : Icons.looks_two,
                   size: 45,
                 ),
                 Icon(
-                  hint < 3 ? Icons.looks_3_outlined : Icons.looks_3,
+                  workHintValue < 3 ? Icons.looks_3_outlined : Icons.looks_3,
                   size: 45,
                 ),
               ],
@@ -224,15 +238,15 @@ class HintModal extends HookWidget {
                 vertical: 20,
               ),
               child: Text(
-                hint < 1
+                workHintValue < 1
                     ? enModeFlg
                         ? EN_TEXT['getHint1']!
                         : JA_TEXT['getHint1']!
-                    : hint == 1
+                    : workHintValue == 1
                         ? enModeFlg
                             ? EN_TEXT['getHint2']!
                             : JA_TEXT['getHint2']!
-                        : hint == 2
+                        : workHintValue == 2
                             ? enModeFlg
                                 ? EN_TEXT['getHint3']!
                                 : JA_TEXT['getHint3']!
@@ -246,10 +260,22 @@ class HintModal extends HookWidget {
               ),
             ),
           ),
+          quiz.id == 1 && workHintValue < 3
+              ? Container(
+                  child: Text(
+                    enModeFlg
+                        ? EN_TEXT['getHintFirst']!
+                        : JA_TEXT['getHintFirst']!,
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontFamily: 'SawarabiGothic',
+                      color: Colors.orange.shade900,
+                    ),
+                  ),
+                )
+              : Container(),
           Padding(
             padding: const EdgeInsets.only(
-              left: 5,
-              right: 5,
               top: 15,
             ),
             child: Wrap(
@@ -275,43 +301,52 @@ class HintModal extends HookWidget {
                 ),
                 const SizedBox(width: 30),
                 ElevatedButton(
-                  onPressed: () async => hint < 3
-                      ? {
-                          soundEffect.play('sounds/tap.mp3',
-                              isNotification: true),
-                          showDialog<int>(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (BuildContext context) {
-                              return AdLoadingModal();
-                            },
-                          ),
-                          await loading(context, loaded, rewardAd, nowLoading),
-                          if (loaded.value)
-                            {
-                              rewardAd.show(),
-                            }
-                          else
-                            {
+                  onPressed: () async => workHintValue < 3
+                      ? quiz.id == 1
+                          ? {
+                              soundEffect.play('sounds/tap.mp3',
+                                  isNotification: true),
                               Navigator.pop(context),
-                              AwesomeDialog(
+                              afterGotReward(),
+                            }
+                          : {
+                              soundEffect.play('sounds/tap.mp3',
+                                  isNotification: true),
+                              showDialog<int>(
                                 context: context,
-                                dialogType: DialogType.ERROR,
-                                headerAnimationLoop: false,
-                                animType: AnimType.SCALE,
-                                width: MediaQuery.of(context).size.width * .86 >
-                                        650
-                                    ? 650
-                                    : null,
-                                body: ReplyModal(
-                                  enModeFlg
-                                      ? EN_TEXT['failedToLoad']!
-                                      : JA_TEXT['failedToLoad']!,
-                                  0,
-                                ),
-                              )..show(),
-                            },
-                        }
+                                barrierDismissible: false,
+                                builder: (BuildContext context) {
+                                  return AdLoadingModal();
+                                },
+                              ),
+                              await loading(
+                                  context, loaded, rewardAd, nowLoading),
+                              if (loaded.value)
+                                {
+                                  rewardAd.show(),
+                                }
+                              else
+                                {
+                                  Navigator.pop(context),
+                                  AwesomeDialog(
+                                    context: context,
+                                    dialogType: DialogType.ERROR,
+                                    headerAnimationLoop: false,
+                                    animType: AnimType.SCALE,
+                                    width: MediaQuery.of(context).size.width *
+                                                .86 >
+                                            650
+                                        ? 650
+                                        : null,
+                                    body: ReplyModal(
+                                      enModeFlg
+                                          ? EN_TEXT['failedToLoad']!
+                                          : JA_TEXT['failedToLoad']!,
+                                      0,
+                                    ),
+                                  )..show(),
+                                },
+                            }
                       : {},
                   child: Text(
                     enModeFlg ? EN_TEXT['yesButton']! : JA_TEXT['yesButton']!,
@@ -321,7 +356,8 @@ class HintModal extends HookWidget {
                       right: 14,
                       left: 14,
                     ),
-                    primary: hint < 3 ? Colors.blue[700] : Colors.blue[300],
+                    primary:
+                        workHintValue < 3 ? Colors.blue[700] : Colors.blue[300],
                     textStyle: Theme.of(context).textTheme.button,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
