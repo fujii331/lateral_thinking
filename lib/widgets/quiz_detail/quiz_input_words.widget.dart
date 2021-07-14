@@ -16,7 +16,6 @@ class QuizInputWords extends HookWidget {
   final List<Question> askingQuestions;
   final TextEditingController subjectController;
   final TextEditingController relatedWordController;
-  final bool subHintFlg;
 
   QuizInputWords(
     this.quiz,
@@ -24,7 +23,6 @@ class QuizInputWords extends HookWidget {
     this.askingQuestions,
     this.subjectController,
     this.relatedWordController,
-    this.subHintFlg,
   );
 
   void _submitData(
@@ -38,8 +36,8 @@ class QuizInputWords extends HookWidget {
     ValueNotifier<String> relatedWordData,
     int hint,
   ) {
-    final enteredSubject = subjectController.text;
-    final enteredRelatedWord = relatedWordController.text;
+    final enteredSubject = subjectController.text.trim();
+    final enteredRelatedWord = relatedWordController.text.trim();
 
     if (subjectData.value != enteredSubject ||
         relatedWordData.value != enteredRelatedWord) {
@@ -63,7 +61,7 @@ class QuizInputWords extends HookWidget {
                 enteredRelatedWord)
             .push()
             .set({
-          'title': subHintFlg,
+          'subHint': context.read(subHintFlgProvider).state,
         });
       }
 
@@ -93,6 +91,7 @@ class QuizInputWords extends HookWidget {
     bool enModeFlg,
   ) {
     bool existFlg = false;
+    bool exsistSubjectFlg = true;
 
     // 主語リストに存在するか判定
     for (String targetSubject in allSubjects) {
@@ -109,6 +108,8 @@ class QuizInputWords extends HookWidget {
           break;
         }
       }
+    } else {
+      exsistSubjectFlg = false;
     }
 
     if (enModeFlg) {
@@ -142,16 +143,22 @@ class QuizInputWords extends HookWidget {
     context.read(displayReplyFlgProvider).state = false;
 
     if (context.read(askingQuestionsProvider).state.isEmpty) {
-      final randomNumber = new Random().nextInt(5);
-      if (randomNumber == 0) {
-        context.read(beforeWordProvider).state =
-            enModeFlg ? EN_TEXT['seekHint']! : JA_TEXT['seekHint']!;
-      } else if (randomNumber == 1) {
-        context.read(beforeWordProvider).state =
-            enModeFlg ? EN_TEXT['advise']! : JA_TEXT['advise']!;
+      if (!exsistSubjectFlg) {
+        context.read(beforeWordProvider).state = enModeFlg
+            ? EN_TEXT['subjectNotExist']!
+            : JA_TEXT['subjectNotExist']!;
       } else {
-        context.read(beforeWordProvider).state =
-            enModeFlg ? EN_TEXT['noQuestions']! : JA_TEXT['noQuestions']!;
+        final randomNumber = new Random().nextInt(5);
+        if (randomNumber == 0) {
+          context.read(beforeWordProvider).state =
+              enModeFlg ? EN_TEXT['seekHint']! : JA_TEXT['seekHint']!;
+        } else if (randomNumber == 1) {
+          context.read(beforeWordProvider).state =
+              enModeFlg ? EN_TEXT['advise']! : JA_TEXT['advise']!;
+        } else {
+          context.read(beforeWordProvider).state =
+              enModeFlg ? EN_TEXT['noQuestions']! : JA_TEXT['noQuestions']!;
+        }
       }
     } else {
       context.read(selectedQuestionProvider).state = dummyQuestion;

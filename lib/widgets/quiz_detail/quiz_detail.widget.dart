@@ -15,13 +15,11 @@ class QuizDetail extends HookWidget {
   final Quiz quiz;
   final TextEditingController subjectController;
   final TextEditingController relatedWordController;
-  final bool subHintFlg;
 
   QuizDetail(
     this.quiz,
     this.subjectController,
     this.relatedWordController,
-    this.subHintFlg,
   );
 
   @override
@@ -58,7 +56,6 @@ class QuizDetail extends HookWidget {
                       askingQuestions,
                       subjectController,
                       relatedWordController,
-                      subHintFlg,
                     ),
                     QuestionInput(
                       selectedQuestion,

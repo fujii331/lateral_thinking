@@ -152,7 +152,6 @@ class QuizDetailTabScreen extends HookWidget {
             quiz,
             subjectController,
             relatedWordController,
-            subHintFlg,
           ),
           Questioned(),
           QuizAnswer(),
