@@ -12,6 +12,7 @@ final subHintFlgProvider = StateProvider((ref) => false);
 final openingNumberProvider = StateProvider((ref) => 0);
 final openingNumberEnglishProvider = StateProvider((ref) => 0);
 final enModeFlgProvider = StateProvider((ref) => true);
+final helperModeFlgProvider = StateProvider((ref) => false);
 
 // detail画面用
 final selectedQuestionProvider = StateProvider((ref) => dummyQuestion);

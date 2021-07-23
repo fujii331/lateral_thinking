@@ -61,7 +61,7 @@ class QuizInputWords extends HookWidget {
                 enteredRelatedWord)
             .push()
             .set({
-          'subHint': context.read(subHintFlgProvider).state,
+          'helperModeFlg': context.read(helperModeFlgProvider).state,
         });
       }
 
@@ -152,9 +152,6 @@ class QuizInputWords extends HookWidget {
         if (randomNumber == 0) {
           context.read(beforeWordProvider).state =
               enModeFlg ? EN_TEXT['seekHint']! : JA_TEXT['seekHint']!;
-        } else if (randomNumber == 1) {
-          context.read(beforeWordProvider).state =
-              enModeFlg ? EN_TEXT['advise']! : JA_TEXT['advise']!;
         } else {
           context.read(beforeWordProvider).state =
               enModeFlg ? EN_TEXT['noQuestions']! : JA_TEXT['noQuestions']!;
@@ -182,6 +179,7 @@ class QuizInputWords extends HookWidget {
         useProvider(selectedRelatedWordProvider).state;
 
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
+    final bool helperModeFlg = useProvider(helperModeFlgProvider).state;
 
     final subjectData = useState<String>('');
     final relatedWordData = useState<String>('');
@@ -228,7 +226,7 @@ class QuizInputWords extends HookWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             // 主語の入力
-            hint < 1
+            hint < 1 && !helperModeFlg
                 ? _wordForQuestion(
                     context,
                     enModeFlg ? EN_TEXT['subject']! : JA_TEXT['subject']!,

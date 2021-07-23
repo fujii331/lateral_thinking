@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:lottie/lottie.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dart:io';
 
@@ -11,6 +12,7 @@ import './quiz_list.screen.dart';
 import './lecture_tab.screen.dart';
 import '../providers/quiz.provider.dart';
 import '../text.dart';
+import '../widgets/mode_modal.widget.dart';
 import '../should_update.service.dart';
 import '../widgets/update_version_modal.widget.dart';
 
@@ -25,6 +27,17 @@ class TitleScreen extends HookWidget {
     Navigator.of(ctx).pushNamed(
       LectureTabScreen.routeName,
     );
+  }
+
+  void toModeModal(BuildContext context) {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.NO_HEADER,
+      headerAnimationLoop: false,
+      animType: AnimType.SCALE,
+      width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
+      body: ModeModal(),
+    )..show();
   }
 
   @override
@@ -50,6 +63,9 @@ class TitleScreen extends HookWidget {
             body: UpdateVersionModal(),
           )..show();
         }
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        context.read(helperModeFlgProvider).state =
+            prefs.getBool('helperModeFlg') ?? false;
       });
       return null;
     }, const []);
@@ -199,7 +215,7 @@ class TitleScreen extends HookWidget {
                         Colors.lightBlue.shade500,
                         Icon(Icons.account_balance),
                         soundEffect,
-                        true,
+                        1,
                       ),
                       _selectButton(
                         context,
@@ -209,7 +225,17 @@ class TitleScreen extends HookWidget {
                         Colors.teal,
                         Icon(Icons.auto_stories),
                         soundEffect,
-                        false,
+                        2,
+                      ),
+                      _selectButton(
+                        context,
+                        enModeFlg
+                            ? EN_TEXT['modeButton']!
+                            : JA_TEXT['modeButton']!,
+                        Colors.lime.shade700,
+                        Icon(Icons.settings_rounded),
+                        soundEffect,
+                        3,
                       ),
                     ],
                   ),
@@ -228,25 +254,29 @@ class TitleScreen extends HookWidget {
     Color color,
     Icon icon,
     AudioCache soundEffect,
-    bool playFlg,
+    int buttonPuttern,
   ) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        vertical: 20,
+        vertical: 10,
       ),
       child: SizedBox(
-        height: 50,
+        height: 40,
         child: ElevatedButton.icon(
           icon: icon,
           onPressed: () => {
             soundEffect.play('sounds/tap.mp3', isNotification: true),
-            if (playFlg)
+            if (buttonPuttern == 1)
               {
                 toQuizList(context),
               }
-            else
+            else if (buttonPuttern == 2)
               {
                 toLectureTab(context),
+              }
+            else
+              {
+                toModeModal(context),
               },
           },
           label: Text(text),
