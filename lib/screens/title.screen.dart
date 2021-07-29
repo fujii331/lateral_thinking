@@ -10,6 +10,7 @@ import 'dart:io';
 
 import './quiz_list.screen.dart';
 import './lecture_tab.screen.dart';
+import './warewolf_setting.screen.dart';
 import '../providers/quiz.provider.dart';
 import '../text.dart';
 import '../widgets/mode_modal.widget.dart';
@@ -40,6 +41,24 @@ class TitleScreen extends HookWidget {
     )..show();
   }
 
+  void toWerewolfSettingTab(BuildContext ctx) {
+    Navigator.of(ctx).pushNamed(
+      WarewolfSettingScreen.routeName,
+    );
+  }
+
+  void _getOpeningNumber(BuildContext context, bool enModeFlg) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (enModeFlg) {
+      context.read(openingNumberProvider).state =
+          prefs.getInt('openingNumberEn') ?? 9;
+    } else {
+      context.read(openingNumberProvider).state =
+          prefs.getInt('openingNumber') ?? 9;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
@@ -60,12 +79,27 @@ class TitleScreen extends HookWidget {
             animType: AnimType.BOTTOMSLIDE,
             width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
             dismissOnTouchOutside: false,
+            dismissOnBackKeyPress: false,
             body: UpdateVersionModal(),
           )..show();
         }
         SharedPreferences prefs = await SharedPreferences.getInstance();
         context.read(helperModeFlgProvider).state =
             prefs.getBool('helperModeFlg') ?? false;
+        if (prefs.getStringList('alreadyAnsweredIds') == null) {
+          if (prefs.getInt('openingNumber') != null) {
+            // openingNumberの数だけループして詰める
+            List<String> answerIds = [];
+            for (var i = 1; i <= prefs.getInt('openingNumber')!; i++) {
+              answerIds.add(i.toString());
+            }
+            prefs.setStringList('alreadyAnsweredIds', answerIds);
+          } else {
+            prefs.setStringList('alreadyAnsweredIds', []);
+          }
+        }
+        context.read(alreadyAnsweredIdsProvider).state =
+            prefs.getStringList('alreadyAnsweredIds')!;
       });
       return null;
     }, const []);
@@ -79,6 +113,8 @@ class TitleScreen extends HookWidget {
       'sounds/quiz_button.mp3',
       'sounds/hint.mp3',
     ]);
+
+    _getOpeningNumber(context, enModeFlg);
 
     return Scaffold(
       body: Stack(
@@ -237,6 +273,86 @@ class TitleScreen extends HookWidget {
                         soundEffect,
                         3,
                       ),
+                      !enModeFlg
+                          ? _selectButton(
+                              context,
+                              '水平思考人狼',
+                              Colors.blueGrey,
+                              Icon(Icons.theater_comedy_outlined),
+                              soundEffect,
+                              4,
+                            )
+                          : Container(),
+                      // !enModeFlg
+                      // ? Stack(
+                      //     children: [
+                      //       Padding(
+                      //         padding: const EdgeInsets.symmetric(
+                      //           vertical: 10,
+                      //         ),
+                      //         child: SizedBox(
+                      //           height: 40,
+                      //           child: ElevatedButton.icon(
+                      //             icon: Icon(Icons.theater_comedy_outlined),
+                      //             onPressed: () => {},
+                      //             label: Text('水平思考人狼'),
+                      //             style: ElevatedButton.styleFrom(
+                      //               elevation: 8, // 影をつける
+                      //               shadowColor: Colors.black,
+                      //               primary: Colors.blueGrey,
+                      //               padding: const EdgeInsets.symmetric(
+                      //                 horizontal: 20,
+                      //                 vertical: 5,
+                      //               ),
+                      //               textStyle:
+                      //                   Theme.of(context).textTheme.button,
+                      //               shape: RoundedRectangleBorder(
+                      //                 borderRadius:
+                      //                     BorderRadius.circular(10),
+                      //               ),
+                      //               side: const BorderSide(),
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //       Padding(
+                      //         padding: const EdgeInsets.symmetric(
+                      //           vertical: 10,
+                      //         ),
+                      //         child: SizedBox(
+                      //           height: 40,
+                      //           child: ElevatedButton(
+                      //             onPressed: () => {},
+                      //             child: Text(
+                      //               '   　準備中...！   ',
+                      //               style: TextStyle(
+                      //                 fontSize: 18,
+                      //                 fontFamily: 'YuseiMagic',
+                      //                 color: Colors.yellow,
+                      //               ),
+                      //             ),
+                      //             style: ElevatedButton.styleFrom(
+                      //               primary:
+                      //                   Colors.blueGrey.withOpacity(0.6),
+                      //               padding: const EdgeInsets.symmetric(
+                      //                 horizontal: 20,
+                      //                 vertical: 5,
+                      //               ),
+                      //               textStyle:
+                      //                   Theme.of(context).textTheme.button,
+                      //               shape: RoundedRectangleBorder(
+                      //                 borderRadius:
+                      //                     BorderRadius.circular(10),
+                      //               ),
+                      //               side: const BorderSide(),
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   )
+                      // : Container(),
+                      // ],
                     ],
                   ),
                 ),
@@ -274,9 +390,13 @@ class TitleScreen extends HookWidget {
               {
                 toLectureTab(context),
               }
-            else
+            else if (buttonPuttern == 3)
               {
                 toModeModal(context),
+              }
+            else
+              {
+                toWerewolfSettingTab(context),
               },
           },
           label: Text(text),

@@ -51,7 +51,7 @@ class ReplyModal extends HookWidget {
               onPressed: () => {
                 soundEffect.play('sounds/cancel.mp3', isNotification: true),
                 Navigator.pop(context),
-                if (reviewNo == 18 || reviewNo == 30)
+                if (reviewNo == 21 || reviewNo == 33)
                   {
                     // 別の方法
                     // LaunchReview.launch(

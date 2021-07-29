@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dart:io';
 
@@ -15,6 +16,12 @@ import './answering_modal.widget.dart';
 import '../../text.dart';
 
 class QuizAnswer extends HookWidget {
+  final int quizId;
+
+  QuizAnswer(
+    this.quizId,
+  );
+
   void getAnswerChoices(
       BuildContext context,
       List<Answer> allAnswers,
@@ -102,6 +109,8 @@ class QuizAnswer extends HookWidget {
     final height = MediaQuery.of(context).size.height * .35;
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
     final List<Answer> allAnswers = useProvider(allAnswersProvider).state;
+    final List<String> alreadyAnsweredIds =
+        useProvider(alreadyAnsweredIdsProvider).state;
 
     final List<Question> askedQuestions =
         useProvider(askedQuestionsProvider).state;
@@ -267,6 +276,19 @@ class QuizAnswer extends HookWidget {
                                     myInterstitial,
                                     nowLoading,
                                   );
+
+                                  SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
+                                  if (!alreadyAnsweredIds
+                                      .contains(quizId.toString())) {
+                                    // 正解した問題を登録
+                                    context
+                                        .read(alreadyAnsweredIdsProvider)
+                                        .state
+                                        .add(quizId.toString());
+                                    prefs.setStringList('alreadyAnsweredIds',
+                                        alreadyAnsweredIds);
+                                  }
 
                                   soundEffect.play(
                                     'sounds/correct_answer.mp3',

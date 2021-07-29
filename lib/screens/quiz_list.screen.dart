@@ -3,7 +3,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lateral_thinking/widgets/quiz_list/quiz_list_detail_title.widget.dart';
 import 'package:lateral_thinking/widgets/quiz_list/quiz_list_pagination.widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../widgets/quiz_list/quiz_list_detail.widget.dart';
 import '../providers/quiz.provider.dart';
@@ -13,18 +12,6 @@ import '../text.dart';
 class QuizListScreen extends HookWidget {
   static const routeName = '/quiz-list';
 
-  void _getOpeningNumber(BuildContext context, bool enModeFlg) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    if (enModeFlg) {
-      context.read(openingNumberProvider).state =
-          prefs.getInt('openingNumberEn') ?? 9;
-    } else {
-      context.read(openingNumberProvider).state =
-          prefs.getInt('openingNumber') ?? 9;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final screenNo = useState<int>(0);
@@ -33,8 +20,6 @@ class QuizListScreen extends HookWidget {
 
     final int numOfPages = ((openingNumber + 1) / 6).ceil();
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
-
-    _getOpeningNumber(context, enModeFlg);
 
     final List<String> titles = [
       enModeFlg ? EN_TEXT['listPageTitle1']! : JA_TEXT['listPageTitle1']!,

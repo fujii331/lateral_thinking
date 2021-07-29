@@ -365,8 +365,9 @@ class HintModal extends HookWidget {
                       right: 14,
                       left: 14,
                     ),
-                    primary:
-                        workHintValue < 3 ? Colors.blue[700] : Colors.blue[300],
+                    primary: workHintValue < 3
+                        ? Colors.blue.shade700
+                        : Colors.blue[300],
                     textStyle: Theme.of(context).textTheme.button,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),

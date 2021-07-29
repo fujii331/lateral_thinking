@@ -154,7 +154,7 @@ class QuizDetailTabScreen extends HookWidget {
             relatedWordController,
           ),
           Questioned(),
-          QuizAnswer(),
+          QuizAnswer(quiz.id),
         ],
       ),
     );

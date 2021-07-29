@@ -8,6 +8,14 @@ import './screens/title.screen.dart';
 import './screens/lecture_tab.screen.dart';
 import './screens/quiz_list.screen.dart';
 import './screens/quiz_detail_tab.screen.dart';
+import './screens/warewolf_setting.screen.dart';
+import './screens/warewolf_preparation.screen.dart';
+import './screens/warewolf_playing.screen.dart';
+import './screens/warewolf_vote.screen.dart';
+import './screens/warewolf_discussion.screen.dart';
+import './screens/warewolf_voted_confirm.screen.dart';
+import './screens/warewolf_result.screen.dart';
+import './screens/warewolf_summary_result.screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -112,6 +120,22 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         QuizListScreen.routeName: (BuildContext context) => QuizListScreen(),
         QuizDetailTabScreen.routeName: (BuildContext context) =>
             QuizDetailTabScreen(),
+        WarewolfSettingScreen.routeName: (BuildContext context) =>
+            WarewolfSettingScreen(),
+        WarewolfPreparationScreen.routeName: (BuildContext context) =>
+            WarewolfPreparationScreen(),
+        WarewolfPlayingScreen.routeName: (BuildContext context) =>
+            WarewolfPlayingScreen(),
+        WarewolfVoteScreen.routeName: (BuildContext context) =>
+            WarewolfVoteScreen(),
+        WarewolfDiscussionScreen.routeName: (BuildContext context) =>
+            WarewolfDiscussionScreen(),
+        WarewolfVotedConfirmScreen.routeName: (BuildContext context) =>
+            WarewolfVotedConfirmScreen(),
+        WarewolfResultScreen.routeName: (BuildContext context) =>
+            WarewolfResultScreen(),
+        WarewolfSummaryResultScreen.routeName: (BuildContext context) =>
+            WarewolfSummaryResultScreen(),
       },
       onUnknownRoute: (settings) {
         return MaterialPageRoute(

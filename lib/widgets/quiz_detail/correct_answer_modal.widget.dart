@@ -68,7 +68,7 @@ class CorrectAnswerModal extends HookWidget {
                   enModeFlg ? EN_TEXT['back']! : JA_TEXT['back']!,
                 ),
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.blue[700],
+                  primary: Colors.blue.shade700,
                   textStyle: Theme.of(context).textTheme.button,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),

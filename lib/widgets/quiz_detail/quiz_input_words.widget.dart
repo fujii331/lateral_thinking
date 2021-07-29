@@ -50,7 +50,7 @@ class QuizInputWords extends HookWidget {
 
         return;
       }
-      if (hint == 0) {
+      if (hint == 0 && quiz.id == 43) {
         FirebaseDatabase.instance
             .reference()
             .child('input_words/' +

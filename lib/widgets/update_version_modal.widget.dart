@@ -23,7 +23,7 @@ class UpdateVersionModal extends StatelessWidget {
     const PLAY_STORE_URL =
         'https://play.google.com/store/apps/details?id=io.github.naoto613.lateral_thinking';
 
-    return new WillPopScope(
+    return WillPopScope(
       onWillPop: () async => false,
       child: Padding(
         padding: const EdgeInsets.only(

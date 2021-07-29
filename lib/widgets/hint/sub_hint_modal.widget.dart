@@ -250,7 +250,7 @@ class SubHintModal extends HookWidget {
                       right: 14,
                       left: 14,
                     ),
-                    primary: Colors.blue[700],
+                    primary: Colors.blue.shade700,
                     textStyle: Theme.of(context).textTheme.button,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
