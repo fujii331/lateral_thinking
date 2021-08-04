@@ -6,6 +6,8 @@ import 'package:audioplayers/audioplayers.dart';
 import '../../models/quiz.model.dart';
 import '../../screens/quiz_detail_tab.screen.dart';
 import '../../providers/quiz.provider.dart';
+import '../../providers/common.provider.dart';
+
 import '../../text.dart';
 
 class QuizItem extends HookWidget {
@@ -14,8 +16,6 @@ class QuizItem extends HookWidget {
   QuizItem(this.quiz);
 
   void toQuizDetail(BuildContext ctx, AudioCache soundEffect) {
-    soundEffect.play('sounds/tap.mp3', isNotification: true);
-
     ctx.read(remainingQuestionsProvider).state = quiz.questions;
     ctx.read(askedQuestionsProvider).state = [];
     ctx.read(allAnswersProvider).state = quiz.answers;
@@ -40,6 +40,7 @@ class QuizItem extends HookWidget {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
     final height = MediaQuery.of(context).size.height;
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
+    final double seVolume = useProvider(seVolumeProvider).state;
 
     return Container(
       height: height > 620 ? 52 : 45,
@@ -85,7 +86,14 @@ class QuizItem extends HookWidget {
             ),
           ),
         ),
-        onTap: () => toQuizDetail(context, soundEffect),
+        onTap: () {
+          soundEffect.play(
+            'sounds/tap.mp3',
+            isNotification: true,
+            volume: seVolume,
+          );
+          toQuizDetail(context, soundEffect);
+        },
       ),
     );
   }

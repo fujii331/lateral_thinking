@@ -1,6 +1,5 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../models/quiz.model.dart';
-import 'package:audioplayers/audioplayers.dart';
 
 final remainingQuestionsProvider = StateProvider((ref) => <Question>[]);
 final askedQuestionsProvider = StateProvider((ref) => <Question>[]);
@@ -14,6 +13,7 @@ final openingNumberEnglishProvider = StateProvider((ref) => 0);
 final enModeFlgProvider = StateProvider((ref) => true);
 final helperModeFlgProvider = StateProvider((ref) => false);
 final alreadyAnsweredIdsProvider = StateProvider((ref) => <String>[]);
+final alreadyPlayedQuizFlgProvider = StateProvider((ref) => false);
 
 // detail画面用
 final selectedQuestionProvider = StateProvider((ref) => dummyQuestion);
@@ -25,5 +25,3 @@ final selectedRelatedWordProvider = StateProvider((ref) => '');
 final askingQuestionsProvider = StateProvider((ref) => <Question>[]);
 
 const dummyQuestion = Question(asking: '', id: 0, reply: '');
-
-final soundEffectProvider = StateProvider((ref) => new AudioCache());

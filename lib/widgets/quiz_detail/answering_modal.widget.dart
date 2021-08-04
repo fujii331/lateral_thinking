@@ -4,7 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'dart:math';
-import '../../providers/quiz.provider.dart';
+import '../../providers/common.provider.dart';
 
 class AnsweringModal extends HookWidget {
   final bool correctFlg;
@@ -18,6 +18,7 @@ class AnsweringModal extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
+    final double seVolume = useProvider(seVolumeProvider).state;
 
     final displayFlg1 = useState<bool>(false);
     final displayFlg2 = useState<bool>(false);
@@ -27,7 +28,11 @@ class AnsweringModal extends HookWidget {
     useEffect(() {
       WidgetsBinding.instance!.addPostFrameCallback((_) async {
         displayFlg1.value = true;
-        soundEffect.play('sounds/think.mp3', isNotification: true);
+        soundEffect.play(
+          'sounds/think.mp3',
+          isNotification: true,
+          volume: seVolume,
+        );
         await new Future.delayed(
           new Duration(seconds: 1),
         );
@@ -49,46 +54,49 @@ class AnsweringModal extends HookWidget {
       return null;
     }, const []);
 
-    return Theme(
-      data: Theme.of(context)
-          .copyWith(dialogBackgroundColor: Colors.white.withOpacity(0.0)),
-      child: new SimpleDialog(
-        children: <Widget>[
-          Center(
-            child: Stack(
-              children: [
-                AnimatedOpacity(
-                  duration: const Duration(milliseconds: 500),
-                  opacity: displayFlg1.value ? 1 : 0,
-                  child: Image.asset(
-                      'assets/images/1_' + randomNumber1.toString() + '.png'),
-                ),
-                AnimatedOpacity(
-                  duration: const Duration(milliseconds: 500),
-                  opacity: displayFlg2.value ? 1 : 0,
-                  child: Image.asset(
-                      'assets/images/2_' + randomNumber2.toString() + '.png'),
-                ),
-                AnimatedOpacity(
-                  duration: const Duration(milliseconds: 500),
-                  opacity: displayFlg3.value ? 1 : 0,
-                  child: correctFlg
-                      ? Image.asset('assets/images/true_3_' +
-                          randomNumber3.toString() +
-                          '.png')
-                      : Image.asset('assets/images/false_3_' +
-                          randomNumber3.toString() +
-                          '.png'),
-                ),
-                AnimatedOpacity(
-                  duration: const Duration(milliseconds: 500),
-                  opacity: displayFlg4.value ? 1 : 0,
-                  child: Image.asset('assets/images/true_4_1.png'),
-                )
-              ],
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Theme(
+        data: Theme.of(context)
+            .copyWith(dialogBackgroundColor: Colors.white.withOpacity(0.0)),
+        child: new SimpleDialog(
+          children: <Widget>[
+            Center(
+              child: Stack(
+                children: [
+                  AnimatedOpacity(
+                    duration: const Duration(milliseconds: 500),
+                    opacity: displayFlg1.value ? 1 : 0,
+                    child: Image.asset(
+                        'assets/images/1_' + randomNumber1.toString() + '.png'),
+                  ),
+                  AnimatedOpacity(
+                    duration: const Duration(milliseconds: 500),
+                    opacity: displayFlg2.value ? 1 : 0,
+                    child: Image.asset(
+                        'assets/images/2_' + randomNumber2.toString() + '.png'),
+                  ),
+                  AnimatedOpacity(
+                    duration: const Duration(milliseconds: 500),
+                    opacity: displayFlg3.value ? 1 : 0,
+                    child: correctFlg
+                        ? Image.asset('assets/images/true_3_' +
+                            randomNumber3.toString() +
+                            '.png')
+                        : Image.asset('assets/images/false_3_' +
+                            randomNumber3.toString() +
+                            '.png'),
+                  ),
+                  AnimatedOpacity(
+                    duration: const Duration(milliseconds: 500),
+                    opacity: displayFlg4.value ? 1 : 0,
+                    child: Image.asset('assets/images/true_4_1.png'),
+                  )
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -8,7 +8,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 
 import '../background.widget.dart';
+
 import '../../providers/quiz.provider.dart';
+import '../../providers/common.provider.dart';
+
 import '../../models/quiz.model.dart';
 import 'correct_answer_modal.widget.dart';
 import '../../advertising.dart';
@@ -120,6 +123,7 @@ class QuizAnswer extends HookWidget {
 
     final List<int> correctAnswerIds =
         useProvider(correctAnswerIdsProvider).state;
+    final double seVolume = useProvider(seVolumeProvider).state;
 
     final availableAnswers = useState<List<Answer>>([]);
     final selectedAnswer = useState<Answer?>(null);
@@ -254,8 +258,11 @@ class QuizAnswer extends HookWidget {
                           ? correctAnswerIds.contains(selectedAnswer.value!.id)
                               ? () async {
                                   enableAnswerButtonFlg.value = false;
-                                  soundEffect.play('sounds/quiz_button.mp3',
-                                      isNotification: true);
+                                  soundEffect.play(
+                                    'sounds/quiz_button.mp3',
+                                    isNotification: true,
+                                    volume: seVolume,
+                                  );
 
                                   await new Future.delayed(
                                     new Duration(milliseconds: 600),
@@ -293,6 +300,7 @@ class QuizAnswer extends HookWidget {
                                   soundEffect.play(
                                     'sounds/correct_answer.mp3',
                                     isNotification: true,
+                                    volume: seVolume,
                                   );
 
                                   if (loaded.value) {
@@ -332,8 +340,11 @@ class QuizAnswer extends HookWidget {
                                 }
                               : () async {
                                   enableAnswerButtonFlg.value = false;
-                                  soundEffect.play('sounds/quiz_button.mp3',
-                                      isNotification: true);
+                                  soundEffect.play(
+                                    'sounds/quiz_button.mp3',
+                                    isNotification: true,
+                                    volume: seVolume,
+                                  );
                                   await new Future.delayed(
                                     new Duration(milliseconds: 600),
                                   );
@@ -350,8 +361,11 @@ class QuizAnswer extends HookWidget {
                                   );
                                   enableAnswerButtonFlg.value = true;
 
-                                  soundEffect.play('sounds/wrong_answer.mp3',
-                                      isNotification: true);
+                                  soundEffect.play(
+                                    'sounds/wrong_answer.mp3',
+                                    isNotification: true,
+                                    volume: seVolume,
+                                  );
 
                                   Navigator.pop(context);
 

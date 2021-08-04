@@ -32,6 +32,7 @@ const DISCUSSION_TIME = <String>[
   '2',
   '3',
   '4',
+  '5',
 ];
 
 const PEACE_VILLAGE_EXSIST = <String>[

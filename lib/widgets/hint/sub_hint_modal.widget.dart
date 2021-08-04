@@ -9,6 +9,7 @@ import 'dart:io';
 import 'dart:async';
 
 import '../../providers/quiz.provider.dart';
+import '../../providers/common.provider.dart';
 
 import '../replry_modal.widget.dart';
 import './ad_loading_modal.widget.dart';
@@ -45,6 +46,7 @@ class SubHintModal extends HookWidget {
     final loaded = useState(false);
     final nowLoading = useState(false);
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
+    final double seVolume = useProvider(seVolumeProvider).state;
 
     void afterGotReward() => {
           context.read(subHintFlgProvider).state = true,
@@ -180,7 +182,11 @@ class SubHintModal extends HookWidget {
               children: [
                 ElevatedButton(
                   onPressed: () => {
-                    soundEffect.play('sounds/cancel.mp3', isNotification: true),
+                    soundEffect.play(
+                      'sounds/cancel.mp3',
+                      isNotification: true,
+                      volume: seVolume,
+                    ),
                     Navigator.pop(context)
                   },
                   child: Text(
@@ -201,14 +207,20 @@ class SubHintModal extends HookWidget {
                 ElevatedButton(
                   onPressed: () async => quizId == 1
                       ? {
-                          soundEffect.play('sounds/tap.mp3',
-                              isNotification: true),
+                          soundEffect.play(
+                            'sounds/tap.mp3',
+                            isNotification: true,
+                            volume: seVolume,
+                          ),
                           Navigator.pop(context),
                           afterGotReward(),
                         }
                       : {
-                          soundEffect.play('sounds/tap.mp3',
-                              isNotification: true),
+                          soundEffect.play(
+                            'sounds/tap.mp3',
+                            isNotification: true,
+                            volume: seVolume,
+                          ),
                           showDialog<int>(
                             context: context,
                             barrierDismissible: false,

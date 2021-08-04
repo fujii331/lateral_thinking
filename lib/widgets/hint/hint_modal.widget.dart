@@ -10,6 +10,7 @@ import 'dart:async';
 import 'dart:math';
 
 import '../../providers/quiz.provider.dart';
+import '../../providers/common.provider.dart';
 
 import '../replry_modal.widget.dart';
 import './ad_loading_modal.widget.dart';
@@ -52,6 +53,7 @@ class HintModal extends HookWidget {
     final nowLoading = useState(false);
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
     final bool helperModeFlg = useProvider(helperModeFlgProvider).state;
+    final double seVolume = useProvider(seVolumeProvider).state;
 
     final List<Question> askedQuestions =
         useProvider(askedQuestionsProvider).state;
@@ -291,7 +293,11 @@ class HintModal extends HookWidget {
               children: [
                 ElevatedButton(
                   onPressed: () => {
-                    soundEffect.play('sounds/cancel.mp3', isNotification: true),
+                    soundEffect.play(
+                      'sounds/cancel.mp3',
+                      isNotification: true,
+                      volume: seVolume,
+                    ),
                     Navigator.pop(context)
                   },
                   child: Text(
@@ -313,14 +319,20 @@ class HintModal extends HookWidget {
                   onPressed: () async => workHintValue < 3
                       ? quiz.id == 1
                           ? {
-                              soundEffect.play('sounds/tap.mp3',
-                                  isNotification: true),
+                              soundEffect.play(
+                                'sounds/tap.mp3',
+                                isNotification: true,
+                                volume: seVolume,
+                              ),
                               Navigator.pop(context),
                               afterGotReward(),
                             }
                           : {
-                              soundEffect.play('sounds/tap.mp3',
-                                  isNotification: true),
+                              soundEffect.play(
+                                'sounds/tap.mp3',
+                                isNotification: true,
+                                volume: seVolume,
+                              ),
                               showDialog<int>(
                                 context: context,
                                 barrierDismissible: false,

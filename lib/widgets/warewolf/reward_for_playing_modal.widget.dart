@@ -6,16 +6,15 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'dart:math';
 import 'dart:io';
 import 'dart:async';
 
 import '../../providers/quiz.provider.dart';
-import '../../providers/warewolf.provider.dart';
+import '../../providers/common.provider.dart';
 
 import '../../models/quiz.model.dart';
 
-import '../../screens/warewolf_preparation.screen.dart';
+import '../../screens/warewolf_preparation_first.screen.dart';
 
 import '../replry_modal.widget.dart';
 import '../hint/ad_loading_modal.widget.dart';
@@ -46,8 +45,7 @@ class RewardForPlayingModal extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
-    final String peaceVillage = useProvider(peaceVillageProvider).state;
-    final String numOfPlayers = useProvider(numOfPlayersProvider).state;
+    final double seVolume = useProvider(seVolumeProvider).state;
 
     final loaded = useState(false);
     final nowLoading = useState(false);
@@ -58,17 +56,11 @@ class RewardForPlayingModal extends HookWidget {
       prefs.setStringList(
           'alreadyAnsweredIds', context.read(alreadyAnsweredIdsProvider).state);
 
-      context.read(wolfIdProvider).state =
-          peaceVillage == 'あり' && Random().nextInt(4) == 0
-              ? 0
-              : Random().nextInt(int.parse(numOfPlayers)) + 1;
-
       Navigator.of(context).pushNamed(
-        WarewolfPreparationScreen.routeName,
+        WarewolfPreparationFirstScreen.routeName,
         arguments: [
           quiz.sentence,
           quiz.answers[0].comment,
-          1,
         ],
       );
     }
@@ -135,7 +127,7 @@ class RewardForPlayingModal extends HookWidget {
               vertical: 10,
             ),
             child: Text(
-              '短い動画を見てゲームをプレイしますか？',
+              '短い動画を見てゲームを始めますか？',
               style: TextStyle(
                 fontSize: 20.0,
                 fontWeight: FontWeight.bold,
@@ -160,7 +152,7 @@ class RewardForPlayingModal extends HookWidget {
               vertical: 10,
             ),
             child: Text(
-              '※一人用モードで正解するか、一度動画を見たら何度でも遊ぶことができます。',
+              '※正解するか一度動画を見たら何度でもプレイ可能',
               style: TextStyle(
                 fontSize: 16.0,
                 fontFamily: 'SawarabiGothic',
@@ -175,7 +167,11 @@ class RewardForPlayingModal extends HookWidget {
               children: [
                 ElevatedButton(
                   onPressed: () => {
-                    soundEffect.play('sounds/cancel.mp3', isNotification: true),
+                    soundEffect.play(
+                      'sounds/cancel.mp3',
+                      isNotification: true,
+                      volume: seVolume,
+                    ),
                     Navigator.pop(context)
                   },
                   child: Text(JA_TEXT['noButton']!),
@@ -194,7 +190,11 @@ class RewardForPlayingModal extends HookWidget {
                 const SizedBox(width: 30),
                 ElevatedButton(
                   onPressed: () async => {
-                    soundEffect.play('sounds/tap.mp3', isNotification: true),
+                    soundEffect.play(
+                      'sounds/tap.mp3',
+                      isNotification: true,
+                      volume: seVolume,
+                    ),
                     showDialog<int>(
                       context: context,
                       barrierDismissible: false,

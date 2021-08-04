@@ -3,8 +3,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-import '../../providers/quiz.provider.dart';
-import '../../screens/warewolf_vote.screen.dart';
+import '../../providers/common.provider.dart';
+import '../../screens/warewolf_vote_first.screen.dart';
 
 class ConfirmDiscussionedModal extends HookWidget {
   final bool timeLimitedFlg;
@@ -22,6 +22,7 @@ class ConfirmDiscussionedModal extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
+    final double seVolume = useProvider(seVolumeProvider).state;
 
     return Container(
       padding: const EdgeInsets.only(
@@ -29,7 +30,7 @@ class ConfirmDiscussionedModal extends HookWidget {
         right: 20,
         bottom: 25,
       ),
-      height: 300, // よう調整
+      height: 210,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -66,7 +67,11 @@ class ConfirmDiscussionedModal extends HookWidget {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    soundEffect.play('sounds/tap.mp3', isNotification: true);
+                    soundEffect.play(
+                      'sounds/tap.mp3',
+                      isNotification: true,
+                      volume: seVolume,
+                    );
                     if (timeLimitedFlg) {
                       time.value = DateTime(2020, 1, 1, 1, 1);
                     }
@@ -79,7 +84,7 @@ class ConfirmDiscussionedModal extends HookWidget {
                       right: 14,
                       left: 14,
                     ),
-                    primary: Colors.amber[500],
+                    primary: Colors.red,
                     textStyle: Theme.of(context).textTheme.button,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -89,11 +94,15 @@ class ConfirmDiscussionedModal extends HookWidget {
                 const SizedBox(width: 30),
                 ElevatedButton(
                   onPressed: () {
-                    soundEffect.play('sounds/tap.mp3', isNotification: true);
+                    soundEffect.play(
+                      'sounds/tap.mp3',
+                      isNotification: true,
+                      volume: seVolume,
+                    );
                     finishFlg.value = true;
+                    context.read(bgmProvider).state.stop();
                     Navigator.of(context).pushNamed(
-                      WarewolfVoteScreen.routeName,
-                      arguments: 1,
+                      WarewolfVoteFirstScreen.routeName,
                     );
                   },
                   child: Text('進む'),
@@ -102,7 +111,7 @@ class ConfirmDiscussionedModal extends HookWidget {
                       right: 14,
                       left: 14,
                     ),
-                    primary: Colors.amber[500],
+                    primary: Colors.blue.shade600,
                     textStyle: Theme.of(context).textTheme.button,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),

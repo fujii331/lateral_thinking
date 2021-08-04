@@ -13,6 +13,8 @@ import '../replry_modal.widget.dart';
 import '../hint/ad_loading_modal.widget.dart';
 
 import '../../providers/quiz.provider.dart';
+import '../../providers/common.provider.dart';
+
 import '../../advertising.dart';
 import '../../text.dart';
 
@@ -58,6 +60,7 @@ class AdvertisingModal extends HookWidget {
     final loaded = useState(false);
     final nowLoading = useState(false);
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
+    final double seVolume = useProvider(seVolumeProvider).state;
 
     final rewardAd = RewardedAd(
       adUnitId: Platform.isAndroid
@@ -150,7 +153,11 @@ class AdvertisingModal extends HookWidget {
               children: [
                 ElevatedButton(
                   onPressed: () => {
-                    soundEffect.play('sounds/cancel.mp3', isNotification: true),
+                    soundEffect.play(
+                      'sounds/cancel.mp3',
+                      isNotification: true,
+                      volume: seVolume,
+                    ),
                     Navigator.pop(context)
                   },
                   child: Text(
@@ -177,7 +184,11 @@ class AdvertisingModal extends HookWidget {
                     ),
                   ),
                   onPressed: () async => {
-                    soundEffect.play('sounds/tap.mp3', isNotification: true),
+                    soundEffect.play(
+                      'sounds/tap.mp3',
+                      isNotification: true,
+                      volume: seVolume,
+                    ),
                     showDialog<int>(
                       context: context,
                       barrierDismissible: false,

@@ -42,7 +42,6 @@ class LectureFirst extends HookWidget {
               borderRadius: BorderRadius.circular(10),
               color: Color.fromRGBO(0, 0, 0, 0.6),
             ),
-            height: MediaQuery.of(context).size.height * .80,
             width: MediaQuery.of(context).size.width * .92,
             child: Padding(
               padding: const EdgeInsets.all(10.0),
@@ -61,17 +60,17 @@ class LectureFirst extends HookWidget {
                         height: 1.7,
                       ),
                     ),
-                    Text(
-                      enModeFlg
-                          ? EN_TEXT['lectureFirst2']!
-                          : JA_TEXT['lectureFirst2']!,
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.yellow.shade200,
-                        height: 1.7,
-                      ),
-                    ),
+                    enModeFlg
+                        ? Text(
+                            EN_TEXT['lectureFirst2']!,
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.yellow.shade200,
+                              height: 1.7,
+                            ),
+                          )
+                        : Container(),
                     Text(
                       enModeFlg
                           ? EN_TEXT['lectureFirst3']!

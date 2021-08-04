@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-import '../../providers/quiz.provider.dart';
+import '../../providers/common.provider.dart';
 import '../../providers/warewolf.provider.dart';
 
 import '../../models/warewolf.model.dart';
@@ -25,6 +25,7 @@ class ConfirmVoteModal extends HookWidget {
     final Vote vote = useProvider(voteProvider).state;
     final Vote votingDestination = useProvider(votingDestinationProvider).state;
     final numOfPlayers = useProvider(numOfPlayersProvider).state;
+    final double seVolume = useProvider(seVolumeProvider).state;
 
     final String votedPlayerName = votetargetId == 1
         ? useProvider(player1Provider).state.name
@@ -44,7 +45,7 @@ class ConfirmVoteModal extends HookWidget {
         right: 20,
         bottom: 25,
       ),
-      height: 300, // よう調整
+      // height: 220,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -65,18 +66,19 @@ class ConfirmVoteModal extends HookWidget {
             padding: const EdgeInsets.only(
               top: 20,
             ),
-            child: Wrap(
+            child: Column(
               children: [
                 Text(
                   votedPlayerName,
                   style: TextStyle(
-                    fontSize: 18.0,
+                    fontSize: 20.0,
                     fontFamily: 'SawarabiGothic',
+                    color: Colors.orange.shade900,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
-                  ' でよろしいですか？',
+                  'でよろしいですか？',
                   style: TextStyle(
                     fontSize: 18.0,
                     fontFamily: 'SawarabiGothic',
@@ -87,13 +89,17 @@ class ConfirmVoteModal extends HookWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(
-              top: 15,
+              top: 20,
             ),
             child: Wrap(
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    soundEffect.play('sounds/cancel.mp3', isNotification: true);
+                    soundEffect.play(
+                      'sounds/cancel.mp3',
+                      isNotification: true,
+                      volume: seVolume,
+                    );
                     Navigator.pop(context);
                   },
                   child: Text('戻る'),
@@ -102,7 +108,7 @@ class ConfirmVoteModal extends HookWidget {
                       right: 14,
                       left: 14,
                     ),
-                    primary: Colors.red[500],
+                    primary: Colors.red.shade400,
                     textStyle: Theme.of(context).textTheme.button,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -112,7 +118,11 @@ class ConfirmVoteModal extends HookWidget {
                 const SizedBox(width: 30),
                 ElevatedButton(
                   onPressed: () {
-                    soundEffect.play('sounds/tap.mp3', isNotification: true);
+                    soundEffect.play(
+                      'sounds/tap.mp3',
+                      isNotification: true,
+                      volume: seVolume,
+                    );
                     context.read(voteProvider).state = Vote(
                       player1:
                           votetargetId == 1 ? vote.player1 + 1 : vote.player1,
@@ -166,7 +176,7 @@ class ConfirmVoteModal extends HookWidget {
                       right: 14,
                       left: 14,
                     ),
-                    primary: Colors.blue.shade700,
+                    primary: Colors.blue.shade600,
                     textStyle: Theme.of(context).textTheme.button,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),

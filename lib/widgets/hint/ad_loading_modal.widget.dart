@@ -14,45 +14,49 @@ class AdLoadingModal extends HookWidget {
   Widget build(BuildContext context) {
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
 
-    return Theme(
-      data: Theme.of(context)
-          .copyWith(dialogBackgroundColor: Colors.white.withOpacity(0.0)),
-      child: new SimpleDialog(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(bottom: 25),
-            child: Text(
-              enModeFlg ? EN_TEXT['nowLoading']! : JA_TEXT['nowLoading']!,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 20,
-                fontFamily: 'YuseiMagic',
-                color: Colors.white,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Theme(
+        data: Theme.of(context)
+            .copyWith(dialogBackgroundColor: Colors.white.withOpacity(0.0)),
+        child: new SimpleDialog(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(bottom: 25),
+              child: Text(
+                enModeFlg ? EN_TEXT['nowLoading']! : JA_TEXT['nowLoading']!,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontFamily: 'YuseiMagic',
+                  color: Colors.white,
+                ),
               ),
             ),
-          ),
-          randomNumber == 0
-              ? SpinKitFadingCube(
-                  itemBuilder: (BuildContext context, int index) {
-                    return DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: index.isEven ? Colors.lightGreen : Colors.green,
-                      ),
-                    );
-                  },
-                )
-              : randomNumber == 1
-                  ? SpinKitWave(
-                      color: Colors.blue.shade200,
-                      size: 50.0,
-                    )
-                  : randomNumber == 2
-                      ? SpinKitWanderingCubes(
-                          color: Colors.yellow.shade200,
-                          size: 50.0,
-                        )
-                      : SpinKitCubeGrid(color: Colors.orange),
-        ],
+            randomNumber == 0
+                ? SpinKitFadingCube(
+                    itemBuilder: (BuildContext context, int index) {
+                      return DecoratedBox(
+                        decoration: BoxDecoration(
+                          color:
+                              index.isEven ? Colors.lightGreen : Colors.green,
+                        ),
+                      );
+                    },
+                  )
+                : randomNumber == 1
+                    ? SpinKitWave(
+                        color: Colors.blue.shade200,
+                        size: 50.0,
+                      )
+                    : randomNumber == 2
+                        ? SpinKitWanderingCubes(
+                            color: Colors.yellow.shade200,
+                            size: 50.0,
+                          )
+                        : SpinKitCubeGrid(color: Colors.orange),
+          ],
+        ),
       ),
     );
   }

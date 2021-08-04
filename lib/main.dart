@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 import './screens/title.screen.dart';
 import './screens/lecture_tab.screen.dart';
@@ -10,12 +10,18 @@ import './screens/quiz_list.screen.dart';
 import './screens/quiz_detail_tab.screen.dart';
 import './screens/warewolf_setting.screen.dart';
 import './screens/warewolf_preparation.screen.dart';
+import './screens/warewolf_preparation_first.screen.dart';
 import './screens/warewolf_playing.screen.dart';
 import './screens/warewolf_vote.screen.dart';
+import './screens/warewolf_vote_first.screen.dart';
 import './screens/warewolf_discussion.screen.dart';
 import './screens/warewolf_voted_confirm.screen.dart';
 import './screens/warewolf_result.screen.dart';
 import './screens/warewolf_summary_result.screen.dart';
+import './screens/warewolf_lecture.screen.dart';
+
+import './providers/common.provider.dart';
+import './providers/warewolf.provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,23 +34,54 @@ void main() {
   );
 }
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
+useWidgetLifecycleObserver(BuildContext context) {
+  return use(_WidgetObserver(
+    context,
+  ));
 }
 
-class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  late AudioPlayer bgm;
-  final AudioCache soundEffect = AudioCache();
+class _WidgetObserver extends Hook<void> {
+  final BuildContext context;
+
+  _WidgetObserver(
+    this.context,
+  );
 
   @override
-  void initState() {
-    super.initState();
+  HookState<void, Hook<void>> createState() {
+    return _WidgetObserverState(
+      context,
+    );
+  }
+}
+
+class _WidgetObserverState extends HookState<void, _WidgetObserver>
+    with WidgetsBindingObserver {
+  final BuildContext context;
+
+  _WidgetObserverState(
+    this.context,
+  );
+
+  @override
+  void build(BuildContext context) {}
+
+  @override
+  void initHook() {
+    super.initHook();
     Future(() async {
-      bgm = await soundEffect.loop('sounds/bgm.mp3',
-          volume: 0.3, isNotification: true);
+      context.read(bgmProvider).state =
+          await context.read(soundEffectProvider).state.loop(
+                'sounds/bgm.mp3',
+                isNotification: true,
+                volume: 0,
+              );
     });
     WidgetsBinding.instance!.addObserver(this);
+  }
+
+  void test() {
+    context.read(bgmProvider).state.pause();
   }
 
   @override
@@ -57,14 +94,23 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.inactive) {
-      bgm.pause();
+      context.read(bgmProvider).state.pause();
+      context.read(subTimeStopFlgProvider).state = true;
     } else if (state == AppLifecycleState.resumed) {
-      bgm.resume();
+      context.read(bgmProvider).state.resume();
+      context.read(subTimeStopFlgProvider).state = false;
     }
+    super.didChangeAppLifecycleState(state);
   }
+}
 
+class MyApp extends HookWidget {
   @override
   Widget build(BuildContext context) {
+    useWidgetLifecycleObserver(
+      context,
+    );
+
     return MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
@@ -122,10 +168,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             QuizDetailTabScreen(),
         WarewolfSettingScreen.routeName: (BuildContext context) =>
             WarewolfSettingScreen(),
+        WarewolfPreparationFirstScreen.routeName: (BuildContext context) =>
+            WarewolfPreparationFirstScreen(),
         WarewolfPreparationScreen.routeName: (BuildContext context) =>
             WarewolfPreparationScreen(),
         WarewolfPlayingScreen.routeName: (BuildContext context) =>
             WarewolfPlayingScreen(),
+        WarewolfVoteFirstScreen.routeName: (BuildContext context) =>
+            WarewolfVoteFirstScreen(),
         WarewolfVoteScreen.routeName: (BuildContext context) =>
             WarewolfVoteScreen(),
         WarewolfDiscussionScreen.routeName: (BuildContext context) =>
@@ -136,6 +186,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             WarewolfResultScreen(),
         WarewolfSummaryResultScreen.routeName: (BuildContext context) =>
             WarewolfSummaryResultScreen(),
+        WarewolfLectureScreen.routeName: (BuildContext context) =>
+            WarewolfLectureScreen(),
       },
       onUnknownRoute: (settings) {
         return MaterialPageRoute(

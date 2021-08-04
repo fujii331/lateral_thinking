@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import '../../providers/quiz.provider.dart';
+import '../../providers/common.provider.dart';
 
 import '../../text.dart';
 
@@ -18,6 +19,7 @@ class OpenedSubHintModal extends HookWidget {
   Widget build(BuildContext context) {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
+    final double seVolume = useProvider(seVolumeProvider).state;
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -148,7 +150,11 @@ class OpenedSubHintModal extends HookWidget {
             ),
             child: ElevatedButton(
               onPressed: () => {
-                soundEffect.play('sounds/cancel.mp3', isNotification: true),
+                soundEffect.play(
+                  'sounds/cancel.mp3',
+                  isNotification: true,
+                  volume: seVolume,
+                ),
                 Navigator.pop(context)
               },
               child: Text(

@@ -4,6 +4,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import '../../providers/quiz.provider.dart';
+import '../../providers/common.provider.dart';
+
 import '../../text.dart';
 
 class CorrectAnswerModal extends HookWidget {
@@ -15,6 +17,7 @@ class CorrectAnswerModal extends HookWidget {
   Widget build(BuildContext context) {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
+    final double seVolume = useProvider(seVolumeProvider).state;
 
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -60,7 +63,11 @@ class CorrectAnswerModal extends HookWidget {
               ),
               child: ElevatedButton(
                 onPressed: () => {
-                  soundEffect.play('sounds/tap.mp3', isNotification: true),
+                  soundEffect.play(
+                    'sounds/tap.mp3',
+                    isNotification: true,
+                    volume: seVolume,
+                  ),
                   Navigator.pop(context),
                   Navigator.pop(context),
                 },

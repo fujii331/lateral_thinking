@@ -4,13 +4,15 @@ import '../models/warewolf.model.dart';
 final timerCancelFlgProvider = StateProvider((ref) => false);
 final wolfIdProvider = StateProvider((ref) => 0);
 final answeredPlayerIdProvider = StateProvider((ref) => 0);
+final alreadyPlayedWarewolfFlgProvider = StateProvider((ref) => false);
+final subTimeStopFlgProvider = StateProvider((ref) => false);
 
 final modeProvider = StateProvider((ref) => '謎解きの王様');
 final quizTitleProvider = StateProvider((ref) => '捨てる男');
 final numOfPlayersProvider = StateProvider((ref) => '3');
 final mainTimeProvider = StateProvider((ref) => '4');
 final questionTimeProvider = StateProvider((ref) => '15');
-final discussionTimeProvider = StateProvider((ref) => '2');
+final discussionTimeProvider = StateProvider((ref) => '3');
 final peaceVillageProvider = StateProvider((ref) => 'なし');
 
 final player1Provider = StateProvider(
@@ -69,11 +71,11 @@ final voteProvider = StateProvider(
 
 final votingDestinationProvider = StateProvider(
   (ref) => Vote(
-    player1: 0,
-    player2: 0,
-    player3: 0,
-    player4: 0,
-    player5: 0,
-    player6: 0,
+    player1: 1,
+    player2: 1,
+    player3: 1,
+    player4: 1,
+    player5: 1,
+    player6: 1,
   ),
 );

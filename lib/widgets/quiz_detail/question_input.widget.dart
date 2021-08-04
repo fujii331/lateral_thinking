@@ -4,6 +4,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import '../../providers/quiz.provider.dart';
+import '../../providers/common.provider.dart';
+
 import '../../models/quiz.model.dart';
 import '../../text.dart';
 
@@ -37,6 +39,7 @@ class QuestionInput extends HookWidget {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
     final String beforeWord = useProvider(beforeWordProvider).state;
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
+    final double seVolume = useProvider(seVolumeProvider).state;
 
     return Padding(
       padding: EdgeInsets.only(
@@ -99,8 +102,11 @@ class QuestionInput extends HookWidget {
                         askingQuestions,
                         selectedQuestion,
                       ),
-                      soundEffect.play('sounds/quiz_button.mp3',
-                          isNotification: true),
+                      soundEffect.play(
+                        'sounds/quiz_button.mp3',
+                        isNotification: true,
+                        volume: seVolume,
+                      ),
                     }
                   : {},
               child: Text(

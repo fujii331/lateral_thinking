@@ -4,9 +4,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../providers/quiz.provider.dart';
+import '../../../providers/quiz.provider.dart';
+import '../../../providers/common.provider.dart';
 
-import '../../text.dart';
+import '../../../text.dart';
 
 class ModeModal extends HookWidget {
   @override
@@ -14,6 +15,7 @@ class ModeModal extends HookWidget {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
     final bool helperModeFlg = useProvider(helperModeFlgProvider).state;
+    final double seVolume = useProvider(seVolumeProvider).state;
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -32,7 +34,11 @@ class ModeModal extends HookWidget {
               children: [
                 ElevatedButton(
                   onPressed: () async {
-                    soundEffect.play('sounds/tap.mp3', isNotification: true);
+                    soundEffect.play(
+                      'sounds/tap.mp3',
+                      isNotification: true,
+                      volume: seVolume,
+                    );
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     prefs.setBool('helperModeFlg', true);
@@ -58,7 +64,11 @@ class ModeModal extends HookWidget {
                 const SizedBox(width: 30),
                 ElevatedButton(
                   onPressed: () async {
-                    soundEffect.play('sounds/tap.mp3', isNotification: true);
+                    soundEffect.play(
+                      'sounds/tap.mp3',
+                      isNotification: true,
+                      volume: seVolume,
+                    );
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     prefs.setBool('helperModeFlg', false);
@@ -108,7 +118,11 @@ class ModeModal extends HookWidget {
             ),
             child: ElevatedButton(
               onPressed: () => {
-                soundEffect.play('sounds/cancel.mp3', isNotification: true),
+                soundEffect.play(
+                  'sounds/cancel.mp3',
+                  isNotification: true,
+                  volume: seVolume,
+                ),
                 Navigator.pop(context),
               },
               child: Text(

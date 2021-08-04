@@ -29,7 +29,6 @@ class LectureLast extends HookWidget {
               borderRadius: BorderRadius.circular(10),
               color: Color.fromRGBO(0, 0, 0, 0.6),
             ),
-            height: MediaQuery.of(context).size.height * .80,
             width: MediaQuery.of(context).size.width * .92,
             margin: EdgeInsets.all(5),
             child: Padding(

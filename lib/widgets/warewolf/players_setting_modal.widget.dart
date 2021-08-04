@@ -5,7 +5,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
 
 import '../../providers/warewolf.provider.dart';
-import '../../providers/quiz.provider.dart';
+import '../../providers/common.provider.dart';
+
 import '../../models/warewolf.model.dart';
 
 import '../../text.dart';
@@ -14,6 +15,8 @@ class PlayersSettingModal extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
+    final double seVolume = useProvider(seVolumeProvider).state;
+
     final int numOfPlayers =
         int.tryParse(useProvider(numOfPlayersProvider).state)!;
 
@@ -168,7 +171,11 @@ class PlayersSettingModal extends HookWidget {
             ),
             child: ElevatedButton(
               onPressed: () => {
-                soundEffect.play('sounds/tap.mp3', isNotification: true),
+                soundEffect.play(
+                  'sounds/tap.mp3',
+                  isNotification: true,
+                  volume: seVolume,
+                ),
                 context.read(player1Provider).state = Player(
                   id: 1,
                   name: player1.name,
@@ -218,7 +225,11 @@ class PlayersSettingModal extends HookWidget {
             ),
             child: ElevatedButton(
               onPressed: () => {
-                soundEffect.play('sounds/cancel.mp3', isNotification: true),
+                soundEffect.play(
+                  'sounds/cancel.mp3',
+                  isNotification: true,
+                  volume: seVolume,
+                ),
                 Navigator.pop(context),
               },
               child: Text(

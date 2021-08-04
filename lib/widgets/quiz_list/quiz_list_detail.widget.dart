@@ -8,7 +8,10 @@ import './quiz_item.widget.dart';
 import './quiz_item_ad.widget.dart';
 import './quiz_item_none.widget.dart';
 import './advertising_modal.widget.dart';
+
 import '../../providers/quiz.provider.dart';
+import '../../providers/common.provider.dart';
+
 import '../../data/quiz_data.dart';
 import '../../data/quiz_data_en.dart';
 import '../../text.dart';
@@ -30,6 +33,7 @@ class QuizListDetail extends HookWidget {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
     final quizData = enModeFlg ? QUIZ_DATA_EN : QUIZ_DATA;
+    final double seVolume = useProvider(seVolumeProvider).state;
 
     return Container(
       height: height > 610
@@ -76,8 +80,11 @@ class QuizListDetail extends HookWidget {
                     ),
                     child: InkWell(
                       onTap: () => {
-                        soundEffect.play('sounds/hint.mp3',
-                            isNotification: true),
+                        soundEffect.play(
+                          'sounds/hint.mp3',
+                          isNotification: true,
+                          volume: seVolume,
+                        ),
                         AwesomeDialog(
                           context: context,
                           dialogType: DialogType.QUESTION,

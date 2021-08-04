@@ -11,6 +11,7 @@ import '../widgets/hint/hint_modal.widget.dart';
 import '../providers/quiz.provider.dart';
 import '../widgets/hint/opened_sub_hint_modal.widget.dart';
 import '../widgets/hint/sub_hint_modal.widget.dart';
+import '../providers/common.provider.dart';
 
 import '../models/quiz.model.dart';
 import '../text.dart';
@@ -29,6 +30,7 @@ class QuizDetailTabScreen extends HookWidget {
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
     final bool subHintFlg = useProvider(subHintFlgProvider).state;
     final int hint = useProvider(hintProvider).state;
+    final double seVolume = useProvider(seVolumeProvider).state;
 
     final workHint = useState<int>(0);
 
@@ -51,8 +53,11 @@ class QuizDetailTabScreen extends HookWidget {
                   ? null
                   : subHintFlg
                       ? () {
-                          soundEffect.play('sounds/tap.mp3',
-                              isNotification: true);
+                          soundEffect.play(
+                            'sounds/tap.mp3',
+                            isNotification: true,
+                            volume: seVolume,
+                          );
                           AwesomeDialog(
                             context: context,
                             dialogType: DialogType.NO_HEADER,
@@ -67,8 +72,11 @@ class QuizDetailTabScreen extends HookWidget {
                           )..show();
                         }
                       : () {
-                          soundEffect.play('sounds/hint.mp3',
-                              isNotification: true);
+                          soundEffect.play(
+                            'sounds/hint.mp3',
+                            isNotification: true,
+                            volume: seVolume,
+                          );
                           AwesomeDialog(
                             context: context,
                             dialogType: DialogType.QUESTION,
@@ -91,7 +99,11 @@ class QuizDetailTabScreen extends HookWidget {
             onPressed: allAnswers.isEmpty
                 ? null
                 : () {
-                    soundEffect.play('sounds/hint.mp3', isNotification: true);
+                    soundEffect.play(
+                      'sounds/hint.mp3',
+                      isNotification: true,
+                      volume: seVolume,
+                    );
                     workHint.value = hint;
                     AwesomeDialog(
                       context: context,

@@ -3,21 +3,19 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
-import 'dart:math';
 
-import '../../providers/warewolf.provider.dart';
-import '../../providers/quiz.provider.dart';
-import '../../screens/warewolf_preparation.screen.dart';
+import '../../providers/common.provider.dart';
+
+import '../../screens/warewolf_preparation_first.screen.dart';
 
 class QuizSettingModal extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
+    final double seVolume = useProvider(seVolumeProvider).state;
+
     final sentenceController = useTextEditingController();
     final correctAnswerController = useTextEditingController();
-
-    final numOfPlayers = useProvider(numOfPlayersProvider).state;
-    final peaceVillage = useProvider(peaceVillageProvider).state;
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -53,7 +51,11 @@ class QuizSettingModal extends HookWidget {
               children: [
                 ElevatedButton(
                   onPressed: () => {
-                    soundEffect.play('sounds/cancel.mp3', isNotification: true),
+                    soundEffect.play(
+                      'sounds/cancel.mp3',
+                      isNotification: true,
+                      volume: seVolume,
+                    ),
                     Navigator.pop(context),
                   },
                   child: Text(
@@ -70,18 +72,17 @@ class QuizSettingModal extends HookWidget {
                 SizedBox(width: 30),
                 ElevatedButton(
                   onPressed: () {
-                    soundEffect.play('sounds/tap.mp3', isNotification: true);
-                    context.read(wolfIdProvider).state =
-                        peaceVillage == 'あり' && Random().nextInt(4) == 0
-                            ? 0
-                            : Random().nextInt(int.parse(numOfPlayers)) + 1;
+                    soundEffect.play(
+                      'sounds/tap.mp3',
+                      isNotification: true,
+                      volume: seVolume,
+                    );
 
                     Navigator.of(context).pushNamed(
-                      WarewolfPreparationScreen.routeName,
+                      WarewolfPreparationFirstScreen.routeName,
                       arguments: [
                         sentenceController.text,
                         correctAnswerController.text,
-                        1,
                       ],
                     );
                   },

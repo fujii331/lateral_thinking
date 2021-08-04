@@ -5,6 +5,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:app_review/app_review.dart';
 
 import '../providers/quiz.provider.dart';
+import '../../providers/common.provider.dart';
+
 import '../../text.dart';
 
 class ReplyModal extends HookWidget {
@@ -19,6 +21,8 @@ class ReplyModal extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
+    final double seVolume = useProvider(seVolumeProvider).state;
+
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
 
     return Padding(
@@ -49,7 +53,11 @@ class ReplyModal extends HookWidget {
             ),
             child: ElevatedButton(
               onPressed: () => {
-                soundEffect.play('sounds/cancel.mp3', isNotification: true),
+                soundEffect.play(
+                  'sounds/cancel.mp3',
+                  isNotification: true,
+                  volume: seVolume,
+                ),
                 Navigator.pop(context),
                 if (reviewNo == 21 || reviewNo == 33)
                   {
