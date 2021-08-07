@@ -31,6 +31,7 @@ class QuizDetailTabScreen extends HookWidget {
     final bool subHintFlg = useProvider(subHintFlgProvider).state;
     final int hint = useProvider(hintProvider).state;
     final double seVolume = useProvider(seVolumeProvider).state;
+    final bool displayInputFlg = useProvider(displayInputFlgProvider).state;
 
     final workHint = useState<int>(0);
 
@@ -38,6 +39,7 @@ class QuizDetailTabScreen extends HookWidget {
     final relatedWordController = useTextEditingController();
 
     return Scaffold(
+      backgroundColor: Color(0x55555555),
       appBar: AppBar(
         title: Text(quiz.title),
         centerTitle: true,
@@ -124,7 +126,7 @@ class QuizDetailTabScreen extends HookWidget {
           ),
         ],
       ),
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: displayInputFlg,
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.shifting,
         selectedItemColor: Colors.blue,

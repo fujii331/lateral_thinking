@@ -147,6 +147,10 @@ class QuizInputWords extends HookWidget {
         context.read(beforeWordProvider).state = enModeFlg
             ? EN_TEXT['subjectNotExist']!
             : JA_TEXT['subjectNotExist']!;
+      } else if (existFlg) {
+        context.read(beforeWordProvider).state = enModeFlg
+            ? 'Maybe you can ask in another subject.'
+            : '主語を変えれば質問できるかも？';
       } else {
         final randomNumber = new Random().nextInt(5);
         if (randomNumber == 0) {

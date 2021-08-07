@@ -318,6 +318,7 @@ class QuizAnswer extends HookWidget {
                                       selectedAnswer.value!.comment;
                                   enableAnswerButtonFlg.value = false;
                                   selectedAnswer.value = null;
+                                  context.read(playingQuizIdProvider).state = 0;
                                   context.read(beforeWordProvider).state =
                                       enModeFlg
                                           ? EN_TEXT['finishedAnswer']!

@@ -12,6 +12,7 @@ import '../widgets/background.widget.dart';
 import '../text.dart';
 import './lecture_tab.screen.dart';
 import '../widgets/settings/mode_modal.widget.dart';
+import '../widgets/settings/input_mode_modal.widget.dart';
 import '../providers/common.provider.dart';
 
 class QuizListScreen extends HookWidget {
@@ -86,6 +87,17 @@ class QuizListScreen extends HookWidget {
                         : null,
                     body: ModeModal(),
                   )..show();
+                } else if (result == 3) {
+                  AwesomeDialog(
+                    context: context,
+                    dialogType: DialogType.NO_HEADER,
+                    headerAnimationLoop: false,
+                    animType: AnimType.SCALE,
+                    width: MediaQuery.of(context).size.width * .86 > 650
+                        ? 650
+                        : null,
+                    body: InputModeModal(),
+                  )..show();
                 }
               },
               itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
@@ -100,6 +112,12 @@ class QuizListScreen extends HookWidget {
                   child: Text(enModeFlg
                       ? EN_TEXT['modeButton']!
                       : JA_TEXT['modeButton']!),
+                ),
+                PopupMenuItem<int>(
+                  value: 3,
+                  child: Text(enModeFlg
+                      ? EN_TEXT['inputModeButton']!
+                      : JA_TEXT['inputModeButton']!),
                 ),
               ],
             )

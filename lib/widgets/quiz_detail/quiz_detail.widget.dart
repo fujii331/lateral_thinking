@@ -33,12 +33,22 @@ class QuizDetail extends HookWidget {
     final String reply = useProvider(replyProvider).state;
 
     final bool displayReplyFlg = useProvider(displayReplyFlgProvider).state;
+    final bool displayInputFlg = useProvider(displayInputFlgProvider).state;
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Stack(
         children: <Widget>[
-          background(),
+          displayInputFlg
+              ? Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/back_grey.png'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                )
+              : background(),
           Center(
             child: SingleChildScrollView(
               child: Padding(

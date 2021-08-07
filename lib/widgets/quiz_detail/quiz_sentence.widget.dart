@@ -28,7 +28,7 @@ class QuizSentence extends StatelessWidget {
               color: Colors.white54,
               blurRadius: 12.0,
               spreadRadius: 0.1,
-              offset: Offset(5, 5))
+              offset: Offset(4, 4))
         ],
       ),
       child: SingleChildScrollView(

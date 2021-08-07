@@ -126,6 +126,10 @@ class TitleScreen extends HookWidget {
     context.read(helperModeFlgProvider).state =
         prefs.getBool('helperModeFlg') ?? false;
 
+    // 入力時設定
+    context.read(displayInputFlgProvider).state =
+        prefs.getBool('displayInputFlg') ?? false;
+
     // 正解済みの問題を設定
     if (prefs.getStringList('alreadyAnsweredIds') == null) {
       if (alreadyPlayeFlg) {
@@ -228,6 +232,7 @@ class TitleScreen extends HookWidget {
                             volume: seVolume,
                           );
                           context.read(enModeFlgProvider).state = !enModeFlg;
+                          context.read(playingQuizIdProvider).state = 0;
                         },
                         label: Text(
                           enModeFlg ? 'EN' : 'JP',

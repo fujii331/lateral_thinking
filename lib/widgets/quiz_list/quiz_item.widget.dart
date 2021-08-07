@@ -16,14 +16,17 @@ class QuizItem extends HookWidget {
   QuizItem(this.quiz);
 
   void toQuizDetail(BuildContext ctx, AudioCache soundEffect) {
-    ctx.read(remainingQuestionsProvider).state = quiz.questions;
-    ctx.read(askedQuestionsProvider).state = [];
-    ctx.read(allAnswersProvider).state = quiz.answers;
-    ctx.read(executedAnswerIdsProvider).state = [];
-    ctx.read(correctAnswerIdsProvider).state = quiz.correctAnswerIds;
-    ctx.read(hintProvider).state = 0;
-    ctx.read(subHintFlgProvider).state = false;
-    ctx.read(selectedQuestionProvider).state = dummyQuestion;
+    if (ctx.read(playingQuizIdProvider).state != quiz.id) {
+      ctx.read(remainingQuestionsProvider).state = quiz.questions;
+      ctx.read(askedQuestionsProvider).state = [];
+      ctx.read(allAnswersProvider).state = quiz.answers;
+      ctx.read(executedAnswerIdsProvider).state = [];
+      ctx.read(correctAnswerIdsProvider).state = quiz.correctAnswerIds;
+      ctx.read(hintProvider).state = 0;
+      ctx.read(subHintFlgProvider).state = false;
+      ctx.read(selectedQuestionProvider).state = dummyQuestion;
+      ctx.read(playingQuizIdProvider).state = quiz.id;
+    }
 
     ctx.read(replyProvider).state = '';
     ctx.read(beforeWordProvider).state = '';
