@@ -112,13 +112,13 @@ class ModeModal extends HookWidget {
               ),
             ),
           ),
-          helperModeFlg
+          !helperModeFlg
               ? Container(
                   height: 30,
                   width: double.infinity,
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Text(
-                    enModeFlg ? '※For beginners' : '※初心者向け',
+                    enModeFlg ? '※Difficult mode' : '※難易度高め',
                     textAlign: TextAlign.start,
                     style: TextStyle(
                       fontSize: 16.0,

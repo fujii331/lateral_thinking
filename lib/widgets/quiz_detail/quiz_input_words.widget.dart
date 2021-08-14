@@ -50,7 +50,7 @@ class QuizInputWords extends HookWidget {
 
         return;
       }
-      if (hint == 0 && quiz.id > 54) {
+      if (hint == 0 && quiz.id > 60) {
         FirebaseDatabase.instance
             .reference()
             .child('input_words/' +
@@ -61,7 +61,7 @@ class QuizInputWords extends HookWidget {
                 enteredRelatedWord)
             .push()
             .set({
-          'helperModeFlg': context.read(helperModeFlgProvider).state,
+          'subHintFlg': context.read(subHintFlgProvider).state,
         });
       }
 
@@ -91,25 +91,23 @@ class QuizInputWords extends HookWidget {
     bool enModeFlg,
   ) {
     bool existFlg = false;
-    bool exsistSubjectFlg = true;
+    bool exsistSubjectFlg = false;
 
     // 主語リストに存在するか判定
     for (String targetSubject in allSubjects) {
-      existFlg = targetSubject == subject ? true : false;
-      if (existFlg) {
+      if (targetSubject == subject) {
+        exsistSubjectFlg = true;
         break;
       }
     }
     // 主語リストに存在した場合、関連語リストに存在するか判定
-    if (existFlg) {
+    if (exsistSubjectFlg) {
       for (String targetRelatedWords in allRelatedWords) {
-        existFlg = targetRelatedWords == relatedWord ? true : false;
-        if (existFlg) {
+        if (targetRelatedWords == relatedWord) {
+          existFlg = true;
           break;
         }
       }
-    } else {
-      exsistSubjectFlg = false;
     }
 
     if (enModeFlg) {
@@ -126,7 +124,6 @@ class QuizInputWords extends HookWidget {
           }
         });
 
-        print(createdQuestions);
         context.read(askingQuestionsProvider).state = createdQuestions;
       }
     } else {
@@ -148,17 +145,45 @@ class QuizInputWords extends HookWidget {
             ? EN_TEXT['subjectNotExist']!
             : JA_TEXT['subjectNotExist']!;
       } else if (existFlg) {
-        context.read(beforeWordProvider).state = enModeFlg
-            ? 'Maybe you can ask in another subject.'
-            : '主語を変えれば質問できるかも？';
-      } else {
-        final randomNumber = new Random().nextInt(5);
-        if (randomNumber == 0) {
-          context.read(beforeWordProvider).state =
-              enModeFlg ? EN_TEXT['seekHint']! : JA_TEXT['seekHint']!;
+        if (remainingQuestions
+            .where((question) =>
+                question.asking.contains(relatedWord) &&
+                !question.asking.startsWith(relatedWord))
+            .isEmpty) {
+          context.read(beforeWordProvider).state = enModeFlg
+              ? "You can't ask in that related word."
+              : 'その関連語ではもう質問できません。';
         } else {
-          context.read(beforeWordProvider).state =
-              enModeFlg ? EN_TEXT['noQuestions']! : JA_TEXT['noQuestions']!;
+          context.read(beforeWordProvider).state = enModeFlg
+              ? 'You can ask by changing subject.'
+              : '主語だけ変えれば質問できそう！';
+        }
+      } else {
+        if (enModeFlg) {
+          final randomNumber = new Random().nextInt(5);
+          if (randomNumber == 0) {
+            context.read(beforeWordProvider).state = EN_TEXT['seekHint']!;
+          } else {
+            context.read(beforeWordProvider).state = EN_TEXT['noQuestions']!;
+          }
+        } else {
+          final enableQuestionsCount = remainingQuestions
+              .where((question) => question.asking.startsWith(subject))
+              .toList()
+              .length;
+
+          if (enableQuestionsCount == 0) {
+            context.read(beforeWordProvider).state =
+                JA_TEXT['subjectNotExist']!;
+          } else {
+            final randomNumber = new Random().nextInt(2);
+            if (randomNumber == 0) {
+              context.read(beforeWordProvider).state = JA_TEXT['noQuestions']!;
+            } else {
+              context.read(beforeWordProvider).state =
+                  'その主語を使う質問は' + enableQuestionsCount.toString() + '個あります。';
+            }
+          }
         }
       }
     } else {

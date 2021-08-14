@@ -124,7 +124,7 @@ class TitleScreen extends HookWidget {
 
     // お助けモードの設定
     context.read(helperModeFlgProvider).state =
-        prefs.getBool('helperModeFlg') ?? false;
+        prefs.getBool('helperModeFlg') ?? true;
 
     // 入力時設定
     context.read(displayInputFlgProvider).state =

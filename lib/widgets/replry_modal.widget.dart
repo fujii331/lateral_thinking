@@ -59,7 +59,7 @@ class ReplyModal extends HookWidget {
                   volume: seVolume,
                 ),
                 Navigator.pop(context),
-                if (reviewNo == 21 || reviewNo == 33)
+                if (reviewNo == 33 || reviewNo == 63)
                   {
                     // 別の方法
                     // LaunchReview.launch(

@@ -43,6 +43,8 @@ class QuizListScreen extends HookWidget {
       enModeFlg ? EN_TEXT['listPageTitle10']! : JA_TEXT['listPageTitle10']!,
       enModeFlg ? EN_TEXT['listPageTitle11']! : JA_TEXT['listPageTitle11']!,
       enModeFlg ? EN_TEXT['listPageTitle12']! : JA_TEXT['listPageTitle12']!,
+      enModeFlg ? 'Secret passage' : '秘密の通路',
+      enModeFlg ? "Children's room" : '子供のお部屋',
     ];
 
     return WillPopScope(
