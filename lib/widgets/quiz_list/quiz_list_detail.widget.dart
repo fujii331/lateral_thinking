@@ -65,7 +65,7 @@ class QuizListDetail extends HookWidget {
           ),
           screenNo.value + 1 == numOfPages && openingNumber != quizData.length
               ? Opacity(
-                  opacity: 0.8,
+                  opacity: 0.85,
                   child: Container(
                     margin: EdgeInsets.only(
                       top: openingNumber % 6 == 0

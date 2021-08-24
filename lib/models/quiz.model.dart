@@ -37,6 +37,7 @@ class Quiz {
   final int hintDisplayQuestionId;
   final List<int> correctAnswerQuestionIds;
   final List<String> subHints;
+  final int difficulty;
 
   const Quiz({
     required this.id,
@@ -51,5 +52,6 @@ class Quiz {
     required this.hintDisplayQuestionId,
     required this.correctAnswerQuestionIds,
     required this.subHints,
+    required this.difficulty,
   });
 }

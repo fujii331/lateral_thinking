@@ -17,6 +17,7 @@ class QuestionInput extends HookWidget {
 
   void _executeQuestion(BuildContext context, List<Question> askingQuestions,
       Question selectedQuestion) {
+    context.read(questionCountProvider).state++;
     context.read(replyProvider).state = selectedQuestion.reply;
     context.read(displayReplyFlgProvider).state = true;
     context.read(askedQuestionsProvider).state.add(selectedQuestion);

@@ -43,7 +43,8 @@ class QuizDetailTabScreen extends HookWidget {
       appBar: AppBar(
         title: Text(quiz.title),
         centerTitle: true,
-        backgroundColor: Colors.blueGrey[900]?.withOpacity(0.9),
+        backgroundColor: Colors.blueGrey.shade800.withOpacity(0.9),
+        // backgroundColor: Colors.green.shade600.withOpacity(0.2),
         actions: <Widget>[
           IconButton(
               iconSize: 22,

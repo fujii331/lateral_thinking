@@ -50,6 +50,17 @@ class LectureLast extends HookWidget {
                     ),
                     Text(
                       enModeFlg
+                          ? EN_TEXT['lectureLastAttention']!
+                          : JA_TEXT['lectureLastAttention']!,
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.yellow,
+                        fontFamily: 'NotoSerifJP',
+                        height: 1.7,
+                      ),
+                    ),
+                    Text(
+                      enModeFlg
                           ? EN_TEXT['lectureLast2']!
                           : JA_TEXT['lectureLast2']!,
                       style: TextStyle(

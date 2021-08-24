@@ -7,6 +7,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import '../widgets/quiz_list/quiz_list_detail.widget.dart';
+// import '../widgets/quiz_list/analytics_list_modal.widget.dart';
 import '../providers/quiz.provider.dart';
 import '../widgets/background.widget.dart';
 import '../text.dart';
@@ -100,6 +101,17 @@ class QuizListScreen extends HookWidget {
                         : null,
                     body: InputModeModal(),
                   )..show();
+                  // } else if (result == 4) {
+                  //   AwesomeDialog(
+                  //     context: context,
+                  //     dialogType: DialogType.NO_HEADER,
+                  //     headerAnimationLoop: false,
+                  //     animType: AnimType.SCALE,
+                  //     width: MediaQuery.of(context).size.width * .86 > 650
+                  //         ? 650
+                  //         : null,
+                  //     body: AnalyticsListModal(),
+                  //   )..show();
                 }
               },
               itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
@@ -121,6 +133,10 @@ class QuizListScreen extends HookWidget {
                       ? EN_TEXT['inputModeButton']!
                       : JA_TEXT['inputModeButton']!),
                 ),
+                // PopupMenuItem<int>(
+                //   value: 4,
+                //   child: Text('統計情報'),
+                // ),
               ],
             )
           ],

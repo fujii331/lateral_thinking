@@ -18,7 +18,6 @@ import '../../data/quiz_data.dart';
 import '../widgets/background.widget.dart';
 import '../screens/warewolf_preparation_first.screen.dart';
 import '../screens/warewolf_lecture.screen.dart';
-import '../screens/title.screen.dart';
 
 class WarewolfSettingScreen extends HookWidget {
   static const routeName = '/warewolf-setting';

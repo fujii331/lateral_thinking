@@ -132,16 +132,21 @@ class TitleScreen extends HookWidget {
 
     // 正解済みの問題を設定
     if (prefs.getStringList('alreadyAnsweredIds') == null) {
-      if (alreadyPlayeFlg) {
-        // openingNumberの数だけループして詰める
-        List<String> answerIds = [];
-        for (var i = 1; i <= prefs.getInt('openingNumber')!; i++) {
-          answerIds.add(i.toString());
-        }
-        prefs.setStringList('alreadyAnsweredIds', answerIds);
-      } else {
-        prefs.setStringList('alreadyAnsweredIds', ['1']);
+      prefs.setStringList('alreadyAnsweredIds', []);
+      prefs.setBool('temporaryQuizIdUpdateFlg', true); // 9月ぐらいに要削除
+    } else if (prefs.getBool('temporaryQuizIdUpdateFlg') == null) {
+      // 9月ぐらいに要削除
+      // openingNumberの数だけループして詰める
+      if (prefs.getInt('openingNumber') == null) {
+        prefs.setInt('openingNumber', 9);
       }
+      List<String> answerIds = [];
+      for (var i = 1; i <= prefs.getInt('openingNumber')!; i++) {
+        answerIds.add(i.toString());
+      }
+      prefs.setStringList('alreadyAnsweredIds', answerIds);
+
+      prefs.setBool('temporaryQuizIdUpdateFlg', true);
     }
     context.read(alreadyAnsweredIdsProvider).state =
         prefs.getStringList('alreadyAnsweredIds')!;

@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 import 'dart:io';
 
@@ -13,6 +14,7 @@ import '../../providers/quiz.provider.dart';
 import '../../providers/common.provider.dart';
 
 import '../../models/quiz.model.dart';
+import '../../models/analytics.model.dart';
 import 'correct_answer_modal.widget.dart';
 import '../../advertising.dart';
 import './answering_modal.widget.dart';
@@ -284,17 +286,23 @@ class QuizAnswer extends HookWidget {
                                     nowLoading,
                                   );
 
-                                  SharedPreferences prefs =
-                                      await SharedPreferences.getInstance();
-                                  if (!alreadyAnsweredIds
-                                      .contains(quizId.toString())) {
+                                  final bool clearedFirst = !alreadyAnsweredIds
+                                      .contains(quizId.toString());
+
+                                  if (clearedFirst && !enModeFlg) {
                                     // 正解した問題を登録
+                                    SharedPreferences prefs =
+                                        await SharedPreferences.getInstance();
+
                                     context
                                         .read(alreadyAnsweredIdsProvider)
                                         .state
                                         .add(quizId.toString());
-                                    prefs.setStringList('alreadyAnsweredIds',
-                                        alreadyAnsweredIds);
+                                    prefs.setStringList(
+                                        'alreadyAnsweredIds',
+                                        context
+                                            .read(alreadyAnsweredIdsProvider)
+                                            .state);
                                   }
 
                                   soundEffect.play(
@@ -307,9 +315,120 @@ class QuizAnswer extends HookWidget {
                                     myInterstitial.show();
                                   }
 
+                                  Analytics? data;
+
+                                  if (!enModeFlg) {
+                                    final int hint =
+                                        context.read(hintProvider).state;
+
+                                    final int relatedWordCountValue = context
+                                        .read(relatedWordCountProvider)
+                                        .state;
+
+                                    final int questionCountValue = context
+                                        .read(questionCountProvider)
+                                        .state;
+
+                                    final bool subHintFlg =
+                                        context.read(subHintFlgProvider).state;
+
+                                    final bool noHintFlg =
+                                        hint == 0 && !subHintFlg;
+
+                                    int hint1Count = hint > 0 ? 1 : 0;
+                                    int hint2Count = hint > 1 ? 1 : 0;
+                                    int hint3Count = hint > 2 ? 1 : 0;
+                                    int subHintCount = subHintFlg ? 1 : 0;
+                                    int relatedWordCount =
+                                        noHintFlg ? relatedWordCountValue : 0;
+                                    int questionCount =
+                                        noHintFlg ? questionCountValue : 0;
+                                    int userCount = 1;
+                                    int noHintCount = noHintFlg ? 1 : 0;
+
+                                    DatabaseReference firebaseInstance =
+                                        FirebaseDatabase.instance
+                                            .reference()
+                                            .child('analytics/' +
+                                                quizId.toString());
+
+                                    await firebaseInstance
+                                        .get()
+                                        .then((DataSnapshot? snapshot) {
+                                      if (snapshot != null) {
+                                        final firebaseData = snapshot.value;
+
+                                        hint1Count +=
+                                            firebaseData['hint1Count'] as int;
+
+                                        hint2Count +=
+                                            firebaseData['hint2Count'] as int;
+                                        hint3Count +=
+                                            firebaseData['hint3Count'] as int;
+                                        subHintCount +=
+                                            firebaseData['subHintCount'] as int;
+
+                                        relatedWordCount +=
+                                            firebaseData['relatedWordCount']
+                                                as int;
+                                        questionCount +=
+                                            firebaseData['questionCount']
+                                                as int;
+
+                                        userCount +=
+                                            firebaseData['userCount'] as int;
+
+                                        noHintCount +=
+                                            firebaseData['noHintCount'] as int;
+
+                                        data = Analytics(
+                                          hint1:
+                                              (100 * (hint1Count / userCount))
+                                                  .round(),
+                                          hint2:
+                                              (100 * (hint2Count / userCount))
+                                                  .round(),
+                                          noHint:
+                                              (100 * (noHintCount / userCount))
+                                                  .round(),
+                                          subHint:
+                                              (100 * (subHintCount / userCount))
+                                                  .round(),
+                                          relatedWordCountAll: noHintCount == 0
+                                              ? 0
+                                              : (relatedWordCount / noHintCount)
+                                                  .round(),
+                                          relatedWordCountYou:
+                                              relatedWordCountValue,
+                                          questionCountAll: noHintCount == 0
+                                              ? 0
+                                              : (questionCount / noHintCount)
+                                                  .round(),
+                                          questionCountYou: questionCountValue,
+                                        );
+
+                                        if (clearedFirst) {
+                                          firebaseInstance.set({
+                                            'hint1Count': hint1Count,
+                                            'hint2Count': hint2Count,
+                                            'hint3Count': hint3Count,
+                                            'subHintCount': subHintCount,
+                                            'relatedWordCount':
+                                                relatedWordCount,
+                                            'questionCount': questionCount,
+                                            'userCount': userCount,
+                                            'noHintCount': noHintCount,
+                                          });
+                                        }
+                                      }
+                                    }).onError((error, stackTrace) =>
+                                            // 何もしない
+                                            null);
+                                  }
+
                                   // Navigator.pop(context)を実行させる前に坊やくんの表示を完了させるため
                                   await new Future.delayed(
-                                    new Duration(seconds: 3),
+                                    new Duration(seconds: 2),
                                   );
 
                                   Navigator.pop(context);
@@ -335,7 +454,10 @@ class QuizAnswer extends HookWidget {
                                     context: context,
                                     barrierDismissible: false,
                                     builder: (BuildContext context) {
-                                      return CorrectAnswerModal(correctComment);
+                                      return CorrectAnswerModal(
+                                        correctComment,
+                                        data,
+                                      );
                                     },
                                   );
                                 }

@@ -50,7 +50,11 @@ class QuizInputWords extends HookWidget {
 
         return;
       }
-      if (hint == 0 && quiz.id > 60) {
+
+      if (relatedWordData.value != enteredRelatedWord) {
+        context.read(relatedWordCountProvider).state++;
+      }
+      if (hint == 0 && quiz.id > 66) {
         FirebaseDatabase.instance
             .reference()
             .child('input_words/' +
