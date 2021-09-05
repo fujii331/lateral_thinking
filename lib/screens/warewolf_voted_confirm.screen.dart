@@ -18,6 +18,55 @@ import '../widgets/warewolf/judging_modal.widget.dart';
 class WarewolfVotedConfirmScreen extends HookWidget {
   static const routeName = '/warewolf-voted-confirm';
 
+  void _createInterstitialAd(
+    ValueNotifier<InterstitialAd?> myInterstitial,
+    ValueNotifier<int> numInterstitialLoadAttempts,
+  ) {
+    InterstitialAd.load(
+      adUnitId: Platform.isAndroid
+          ? ANDROID_WAREWOLF_INTERSTITIAL_ADVID
+          : IOS_WAREWOLF_INTERSTITIAL_ADVID,
+      // ? TEST_ANDROID_INTERSTITIAL_ADVID
+      // : TEST_IOS_INTERSTITIAL_ADVID, //InterstitialAd.testAdUnitId
+      request: AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (InterstitialAd ad) {
+          myInterstitial.value = ad;
+          numInterstitialLoadAttempts.value = 0;
+          myInterstitial.value!.setImmersiveMode(true);
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          numInterstitialLoadAttempts.value += 1;
+          myInterstitial.value = null;
+          if (numInterstitialLoadAttempts.value <= 3) {
+            _createInterstitialAd(
+              myInterstitial,
+              numInterstitialLoadAttempts,
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  void _showInterstitialAd(
+    InterstitialAd? myInterstitialValue,
+  ) {
+    if (myInterstitialValue == null) {
+      return;
+    }
+    myInterstitialValue.fullScreenContentCallback = FullScreenContentCallback(
+      onAdDismissedFullScreenContent: (InterstitialAd ad) {
+        ad.dispose();
+      },
+      onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
+        ad.dispose();
+      },
+    );
+    myInterstitialValue.show();
+    myInterstitialValue = null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final int wolfId = useProvider(wolfIdProvider).state;
@@ -36,7 +85,9 @@ class WarewolfVotedConfirmScreen extends HookWidget {
     final player5 = useProvider(player5Provider).state;
     final player6 = useProvider(player6Provider).state;
 
-    final loaded = useState(false);
+    final numInterstitialLoadAttempts = useState(0);
+
+    final ValueNotifier<InterstitialAd?> myInterstitial = useState(null);
 
     int mostVotedPoint = vote.player1;
     List<Player> mostVotedList = [player1];
@@ -97,54 +148,6 @@ class WarewolfVotedConfirmScreen extends HookWidget {
 
     final confirmFlg = useState<bool>(true);
 
-    final InterstitialAd myInterstitial = InterstitialAd(
-      adUnitId: Platform.isAndroid
-          ? ANDROID_WAREWOLF_INTERSTITIAL_ADVID
-          : IOS_WAREWOLF_INTERSTITIAL_ADVID,
-      // ? TEST_ANDROID_INTERSTITIAL_ADVID
-      // : TEST_IOS_INTERSTITIAL_ADVID,
-      request: AdRequest(),
-      listener: AdListener(
-        onAdLoaded: (Ad ad) => {
-          loaded.value = true,
-          // print('インタースティシャル広告がロードされました。'),
-        },
-        onAdFailedToLoad: (Ad ad, LoadAdError error) => {
-          ad.dispose(),
-          // print('インタースティシャル広告のロードに失敗しました。: $error'),
-        },
-        // onAdOpened: (Ad ad) => print('インタースティシャル広告が開かれました。'),
-        onAdClosed: (Ad ad) async {
-          ad.dispose();
-          context.read(bgmProvider).state = await soundEffect.loop(
-            'sounds/bgm.mp3',
-            volume: bgmVolume,
-            isNotification: true,
-          );
-
-          soundEffect.play(
-            'sounds/congraturation.mp3',
-            isNotification: true,
-            volume: seVolume,
-          );
-
-          // 結果画面に移行
-          Navigator.of(context).pushNamed(
-            WarewolfResultScreen.routeName,
-            arguments: [
-              mostVotedList,
-              wolfVotedFlg,
-              sameVoteFlg,
-            ],
-          );
-          // print('インタースティシャル広告が閉じられました。'),
-        },
-        // onApplicationExit: (Ad ad) => {
-        //   print('ユーザーがアプリを離れました。'),
-        // },
-      ),
-    );
-
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -169,7 +172,10 @@ class WarewolfVotedConfirmScreen extends HookWidget {
                       child: ElevatedButton(
                         onPressed: confirmFlg.value
                             ? () async {
-                                myInterstitial.load();
+                                _createInterstitialAd(
+                                  myInterstitial,
+                                  numInterstitialLoadAttempts,
+                                );
                                 soundEffect.play(
                                   'sounds/tap.mp3',
                                   isNotification: true,
@@ -342,32 +348,31 @@ class WarewolfVotedConfirmScreen extends HookWidget {
                                   );
                                 }
 
-                                if (loaded.value) {
-                                  myInterstitial.show();
-                                } else {
-                                  context.read(bgmProvider).state =
-                                      await soundEffect.loop(
-                                    'sounds/bgm.mp3',
-                                    volume: bgmVolume,
-                                    isNotification: true,
-                                  );
-
-                                  soundEffect.play(
-                                    'sounds/congraturation.mp3',
-                                    isNotification: true,
-                                    volume: seVolume,
-                                  );
-
-                                  // 結果画面に移行
-                                  Navigator.of(context).pushNamed(
-                                    WarewolfResultScreen.routeName,
-                                    arguments: [
-                                      mostVotedList,
-                                      wolfVotedFlg,
-                                      sameVoteFlg,
-                                    ],
-                                  );
+                                if (myInterstitial.value != null) {
+                                  _showInterstitialAd(myInterstitial.value);
                                 }
+                                context.read(bgmProvider).state =
+                                    await soundEffect.loop(
+                                  'sounds/bgm.mp3',
+                                  volume: bgmVolume,
+                                  isNotification: true,
+                                );
+
+                                soundEffect.play(
+                                  'sounds/congraturation.mp3',
+                                  isNotification: true,
+                                  volume: seVolume,
+                                );
+
+                                // 結果画面に移行
+                                Navigator.of(context).pushNamed(
+                                  WarewolfResultScreen.routeName,
+                                  arguments: [
+                                    mostVotedList,
+                                    wolfVotedFlg,
+                                    sameVoteFlg,
+                                  ],
+                                );
                               }
                             : () {},
                         child: Text(

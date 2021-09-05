@@ -115,9 +115,9 @@ class AnalyticsModal extends HookWidget {
               top: 12,
             ),
             child: Text(
-              '※「みんな」はヒント未使用者の平均',
+              '※「みんな」はヒント未使用者の平均\n※データは過去の特定集計期間のもの',
               style: TextStyle(
-                fontSize: 13.5,
+                fontSize: 13,
                 fontFamily: 'SawarabiGothic',
                 color: Colors.grey.shade800,
               ),

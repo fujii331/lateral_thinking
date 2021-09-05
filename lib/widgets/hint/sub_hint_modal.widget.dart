@@ -27,12 +27,51 @@ class SubHintModal extends HookWidget {
     this.quizId,
   );
 
-  Future loading(BuildContext context, ValueNotifier loaded,
-      RewardedAd rewardAd, ValueNotifier nowLoading) async {
-    rewardAd.load();
+  static final AdRequest request = AdRequest();
+
+  void _createRewardedAd(
+    ValueNotifier<RewardedAd?> rewardedAd,
+    int _numRewardedLoadAttempts,
+  ) {
+    RewardedAd.load(
+      adUnitId: Platform.isAndroid
+          ? ANDROID_SUB_HINT_REWQRD_ADVID
+          : IOS_SUB_HINT_REWQRD_ADVID,
+      // ? TEST_ANDROID_REWQRD_ADVID
+      // : TEST_IOS_REWQRD_ADVID, //RewardedAd.testAdUnitId,
+      request: request,
+      rewardedAdLoadCallback: RewardedAdLoadCallback(
+        onAdLoaded: (RewardedAd ad) {
+          rewardedAd.value = ad;
+          _numRewardedLoadAttempts = 0;
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          rewardedAd.value = null;
+          _numRewardedLoadAttempts += 1;
+          if (_numRewardedLoadAttempts <= 3) {
+            _createRewardedAd(
+              rewardedAd,
+              _numRewardedLoadAttempts,
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  Future loading(
+    BuildContext context,
+    ValueNotifier<RewardedAd?> rewardedAd,
+    ValueNotifier nowLoading,
+  ) async {
+    int _numRewardedLoadAttempts = 0;
     nowLoading.value = true;
+    _createRewardedAd(
+      rewardedAd,
+      _numRewardedLoadAttempts,
+    );
     for (int i = 0; i < 15; i++) {
-      if (loaded.value) {
+      if (rewardedAd.value != null) {
         break;
       }
       await new Future.delayed(new Duration(seconds: 1));
@@ -40,73 +79,66 @@ class SubHintModal extends HookWidget {
     nowLoading.value = false;
   }
 
+  void afterGotReward(
+    BuildContext context,
+  ) {
+    context.read(subHintFlgProvider).state = true;
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.NO_HEADER,
+      headerAnimationLoop: false,
+      animType: AnimType.SCALE,
+      width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
+      body: OpenedSubHintModal(
+        subHints,
+      ),
+    )..show();
+  }
+
+  void _showRewardedAd(
+    BuildContext context,
+    RewardedAd? rewardAdValue,
+    bool enModeFlg,
+  ) {
+    if (rewardAdValue == null) {
+      return;
+    }
+    rewardAdValue.fullScreenContentCallback = FullScreenContentCallback(
+      onAdDismissedFullScreenContent: (RewardedAd ad) {
+        ad.dispose();
+      },
+      onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
+        ad.dispose();
+        Navigator.pop(context);
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.ERROR,
+          headerAnimationLoop: false,
+          animType: AnimType.SCALE,
+          width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
+          body: ReplyModal(
+            enModeFlg ? EN_TEXT['notGetSubHint']! : JA_TEXT['notGetSubHint']!,
+            0,
+          ),
+        )..show();
+      },
+    );
+    rewardAdValue.setImmersiveMode(true);
+    rewardAdValue.show(onUserEarnedReward: (RewardedAd ad, RewardItem reward) {
+      Navigator.pop(context);
+      afterGotReward(context);
+    });
+    rewardAdValue = null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
-    final loaded = useState(false);
     final nowLoading = useState(false);
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
     final double seVolume = useProvider(seVolumeProvider).state;
 
-    void afterGotReward() => {
-          context.read(subHintFlgProvider).state = true,
-          AwesomeDialog(
-            context: context,
-            dialogType: DialogType.NO_HEADER,
-            headerAnimationLoop: false,
-            animType: AnimType.SCALE,
-            width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
-            body: OpenedSubHintModal(
-              subHints,
-            ),
-          )..show(),
-        };
-
-    final rewardAd = RewardedAd(
-      adUnitId: Platform.isAndroid
-          ? ANDROID_SUB_HINT_REWQRD_ADVID
-          : IOS_SUB_HINT_REWQRD_ADVID,
-      // ? TEST_ANDROID_REWQRD_ADVID
-      // : TEST_IOS_REWQRD_ADVID,
-      request: AdRequest(),
-      listener: AdListener(
-        onAdLoaded: (Ad ad) {
-          loaded.value = true;
-          // print('リワード広告を読み込みました！');
-        },
-        onAdFailedToLoad: (Ad ad, LoadAdError error) {
-          ad.dispose();
-          // print('リワード広告の読み込みに失敗しました。: $error');
-        },
-        onAdOpened: (Ad ad) {
-          // print('リワード広告が開かれました。');
-        },
-        onAdClosed: (Ad ad) => {
-          ad.dispose(),
-          // print('リワード広告が閉じられました。'),
-          Navigator.pop(context),
-          Navigator.pop(context),
-          AwesomeDialog(
-            context: context,
-            dialogType: DialogType.ERROR,
-            headerAnimationLoop: false,
-            animType: AnimType.SCALE,
-            width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
-            body: ReplyModal(
-              enModeFlg ? EN_TEXT['notGetSubHint']! : JA_TEXT['notGetSubHint']!,
-              0,
-            ),
-          )..show(),
-        },
-        // onApplicationExit: (Ad ad) => print('ユーザーがアプリを離れました。'),
-        onRewardedAdUserEarnedReward: (RewardedAd ad, RewardItem reward) => {
-          // print('報酬を獲得しました: $reward'),
-          Navigator.pop(context),
-          Navigator.pop(context),
-          afterGotReward(),
-        },
-      ),
-    );
+    final ValueNotifier<RewardedAd?> rewardedAd = useState(null);
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -213,7 +245,7 @@ class SubHintModal extends HookWidget {
                             volume: seVolume,
                           ),
                           Navigator.pop(context),
-                          afterGotReward(),
+                          afterGotReward(context),
                         }
                       : {
                           soundEffect.play(
@@ -228,10 +260,19 @@ class SubHintModal extends HookWidget {
                               return AdLoadingModal();
                             },
                           ),
-                          await loading(context, loaded, rewardAd, nowLoading),
-                          if (loaded.value)
+                          await loading(
+                            context,
+                            rewardedAd,
+                            nowLoading,
+                          ),
+                          if (rewardedAd.value != null)
                             {
-                              rewardAd.show(),
+                              _showRewardedAd(
+                                context,
+                                rewardedAd.value,
+                                enModeFlg,
+                              ),
+                              Navigator.pop(context),
                             }
                           else
                             {

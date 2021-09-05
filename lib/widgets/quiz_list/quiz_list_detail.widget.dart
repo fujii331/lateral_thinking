@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import './quiz_item.widget.dart';
 import './quiz_item_ad.widget.dart';
 import './quiz_item_none.widget.dart';
+import './quiz_item_info.widget.dart';
 import './advertising_modal.widget.dart';
 
 import '../../providers/quiz.provider.dart';
@@ -55,7 +56,9 @@ class QuizListDetail extends HookWidget {
                   : openingNumber < quizData.length
                       ? QuizItemAd(quizData[quizNumber])
                       : quizNumber == quizData.length
-                          ? QuizItemNone(openingNumber + 1)
+                          ? enModeFlg
+                              ? QuizItemNone(openingNumber + 1)
+                              : QuizItemInfo()
                           : Container();
             },
             itemCount:

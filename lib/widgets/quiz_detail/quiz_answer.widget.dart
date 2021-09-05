@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_database/firebase_database.dart';
+// import 'package:firebase_database/firebase_database.dart';
 
 import 'dart:io';
 
@@ -15,6 +15,7 @@ import '../../providers/common.provider.dart';
 
 import '../../models/quiz.model.dart';
 import '../../models/analytics.model.dart';
+import '../../data/analytics_data.dart';
 import 'correct_answer_modal.widget.dart';
 import '../../advertising.dart';
 import './answering_modal.widget.dart';
@@ -92,21 +93,78 @@ class QuizAnswer extends HookWidget {
     selectedAnswer.value = null;
   }
 
+  void _createInterstitialAd(
+    ValueNotifier<InterstitialAd?> myInterstitial,
+    int _numInterstitialLoadAttempts,
+  ) {
+    InterstitialAd.load(
+      adUnitId: Platform.isAndroid
+          ? ANDROID_ANSWER_INTERSTITIAL_ADVID
+          : IOS_ANSWER_INTERSTITIAL_ADVID,
+      // ? TEST_ANDROID_INTERSTITIAL_ADVID
+      // : TEST_IOS_INTERSTITIAL_ADVID, //InterstitialAd.testAdUnitId
+      request: AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (InterstitialAd ad) {
+          myInterstitial.value = ad;
+          _numInterstitialLoadAttempts = 0;
+          myInterstitial.value!.setImmersiveMode(true);
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          _numInterstitialLoadAttempts += 1;
+          myInterstitial.value = null;
+          if (_numInterstitialLoadAttempts <= 3) {
+            _createInterstitialAd(
+              myInterstitial,
+              _numInterstitialLoadAttempts,
+            );
+          }
+        },
+      ),
+    );
+  }
+
   Future loading(
     BuildContext context,
-    ValueNotifier loaded,
-    InterstitialAd myInterstitial,
+    ValueNotifier<InterstitialAd?> myInterstitial,
     ValueNotifier nowLoading,
   ) async {
-    myInterstitial.load();
+    int _numInterstitialLoadAttempts = 0;
     nowLoading.value = true;
+    _createInterstitialAd(
+      myInterstitial,
+      _numInterstitialLoadAttempts,
+    );
     for (int i = 0; i < 10; i++) {
-      if (loaded.value) {
+      if (i > 2 && myInterstitial.value != null) {
         break;
       }
       await new Future.delayed(new Duration(seconds: 1));
     }
     nowLoading.value = false;
+  }
+
+  void _showInterstitialAd(
+    InterstitialAd? myInterstitialValue,
+  ) {
+    if (myInterstitialValue == null) {
+      // print('Warning: attempt to show interstitial before loaded.');
+      return;
+    }
+    myInterstitialValue.fullScreenContentCallback = FullScreenContentCallback(
+      // onAdShowedFullScreenContent: (InterstitialAd ad) =>
+      //     print('ad onAdShowedFullScreenContent.'),
+      onAdDismissedFullScreenContent: (InterstitialAd ad) {
+        // print('$ad onAdDismissedFullScreenContent.');
+        ad.dispose();
+      },
+      onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
+        // print('$ad onAdFailedToShowFullScreenContent: $error');
+        ad.dispose();
+      },
+    );
+    myInterstitialValue.show();
+    myInterstitialValue = null;
   }
 
   @override
@@ -134,37 +192,11 @@ class QuizAnswer extends HookWidget {
     final comment = useState<String>('');
     final beforeAnswer = useState<String>('');
 
-    final loaded = useState(false);
     final nowLoading = useState(false);
 
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
 
-    final InterstitialAd myInterstitial = InterstitialAd(
-      adUnitId: Platform.isAndroid
-          ? ANDROID_ANSWER_INTERSTITIAL_ADVID
-          : IOS_ANSWER_INTERSTITIAL_ADVID,
-      // ? TEST_ANDROID_INTERSTITIAL_ADVID
-      // : TEST_IOS_INTERSTITIAL_ADVID,
-      request: AdRequest(),
-      listener: AdListener(
-        onAdLoaded: (Ad ad) => {
-          loaded.value = true,
-          // print('インタースティシャル広告がロードされました。'),
-        },
-        onAdFailedToLoad: (Ad ad, LoadAdError error) => {
-          ad.dispose(),
-          // print('インタースティシャル広告のロードに失敗しました。: $error'),
-        },
-        // onAdOpened: (Ad ad) => print('インタースティシャル広告が開かれました。'),
-        onAdClosed: (Ad ad) => {
-          ad.dispose(),
-          // print('インタースティシャル広告が閉じられました。'),
-        },
-        // onApplicationExit: (Ad ad) => {
-        //   print('ユーザーがアプリを離れました。'),
-        // },
-      ),
-    );
+    final ValueNotifier<InterstitialAd?> myInterstitial = useState(null);
 
     getAnswerChoices(
       context,
@@ -281,7 +313,6 @@ class QuizAnswer extends HookWidget {
                                   // 広告を出す
                                   await loading(
                                     context,
-                                    loaded,
                                     myInterstitial,
                                     nowLoading,
                                   );
@@ -311,15 +342,15 @@ class QuizAnswer extends HookWidget {
                                     volume: seVolume,
                                   );
 
-                                  if (loaded.value) {
-                                    myInterstitial.show();
+                                  if (myInterstitial.value != null) {
+                                    _showInterstitialAd(myInterstitial.value);
                                   }
 
                                   Analytics? data;
 
                                   if (!enModeFlg) {
-                                    final int hint =
-                                        context.read(hintProvider).state;
+                                    //   final int hint =
+                                    //       context.read(hintProvider).state;
 
                                     final int relatedWordCountValue = context
                                         .read(relatedWordCountProvider)
@@ -329,101 +360,116 @@ class QuizAnswer extends HookWidget {
                                         .read(questionCountProvider)
                                         .state;
 
-                                    final bool subHintFlg =
-                                        context.read(subHintFlgProvider).state;
+                                    //   final bool subHintFlg =
+                                    //       context.read(subHintFlgProvider).state;
 
-                                    final bool noHintFlg =
-                                        hint == 0 && !subHintFlg;
+                                    //   final bool noHintFlg =
+                                    //       hint == 0 && !subHintFlg;
 
-                                    int hint1Count = hint > 0 ? 1 : 0;
-                                    int hint2Count = hint > 1 ? 1 : 0;
-                                    int hint3Count = hint > 2 ? 1 : 0;
-                                    int subHintCount = subHintFlg ? 1 : 0;
-                                    int relatedWordCount =
-                                        noHintFlg ? relatedWordCountValue : 0;
-                                    int questionCount =
-                                        noHintFlg ? questionCountValue : 0;
-                                    int userCount = 1;
-                                    int noHintCount = noHintFlg ? 1 : 0;
+                                    //   int hint1Count = hint > 0 ? 1 : 0;
+                                    //   int hint2Count = hint > 1 ? 1 : 0;
+                                    //   int hint3Count = hint > 2 ? 1 : 0;
+                                    //   int subHintCount = subHintFlg ? 1 : 0;
+                                    //   int relatedWordCount =
+                                    //       noHintFlg ? relatedWordCountValue : 0;
+                                    //   int questionCount =
+                                    //       noHintFlg ? questionCountValue : 0;
+                                    //   int userCount = 1;
+                                    //   int noHintCount = noHintFlg ? 1 : 0;
 
-                                    DatabaseReference firebaseInstance =
-                                        FirebaseDatabase.instance
-                                            .reference()
-                                            .child('analytics/' +
-                                                quizId.toString());
+                                    //   DatabaseReference firebaseInstance =
+                                    //       FirebaseDatabase.instance
+                                    //           .reference()
+                                    //           .child('analytics/' +
+                                    //               quizId.toString());
 
-                                    await firebaseInstance
-                                        .get()
-                                        .then((DataSnapshot? snapshot) {
-                                      if (snapshot != null) {
-                                        final firebaseData = snapshot.value;
+                                    //   await firebaseInstance
+                                    //       .get()
+                                    //       .then((DataSnapshot? snapshot) {
+                                    //     if (snapshot != null) {
+                                    //       final firebaseData = snapshot.value;
 
-                                        hint1Count +=
-                                            firebaseData['hint1Count'] as int;
+                                    //       hint1Count +=
+                                    //           firebaseData['hint1Count'] as int;
 
-                                        hint2Count +=
-                                            firebaseData['hint2Count'] as int;
-                                        hint3Count +=
-                                            firebaseData['hint3Count'] as int;
-                                        subHintCount +=
-                                            firebaseData['subHintCount'] as int;
+                                    //       hint2Count +=
+                                    //           firebaseData['hint2Count'] as int;
+                                    //       hint3Count +=
+                                    //           firebaseData['hint3Count'] as int;
+                                    //       subHintCount +=
+                                    //           firebaseData['subHintCount'] as int;
 
-                                        relatedWordCount +=
-                                            firebaseData['relatedWordCount']
-                                                as int;
-                                        questionCount +=
-                                            firebaseData['questionCount']
-                                                as int;
+                                    //       relatedWordCount +=
+                                    //           firebaseData['relatedWordCount']
+                                    //               as int;
+                                    //       questionCount +=
+                                    //           firebaseData['questionCount']
+                                    //               as int;
 
-                                        userCount +=
-                                            firebaseData['userCount'] as int;
+                                    //       userCount +=
+                                    //           firebaseData['userCount'] as int;
 
-                                        noHintCount +=
-                                            firebaseData['noHintCount'] as int;
+                                    //       noHintCount +=
+                                    //           firebaseData['noHintCount'] as int;
 
-                                        data = Analytics(
-                                          hint1:
-                                              (100 * (hint1Count / userCount))
-                                                  .round(),
-                                          hint2:
-                                              (100 * (hint2Count / userCount))
-                                                  .round(),
-                                          noHint:
-                                              (100 * (noHintCount / userCount))
-                                                  .round(),
-                                          subHint:
-                                              (100 * (subHintCount / userCount))
-                                                  .round(),
-                                          relatedWordCountAll: noHintCount == 0
-                                              ? 0
-                                              : (relatedWordCount / noHintCount)
-                                                  .round(),
-                                          relatedWordCountYou:
-                                              relatedWordCountValue,
-                                          questionCountAll: noHintCount == 0
-                                              ? 0
-                                              : (questionCount / noHintCount)
-                                                  .round(),
-                                          questionCountYou: questionCountValue,
-                                        );
+                                    //       data = Analytics(
+                                    //         hint1:
+                                    //             (100 * (hint1Count / userCount))
+                                    //                 .round(),
+                                    //         hint2:
+                                    //             (100 * (hint2Count / userCount))
+                                    //                 .round(),
+                                    //         noHint:
+                                    //             (100 * (noHintCount / userCount))
+                                    //                 .round(),
+                                    //         subHint:
+                                    //             (100 * (subHintCount / userCount))
+                                    //                 .round(),
+                                    //         relatedWordCountAll: noHintCount == 0
+                                    //             ? 0
+                                    //             : (relatedWordCount / noHintCount)
+                                    //                 .round(),
+                                    //         relatedWordCountYou:
+                                    //             relatedWordCountValue,
+                                    //         questionCountAll: noHintCount == 0
+                                    //             ? 0
+                                    //             : (questionCount / noHintCount)
+                                    //                 .round(),
+                                    //         questionCountYou: questionCountValue,
+                                    //       );
 
-                                        if (clearedFirst) {
-                                          firebaseInstance.set({
-                                            'hint1Count': hint1Count,
-                                            'hint2Count': hint2Count,
-                                            'hint3Count': hint3Count,
-                                            'subHintCount': subHintCount,
-                                            'relatedWordCount':
-                                                relatedWordCount,
-                                            'questionCount': questionCount,
-                                            'userCount': userCount,
-                                            'noHintCount': noHintCount,
-                                          });
-                                        }
-                                      }
-                                    }).onError((error, stackTrace) =>
-                                            // 何もしない
-                                            null);
+                                    //       if (clearedFirst) {
+                                    //         firebaseInstance.set({
+                                    //           'hint1Count': hint1Count,
+                                    //           'hint2Count': hint2Count,
+                                    //           'hint3Count': hint3Count,
+                                    //           'subHintCount': subHintCount,
+                                    //           'relatedWordCount':
+                                    //               relatedWordCount,
+                                    //           'questionCount': questionCount,
+                                    //           'userCount': userCount,
+                                    //           'noHintCount': noHintCount,
+                                    //         });
+                                    //       }
+                                    //     }
+                                    //   }).onError((error, stackTrace) =>
+                                    //           // 何もしない
+                                    //           null);
+                                    final gotAnalyticsData =
+                                        ANALYTICS_DATA[quizId - 1];
+                                    data = Analytics(
+                                      hint1: gotAnalyticsData.hint1,
+                                      hint2: gotAnalyticsData.hint2,
+                                      noHint: gotAnalyticsData.noHint,
+                                      subHint: gotAnalyticsData.subHint,
+                                      relatedWordCountAll:
+                                          gotAnalyticsData.relatedWordCountAll,
+                                      relatedWordCountYou:
+                                          relatedWordCountValue,
+                                      questionCountAll:
+                                          gotAnalyticsData.questionCountAll,
+                                      questionCountYou: questionCountValue,
+                                    );
                                   }
 
                                   // Navigator.pop(context)を実行させる前に坊やくんの表示を完了させるため

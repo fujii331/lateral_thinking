@@ -41,12 +41,49 @@ class AdvertisingModal extends HookWidget {
     context.read(openingNumberProvider).state = openQuizNumber;
   }
 
-  Future loading(BuildContext context, ValueNotifier loaded,
-      RewardedAd rewardAd, ValueNotifier nowLoading) async {
-    rewardAd.load();
+  void _createRewardedAd(
+    ValueNotifier<RewardedAd?> rewardedAd,
+    int _numRewardedLoadAttempts,
+  ) {
+    RewardedAd.load(
+      adUnitId: Platform.isAndroid
+          ? ANDROID_OPEN_QUESTION_REWQRD_ADVID
+          : IOS_OPEN_QUESTION_REWQRD_ADVID,
+      // ? TEST_ANDROID_REWQRD_ADVID
+      // : TEST_IOS_REWQRD_ADVID, //RewardedAd.testAdUnitId,
+      request: AdRequest(),
+      rewardedAdLoadCallback: RewardedAdLoadCallback(
+        onAdLoaded: (RewardedAd ad) {
+          rewardedAd.value = ad;
+          _numRewardedLoadAttempts = 0;
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          rewardedAd.value = null;
+          _numRewardedLoadAttempts += 1;
+          if (_numRewardedLoadAttempts <= 3) {
+            _createRewardedAd(
+              rewardedAd,
+              _numRewardedLoadAttempts,
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  Future loading(
+    BuildContext context,
+    ValueNotifier<RewardedAd?> rewardedAd,
+    ValueNotifier nowLoading,
+  ) async {
+    int _numRewardedLoadAttempts = 0;
     nowLoading.value = true;
+    _createRewardedAd(
+      rewardedAd,
+      _numRewardedLoadAttempts,
+    );
     for (int i = 0; i < 15; i++) {
-      if (loaded.value) {
+      if (rewardedAd.value != null) {
         break;
       }
       await new Future.delayed(new Duration(seconds: 1));
@@ -54,74 +91,66 @@ class AdvertisingModal extends HookWidget {
     nowLoading.value = false;
   }
 
+  void _showRewardedAd(
+    BuildContext context,
+    RewardedAd? rewardAdValue,
+    bool enModeFlg,
+  ) {
+    if (rewardAdValue == null) {
+      return;
+    }
+    rewardAdValue.fullScreenContentCallback = FullScreenContentCallback(
+      onAdDismissedFullScreenContent: (RewardedAd ad) {
+        ad.dispose();
+      },
+      onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
+        ad.dispose();
+        Navigator.pop(context);
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.ERROR,
+          headerAnimationLoop: false,
+          animType: AnimType.SCALE,
+          width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
+          body: ReplyModal(
+            enModeFlg ? EN_TEXT['gotNoQuiz']! : JA_TEXT['gotNoQuiz']!,
+            0,
+          ),
+        )..show();
+      },
+    );
+
+    rewardAdValue.setImmersiveMode(true);
+    rewardAdValue.show(onUserEarnedReward: (RewardedAd ad, RewardItem reward) {
+      _setOpeningNumber(
+        quizId,
+        context,
+        enModeFlg,
+      );
+      Navigator.pop(context);
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.SUCCES,
+        headerAnimationLoop: false,
+        animType: AnimType.SCALE,
+        width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
+        body: ReplyModal(
+          enModeFlg ? EN_TEXT['gotQuiz']! : JA_TEXT['gotQuiz']!,
+          quizId,
+        ),
+      )..show();
+    });
+    rewardAdValue = null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
-    final loaded = useState(false);
     final nowLoading = useState(false);
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
     final double seVolume = useProvider(seVolumeProvider).state;
 
-    final rewardAd = RewardedAd(
-      adUnitId: Platform.isAndroid
-          ? ANDROID_OPEN_QUESTION_REWQRD_ADVID
-          : IOS_OPEN_QUESTION_REWQRD_ADVID,
-      // ? TEST_ANDROID_REWQRD_ADVID
-      // : TEST_IOS_REWQRD_ADVID,
-      request: AdRequest(),
-      listener: AdListener(
-        onAdLoaded: (Ad ad) {
-          loaded.value = true;
-          // print('リワード広告を読み込みました！');
-        },
-        onAdFailedToLoad: (Ad ad, LoadAdError error) {
-          ad.dispose();
-          // print('リワード広告の読み込みに失敗しました。: $error');
-        },
-        onAdOpened: (Ad ad) {
-          // print('リワード広告が開かれました。');
-        },
-        onAdClosed: (Ad ad) => {
-          ad.dispose(),
-          // print('リワード広告が閉じられました。'),
-          Navigator.pop(context),
-          Navigator.pop(context),
-          AwesomeDialog(
-            context: context,
-            dialogType: DialogType.ERROR,
-            headerAnimationLoop: false,
-            animType: AnimType.SCALE,
-            width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
-            body: ReplyModal(
-              enModeFlg ? EN_TEXT['gotNoQuiz']! : JA_TEXT['gotNoQuiz']!,
-              0,
-            ),
-          )..show(),
-        },
-        // onApplicationExit: (Ad ad) => print('ユーザーがアプリを離れました。'),
-        onRewardedAdUserEarnedReward: (RewardedAd ad, RewardItem reward) => {
-          // print('報酬を獲得しました: $reward'),
-          _setOpeningNumber(
-            quizId,
-            context,
-            enModeFlg,
-          ),
-          Navigator.pop(context),
-          Navigator.pop(context),
-          AwesomeDialog(
-            context: context,
-            dialogType: DialogType.SUCCES,
-            headerAnimationLoop: false,
-            animType: AnimType.SCALE,
-            width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
-            body: ReplyModal(
-              enModeFlg ? EN_TEXT['gotQuiz']! : JA_TEXT['gotQuiz']!,
-              quizId,
-            ),
-          )..show(),
-        },
-      ),
-    );
+    final ValueNotifier<RewardedAd?> rewardedAd = useState(null);
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -196,10 +225,19 @@ class AdvertisingModal extends HookWidget {
                         return AdLoadingModal();
                       },
                     ),
-                    await loading(context, loaded, rewardAd, nowLoading),
-                    if (loaded.value)
+                    await loading(
+                      context,
+                      rewardedAd,
+                      nowLoading,
+                    ),
+                    if (rewardedAd.value != null)
                       {
-                        rewardAd.show(),
+                        _showRewardedAd(
+                          context,
+                          rewardedAd.value,
+                          enModeFlg,
+                        ),
+                        Navigator.pop(context),
                       }
                     else
                       {

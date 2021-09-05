@@ -80,10 +80,6 @@ class _WidgetObserverState extends HookState<void, _WidgetObserver>
     WidgetsBinding.instance!.addObserver(this);
   }
 
-  void test() {
-    context.read(bgmProvider).state.pause();
-  }
-
   @override
   void dispose() {
     WidgetsBinding.instance!.removeObserver(this);
@@ -126,31 +122,31 @@ class MyApp extends HookWidget {
           },
         ),
         textTheme: ThemeData.light().textTheme.copyWith(
-              bodyText1: TextStyle(
+              bodyText1: const TextStyle(
                 fontSize: 17.0,
                 color: Colors.black,
                 fontFamily: 'NotoSerifJP',
               ),
-              bodyText2: TextStyle(
+              bodyText2: const TextStyle(
                 fontSize: 15.5,
                 color: Colors.black,
                 fontFamily: 'NotoSerifJP',
               ),
-              button: TextStyle(
+              button: const TextStyle(
                 fontSize: 19.0,
               ),
-              headline1: TextStyle(
+              headline1: const TextStyle(
                 fontSize: 18.0,
                 color: Colors.white,
                 fontFamily: 'NotoSerifJP',
               ),
-              headline2: TextStyle(
+              headline2: const TextStyle(
                 // 質問済みリスト用 黒
                 fontSize: 18.0,
                 color: Colors.black,
                 fontFamily: 'NotoSerifJP',
               ),
-              headline3: TextStyle(
+              headline3: const TextStyle(
                 // 質問済みリスト用 黒 小さめ
                 fontSize: 16.0,
                 color: Colors.black,

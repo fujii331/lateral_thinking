@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:firebase_database/firebase_database.dart';
+// import 'package:firebase_database/firebase_database.dart';
 
 import 'dart:math';
 
@@ -54,20 +54,20 @@ class QuizInputWords extends HookWidget {
       if (relatedWordData.value != enteredRelatedWord) {
         context.read(relatedWordCountProvider).state++;
       }
-      if (hint == 0 && quiz.id > 66) {
-        FirebaseDatabase.instance
-            .reference()
-            .child('input_words/' +
-                quiz.id.toString() +
-                '/' +
-                enteredSubject +
-                '/' +
-                enteredRelatedWord)
-            .push()
-            .set({
-          'subHintFlg': context.read(subHintFlgProvider).state,
-        });
-      }
+      // if (hint == 0 && quiz.id > 66) {
+      //   FirebaseDatabase.instance
+      //       .reference()
+      //       .child('input_words/' +
+      //           quiz.id.toString() +
+      //           '/' +
+      //           enteredSubject +
+      //           '/' +
+      //           enteredRelatedWord)
+      //       .push()
+      //       .set({
+      //     'subHintFlg': context.read(subHintFlgProvider).state,
+      //   });
+      // }
 
       subjectData.value = enteredSubject;
       relatedWordData.value = enteredRelatedWord;

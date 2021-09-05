@@ -5,6 +5,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:lottie/lottie.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:firebase_database/firebase_database.dart';
+// import 'dart:developer' as developer;
 
 import 'dart:io';
 
@@ -20,6 +22,7 @@ import '../widgets/settings/sound_mode_modal.widget.dart';
 import '../should_update.service.dart';
 import '../widgets/update_version_modal.widget.dart';
 import './warewolf_lecture.screen.dart';
+// import '../models/analytics.model.dart';
 
 class TitleScreen extends HookWidget {
   void toQuizList(BuildContext ctx) {
@@ -133,20 +136,6 @@ class TitleScreen extends HookWidget {
     // 正解済みの問題を設定
     if (prefs.getStringList('alreadyAnsweredIds') == null) {
       prefs.setStringList('alreadyAnsweredIds', []);
-      prefs.setBool('temporaryQuizIdUpdateFlg', true); // 9月ぐらいに要削除
-    } else if (prefs.getBool('temporaryQuizIdUpdateFlg') == null) {
-      // 9月ぐらいに要削除
-      // openingNumberの数だけループして詰める
-      if (prefs.getInt('openingNumber') == null) {
-        prefs.setInt('openingNumber', 9);
-      }
-      List<String> answerIds = [];
-      for (var i = 1; i <= prefs.getInt('openingNumber')!; i++) {
-        answerIds.add(i.toString());
-      }
-      prefs.setStringList('alreadyAnsweredIds', answerIds);
-
-      prefs.setBool('temporaryQuizIdUpdateFlg', true);
     }
     context.read(alreadyAnsweredIdsProvider).state =
         prefs.getStringList('alreadyAnsweredIds')!;
@@ -238,10 +227,66 @@ class TitleScreen extends HookWidget {
                           );
                           context.read(enModeFlgProvider).state = !enModeFlg;
                           context.read(playingQuizIdProvider).state = 0;
+
+                          // List<Analytics> dataList = [];
+
+                          // for (int i = 1; i < 70; i++) {
+                          //   DatabaseReference firebaseInstance =
+                          //       FirebaseDatabase.instance
+                          //           .reference()
+                          //           .child('analytics/' + i.toString());
+
+                          //   await firebaseInstance
+                          //       .get()
+                          //       .then((DataSnapshot? snapshot) {
+                          //     if (snapshot != null) {
+                          //       final firebaseData = snapshot.value;
+
+                          //       final hint1Count =
+                          //           firebaseData['hint1Count'] as int;
+
+                          //       final hint2Count =
+                          //           firebaseData['hint2Count'] as int;
+                          //       final subHintCount =
+                          //           firebaseData['subHintCount'] as int;
+
+                          //       final relatedWordCount =
+                          //           firebaseData['relatedWordCount'] as int;
+                          //       final questionCount =
+                          //           firebaseData['questionCount'] as int;
+
+                          //       final userCount =
+                          //           firebaseData['userCount'] as int;
+
+                          //       final noHintCount =
+                          //           firebaseData['noHintCount'] as int;
+
+                          //       dataList.add(Analytics(
+                          //         id: i,
+                          //         hint1:
+                          //             (100 * (hint1Count / userCount)).round(),
+                          //         hint2:
+                          //             (100 * (hint2Count / userCount)).round(),
+                          //         noHint:
+                          //             (100 * (noHintCount / userCount)).round(),
+                          //         subHint: (100 * (subHintCount / userCount))
+                          //             .round(),
+                          //         relatedWordCountAll: noHintCount == 0
+                          //             ? 0
+                          //             : (relatedWordCount / noHintCount)
+                          //                 .round(),
+                          //         questionCountAll: noHintCount == 0
+                          //             ? 0
+                          //             : (questionCount / noHintCount).round(),
+                          //       ));
+                          //     }
+                          //   });
+                          // }
+                          // developer.log(dataList.toString());
                         },
                         label: Text(
                           enModeFlg ? 'EN' : 'JP',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14,
                             fontFamily: 'YuseiMagic',
                             color: Colors.white,
@@ -279,7 +324,7 @@ class TitleScreen extends HookWidget {
                     child: Text(
                       'Arun Sajeev, jk kim @LottieFiles',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white70,
                         fontSize: 10,
                       ),
