@@ -261,7 +261,8 @@ class WarewolfPreparationScreen extends HookWidget {
                                                     .read(bgmProvider)
                                                     .state
                                                     .stop();
-                                                Navigator.of(context).pushNamed(
+                                                Navigator.of(context)
+                                                    .pushReplacementNamed(
                                                   WarewolfPlayingScreen
                                                       .routeName,
                                                   arguments: [
@@ -270,7 +271,8 @@ class WarewolfPreparationScreen extends HookWidget {
                                                   ],
                                                 );
                                               } else {
-                                                Navigator.of(context).pushNamed(
+                                                Navigator.of(context)
+                                                    .pushReplacementNamed(
                                                   WarewolfPreparationScreen
                                                       .routeName,
                                                   arguments: [

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:lateral_thinking/widgets/title/another_app_link.widget.dart';
 import 'package:lottie/lottie.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,7 +29,6 @@ class TitleScreen extends HookWidget {
   void toQuizList(BuildContext ctx) {
     Navigator.of(ctx).pushNamed(
       QuizListScreen.routeName,
-      arguments: true,
     );
   }
 
@@ -53,7 +53,6 @@ class TitleScreen extends HookWidget {
   void toWarewolfSettingTab(BuildContext ctx) {
     Navigator.of(ctx).pushNamed(
       WarewolfSettingScreen.routeName,
-      arguments: 1,
     );
   }
 
@@ -103,7 +102,6 @@ class TitleScreen extends HookWidget {
       'sounds/quiz_button.mp3',
       'sounds/hint.mp3',
       'sounds/change.mp3',
-      'sounds/congraturation.mp3',
       'sounds/fault.mp3',
       'sounds/finish.mp3',
       'sounds/funny.mp3',
@@ -446,6 +444,19 @@ class TitleScreen extends HookWidget {
               ],
             ),
           ),
+          !enModeFlg
+              ? Column(
+                  children: [
+                    const Spacer(),
+                    SizedBox(
+                      height: 100,
+                      child: AnotherAppLink(
+                        context: context,
+                      ),
+                    ),
+                  ],
+                )
+              : Container(),
         ],
       ),
     );

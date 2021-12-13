@@ -9,7 +9,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'dart:io';
 import 'dart:async';
 
-import '../replry_modal.widget.dart';
+import '../reply_modal.widget.dart';
 import '../hint/ad_loading_modal.widget.dart';
 
 import '../../providers/quiz.provider.dart';

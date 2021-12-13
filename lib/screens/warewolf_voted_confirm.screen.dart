@@ -348,24 +348,26 @@ class WarewolfVotedConfirmScreen extends HookWidget {
                                   );
                                 }
 
-                                if (myInterstitial.value != null) {
-                                  _showInterstitialAd(myInterstitial.value);
-                                }
                                 context.read(bgmProvider).state =
                                     await soundEffect.loop(
                                   'sounds/bgm.mp3',
-                                  volume: bgmVolume,
+                                  volume: 0,
                                   isNotification: true,
                                 );
 
-                                soundEffect.play(
-                                  'sounds/congraturation.mp3',
-                                  isNotification: true,
-                                  volume: seVolume,
+                                if (myInterstitial.value != null) {
+                                  _showInterstitialAd(myInterstitial.value);
+                                }
+
+                                await new Future.delayed(
+                                  new Duration(milliseconds: 700),
                                 );
+
+                                context.read(bgmProvider).state.setVolume(
+                                    context.read(bgmVolumeProvider).state);
 
                                 // 結果画面に移行
-                                Navigator.of(context).pushNamed(
+                                Navigator.of(context).pushReplacementNamed(
                                   WarewolfResultScreen.routeName,
                                   arguments: [
                                     mostVotedList,

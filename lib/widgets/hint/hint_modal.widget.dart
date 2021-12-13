@@ -12,7 +12,7 @@ import 'dart:math';
 import '../../providers/quiz.provider.dart';
 import '../../providers/common.provider.dart';
 
-import '../replry_modal.widget.dart';
+import '../reply_modal.widget.dart';
 import './ad_loading_modal.widget.dart';
 
 import '../../models/quiz.model.dart';

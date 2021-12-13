@@ -160,11 +160,11 @@ class ConfirmVoteModal extends HookWidget {
                     );
 
                     if (playerId.toString() == numOfPlayers) {
-                      Navigator.of(context).pushNamed(
+                      Navigator.of(context).pushReplacementNamed(
                         WarewolfVotedConfirmScreen.routeName,
                       );
                     } else {
-                      Navigator.of(context).pushNamed(
+                      Navigator.of(context).pushReplacementNamed(
                         WarewolfVoteScreen.routeName,
                         arguments: playerId + 1,
                       );

@@ -21,8 +21,6 @@ class QuizListScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool alreadyPlayedFlg =
-        ModalRoute.of(context)?.settings.arguments as bool;
     final screenNo = useState<int>(0);
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
     final int openingNumber = useProvider(openingNumberProvider).state;
@@ -48,122 +46,113 @@ class QuizListScreen extends HookWidget {
       enModeFlg ? "Children's room" : '子供のお部屋',
     ];
 
-    return WillPopScope(
-      onWillPop: () {
-        if (!alreadyPlayedFlg) {
-          Navigator.pop(context);
-        }
-        Navigator.pop(context);
-        return Future.value(false);
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            enModeFlg ? EN_TEXT['listTitle']! : JA_TEXT['listTitle']!,
-          ),
-          centerTitle: true,
-          backgroundColor: Colors.blueGrey.shade900.withOpacity(0.9),
-          actions: <Widget>[
-            PopupMenuButton<int>(
-              elevation: 20,
-              shape: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blueGrey, width: 2)),
-              onSelected: (int result) {
-                soundEffect.play(
-                  'sounds/tap.mp3',
-                  isNotification: true,
-                  volume: seVolume,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          enModeFlg ? EN_TEXT['listTitle']! : JA_TEXT['listTitle']!,
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.blueGrey.shade900.withOpacity(0.9),
+        actions: <Widget>[
+          PopupMenuButton<int>(
+            elevation: 20,
+            shape: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.blueGrey, width: 2)),
+            onSelected: (int result) {
+              soundEffect.play(
+                'sounds/tap.mp3',
+                isNotification: true,
+                volume: seVolume,
+              );
+              if (result == 1) {
+                Navigator.of(context).pushNamed(
+                  LectureTabScreen.routeName,
+                  arguments: true,
                 );
-                if (result == 1) {
-                  Navigator.of(context).pushNamed(
-                    LectureTabScreen.routeName,
-                    arguments: true,
-                  );
-                } else if (result == 2) {
-                  AwesomeDialog(
-                    context: context,
-                    dialogType: DialogType.NO_HEADER,
-                    headerAnimationLoop: false,
-                    animType: AnimType.SCALE,
-                    width: MediaQuery.of(context).size.width * .86 > 650
-                        ? 650
-                        : null,
-                    body: ModeModal(),
-                  )..show();
-                } else if (result == 3) {
-                  AwesomeDialog(
-                    context: context,
-                    dialogType: DialogType.NO_HEADER,
-                    headerAnimationLoop: false,
-                    animType: AnimType.SCALE,
-                    width: MediaQuery.of(context).size.width * .86 > 650
-                        ? 650
-                        : null,
-                    body: InputModeModal(),
-                  )..show();
-                  // } else if (result == 4) {
-                  //   AwesomeDialog(
-                  //     context: context,
-                  //     dialogType: DialogType.NO_HEADER,
-                  //     headerAnimationLoop: false,
-                  //     animType: AnimType.SCALE,
-                  //     width: MediaQuery.of(context).size.width * .86 > 650
-                  //         ? 650
-                  //         : null,
-                  //     body: AnalyticsListModal(),
-                  //   )..show();
-                }
-              },
-              itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
-                PopupMenuItem<int>(
-                  value: 1,
-                  child: Text(enModeFlg
-                      ? EN_TEXT['playMethodButton']!
-                      : JA_TEXT['playMethodButton']!),
-                ),
-                PopupMenuItem<int>(
-                  value: 2,
-                  child: Text(enModeFlg
-                      ? EN_TEXT['modeButton']!
-                      : JA_TEXT['modeButton']!),
-                ),
-                PopupMenuItem<int>(
-                  value: 3,
-                  child: Text(enModeFlg
-                      ? EN_TEXT['inputModeButton']!
-                      : JA_TEXT['inputModeButton']!),
-                ),
-                // PopupMenuItem<int>(
-                //   value: 4,
-                //   child: Text('統計情報'),
-                // ),
-              ],
-            )
-          ],
-        ),
-        resizeToAvoidBottomInset: false,
-        body: Stack(
-          children: [
-            background(),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                QuizListDetailTitle(
-                  titles[screenNo.value],
-                ),
-                QuizListDetail(
-                  openingNumber,
-                  screenNo,
-                  numOfPages,
-                ),
-                QuizListPagination(
-                  screenNo,
-                  numOfPages,
-                ),
-              ],
-            ),
-          ],
-        ),
+              } else if (result == 2) {
+                AwesomeDialog(
+                  context: context,
+                  dialogType: DialogType.NO_HEADER,
+                  headerAnimationLoop: false,
+                  animType: AnimType.SCALE,
+                  width: MediaQuery.of(context).size.width * .86 > 650
+                      ? 650
+                      : null,
+                  body: ModeModal(),
+                )..show();
+              } else if (result == 3) {
+                AwesomeDialog(
+                  context: context,
+                  dialogType: DialogType.NO_HEADER,
+                  headerAnimationLoop: false,
+                  animType: AnimType.SCALE,
+                  width: MediaQuery.of(context).size.width * .86 > 650
+                      ? 650
+                      : null,
+                  body: InputModeModal(),
+                )..show();
+                // } else if (result == 4) {
+                //   AwesomeDialog(
+                //     context: context,
+                //     dialogType: DialogType.NO_HEADER,
+                //     headerAnimationLoop: false,
+                //     animType: AnimType.SCALE,
+                //     width: MediaQuery.of(context).size.width * .86 > 650
+                //         ? 650
+                //         : null,
+                //     body: AnalyticsListModal(),
+                //   )..show();
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
+              PopupMenuItem<int>(
+                value: 1,
+                child: Text(enModeFlg
+                    ? EN_TEXT['playMethodButton']!
+                    : JA_TEXT['playMethodButton']!),
+              ),
+              PopupMenuItem<int>(
+                value: 2,
+                child: Text(enModeFlg
+                    ? EN_TEXT['modeButton']!
+                    : JA_TEXT['modeButton']!),
+              ),
+              PopupMenuItem<int>(
+                value: 3,
+                child: Text(enModeFlg
+                    ? EN_TEXT['inputModeButton']!
+                    : JA_TEXT['inputModeButton']!),
+              ),
+              // PopupMenuItem<int>(
+              //   value: 4,
+              //   child: Text('統計情報'),
+              // ),
+            ],
+          )
+        ],
+      ),
+      resizeToAvoidBottomInset: false,
+      body: Stack(
+        children: [
+          background(),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              QuizListDetailTitle(
+                titles[screenNo.value],
+              ),
+              QuizListDetail(
+                openingNumber,
+                screenNo,
+                numOfPages,
+              ),
+              QuizListPagination(
+                screenNo,
+                numOfPages,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

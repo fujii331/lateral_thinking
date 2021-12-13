@@ -166,7 +166,7 @@ class ConfirmAnsweredModal extends HookWidget {
                                     volume: bgmVolume,
                                     isNotification: true,
                                   );
-                                  Navigator.of(context).pushNamed(
+                                  Navigator.of(context).pushReplacementNamed(
                                     WarewolfResultScreen.routeName,
                                     arguments: [
                                       [
@@ -503,12 +503,14 @@ class ConfirmAnsweredModal extends HookWidget {
                                           .state = selectedPlayer.value!.id;
                                       if (discussionTime == '0') {
                                         context.read(bgmProvider).state.stop();
-                                        Navigator.of(context).pushNamed(
+                                        Navigator.of(context)
+                                            .pushReplacementNamed(
                                           WarewolfVoteFirstScreen.routeName,
                                         );
                                       } else {
                                         context.read(bgmProvider).state.stop();
-                                        Navigator.of(context).pushNamed(
+                                        Navigator.of(context)
+                                            .pushReplacementNamed(
                                           WarewolfDiscussionScreen.routeName,
                                         );
                                       }

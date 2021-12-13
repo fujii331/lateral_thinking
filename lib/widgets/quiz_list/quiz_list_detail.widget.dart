@@ -58,7 +58,7 @@ class QuizListDetail extends HookWidget {
                       : quizNumber == quizData.length
                           ? enModeFlg
                               ? QuizItemNone(openingNumber + 1)
-                              : QuizItemInfo()
+                              : Container()
                           : Container();
             },
             itemCount:

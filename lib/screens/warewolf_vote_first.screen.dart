@@ -69,7 +69,7 @@ class WarewolfVoteFirstScreen extends HookWidget {
                               isNotification: true,
                               volume: seVolume,
                             );
-                            Navigator.of(context).pushNamed(
+                            Navigator.of(context).pushReplacementNamed(
                               WarewolfVoteScreen.routeName,
                               arguments: 1,
                             );

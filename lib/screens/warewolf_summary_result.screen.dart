@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'dart:io';
 
 import '../providers/common.provider.dart';
 import '../providers/warewolf.provider.dart';
@@ -11,7 +9,6 @@ import '../providers/warewolf.provider.dart';
 import '../widgets/background.widget.dart';
 import './warewolf_setting.screen.dart';
 import '../../models/warewolf.model.dart';
-import '../../advertising.dart';
 
 class WarewolfSummaryResultScreen extends HookWidget {
   static const routeName = '/warewolf-summary-result';
@@ -194,10 +191,10 @@ class WarewolfSummaryResultScreen extends HookWidget {
                                 isNotification: true,
                                 volume: seVolume,
                               );
-                              Navigator.of(context).pushNamed(
-                                WarewolfSettingScreen.routeName,
-                                arguments: 3,
-                              );
+                              Navigator.popUntil(
+                                  context,
+                                  ModalRoute.withName(
+                                      WarewolfSettingScreen.routeName));
                             },
                             child: Text(
                               '設定画面に戻る',

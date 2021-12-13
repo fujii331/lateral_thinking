@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'dart:io';
 
 import '../providers/common.provider.dart';
 import '../providers/warewolf.provider.dart';
@@ -11,7 +9,6 @@ import '../providers/warewolf.provider.dart';
 import '../widgets/background.widget.dart';
 import './warewolf_summary_result.screen.dart';
 import '../../models/warewolf.model.dart';
-import '../../advertising.dart';
 
 class WarewolfResultScreen extends HookWidget {
   static const routeName = '/warewolf-result';
@@ -41,8 +38,6 @@ class WarewolfResultScreen extends HookWidget {
     final player5 = useProvider(player5Provider).state;
     final player6 = useProvider(player6Provider).state;
 
-    final loadedFlg = useState<bool>(false);
-
     final votingDestinationNamesList = [
       player1.name,
       player2.name,
@@ -56,39 +51,6 @@ class WarewolfResultScreen extends HookWidget {
     final List<int> mostVotedListIds = mostVotedList.map((player) {
       return player.id;
     }).toList();
-
-    // final BannerAd myBanner = BannerAd(
-    //   adUnitId: Platform.isAndroid
-    //       // ? ANDROID_RESULT_BANNER_ADVID
-    //       // : IOS_RESULT_BANNER_ADVID,
-    //       ? TEST_ANDROID_BANNER_ADVID
-    //       : TEST_IOS_BANNER_ADVID,
-    //   size: AdSize.banner,
-    //   request: AdRequest(),
-    //   listener: AdListener(
-    //     // 広告が正常にロードされたときに呼ばれます。
-    //     onAdLoaded: (Ad ad) {
-    //       // print('バナー広告がロードされました。');
-    //       loadedFlg.value = true;
-    //     },
-    //     // 広告のロードが失敗した際に呼ばれます。
-    //     onAdFailedToLoad: (Ad ad, LoadAdError error) {
-    //       // print('バナー広告のロードに失敗しました。: $error');
-    //       ad.dispose();
-    //     },
-    //     // 広告が開かれたときに呼ばれます。
-    //     // onAdOpened: (Ad ad) => print('バナー広告が開かれました。'),
-    //     // 広告が閉じられたときに呼ばれます。
-    //     onAdClosed: (Ad ad) {
-    //       ad.dispose();
-    //       // print('バナー広告が閉じられました。');
-    //     },
-    //     // ユーザーがアプリを閉じるときに呼ばれます。
-    //     onApplicationExit: (Ad ad) => print('ユーザーがアプリを離れました。'),
-    //   ),
-    // );
-
-    // myBanner.load();
 
     return WillPopScope(
       onWillPop: () async => false,
@@ -300,7 +262,7 @@ class WarewolfResultScreen extends HookWidget {
                                 isNotification: true,
                                 volume: seVolume,
                               );
-                              Navigator.of(context).pushNamed(
+                              Navigator.of(context).pushReplacementNamed(
                                 WarewolfSummaryResultScreen.routeName,
                               );
                             },

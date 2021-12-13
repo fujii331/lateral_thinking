@@ -11,7 +11,7 @@ import 'dart:async';
 import '../../providers/quiz.provider.dart';
 import '../../providers/common.provider.dart';
 
-import '../replry_modal.widget.dart';
+import '../reply_modal.widget.dart';
 import './ad_loading_modal.widget.dart';
 import './opened_sub_hint_modal.widget.dart';
 

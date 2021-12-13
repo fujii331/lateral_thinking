@@ -69,9 +69,8 @@ class WarewolfLecturePagination extends HookWidget {
                         context.read(alreadyPlayedWarewolfFlgProvider).state =
                             true;
                         prefs.setBool('alreadyPlayedWarewolf', true);
-                        Navigator.of(context).pushNamed(
+                        Navigator.of(context).pushReplacementNamed(
                           WarewolfSettingScreen.routeName,
-                          arguments: 2,
                         );
                       },
                       child: Text(

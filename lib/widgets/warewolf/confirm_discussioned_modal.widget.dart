@@ -101,7 +101,7 @@ class ConfirmDiscussionedModal extends HookWidget {
                     );
                     finishFlg.value = true;
                     context.read(bgmProvider).state.stop();
-                    Navigator.of(context).pushNamed(
+                    Navigator.of(context).pushReplacementNamed(
                       WarewolfVoteFirstScreen.routeName,
                     );
                   },

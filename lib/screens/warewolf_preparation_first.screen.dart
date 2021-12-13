@@ -93,7 +93,7 @@ class WarewolfPreparationFirstScreen extends HookWidget {
                                 ? 0
                                 : Random().nextInt(int.parse(numOfPlayers)) + 1;
 
-                            Navigator.of(context).pushNamed(
+                            Navigator.of(context).pushReplacementNamed(
                               WarewolfPreparationScreen.routeName,
                               arguments: [
                                 sentence,

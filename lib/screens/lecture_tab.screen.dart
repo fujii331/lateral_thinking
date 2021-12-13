@@ -80,9 +80,8 @@ class LectureTabScreen extends HookWidget {
                     );
                     context.read(alreadyPlayedQuizFlgProvider).state = true;
                     prefs.setBool('alreadyPlayedQuiz', true);
-                    Navigator.of(context).pushNamed(
+                    Navigator.of(context).pushReplacementNamed(
                       QuizListScreen.routeName,
-                      arguments: false,
                     );
                   },
                   child: Text(

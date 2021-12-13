@@ -16,7 +16,7 @@ import '../../models/quiz.model.dart';
 
 import '../../screens/warewolf_preparation_first.screen.dart';
 
-import '../replry_modal.widget.dart';
+import '../reply_modal.widget.dart';
 import '../hint/ad_loading_modal.widget.dart';
 
 import '../../advertising.dart';
