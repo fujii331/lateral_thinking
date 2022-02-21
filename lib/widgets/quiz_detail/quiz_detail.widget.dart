@@ -3,7 +3,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../models/quiz.model.dart';
-import '../background.widget.dart';
 import 'quiz_sentence.widget.dart';
 import 'question_reply.widget.dart';
 import 'quiz_input_words.widget.dart';
@@ -33,54 +32,39 @@ class QuizDetail extends HookWidget {
     final String reply = useProvider(replyProvider).state;
 
     final bool displayReplyFlg = useProvider(displayReplyFlgProvider).state;
-    final bool displayInputFlg = useProvider(displayInputFlgProvider).state;
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
-      child: Stack(
-        children: <Widget>[
-          displayInputFlg
-              ? Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/images/back_grey.png'),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                )
-              : background(),
-          Center(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    top: 5, bottom: 16.0, right: 16.0, left: 16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    QuizSentence(
-                      quiz.sentence,
-                    ),
-                    QuizInputWords(
-                      quiz,
-                      selectedQuestion,
-                      askingQuestions,
-                      subjectController,
-                      relatedWordController,
-                    ),
-                    QuestionInput(
-                      selectedQuestion,
-                      askingQuestions,
-                    ),
-                    QuestionReply(
-                      displayReplyFlg,
-                      reply,
-                    ),
-                  ],
+      child: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.only(
+                top: 5, bottom: 16.0, right: 16.0, left: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                QuizSentence(
+                  quiz.sentence,
                 ),
-              ),
+                QuizInputWords(
+                  quiz,
+                  selectedQuestion,
+                  askingQuestions,
+                  subjectController,
+                  relatedWordController,
+                ),
+                QuestionInput(
+                  selectedQuestion,
+                  askingQuestions,
+                ),
+                QuestionReply(
+                  displayReplyFlg,
+                  reply,
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }

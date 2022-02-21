@@ -88,7 +88,6 @@ class HintModal extends HookWidget {
     final int hint = useProvider(hintProvider).state;
     final nowLoading = useState(false);
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
-    final bool helperModeFlg = useProvider(helperModeFlgProvider).state;
     final double seVolume = useProvider(seVolumeProvider).state;
 
     final List<Question> askedQuestions =
@@ -107,13 +106,9 @@ class HintModal extends HookWidget {
             width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
             body: ReplyModal(
               hint == 0
-                  ? helperModeFlg
-                      ? enModeFlg
-                          ? EN_TEXT['openedHint1Helper']!
-                          : JA_TEXT['openedHint1Helper']!
-                      : enModeFlg
-                          ? EN_TEXT['openedHint1']!
-                          : JA_TEXT['openedHint1']!
+                  ? enModeFlg
+                      ? EN_TEXT['openedHint1Helper']!
+                      : JA_TEXT['openedHint1Helper']!
                   : hint == 1
                       ? enModeFlg
                           ? EN_TEXT['openedHint2']!
@@ -275,13 +270,9 @@ class HintModal extends HookWidget {
               ),
               child: Text(
                 workHintValue < 1
-                    ? helperModeFlg
-                        ? enModeFlg
-                            ? EN_TEXT['getHint1Helper']!
-                            : JA_TEXT['getHint1Helper']!
-                        : enModeFlg
-                            ? EN_TEXT['getHint1']!
-                            : JA_TEXT['getHint1']!
+                    ? enModeFlg
+                        ? EN_TEXT['getHint1Helper']!
+                        : JA_TEXT['getHint1Helper']!
                     : workHintValue == 1
                         ? enModeFlg
                             ? EN_TEXT['getHint2']!

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:lateral_thinking/data/restriction_words.dart';
 // import 'package:firebase_database/firebase_database.dart';
 
 import 'dart:math';
@@ -43,8 +44,9 @@ class QuizInputWords extends HookWidget {
         relatedWordData.value != enteredRelatedWord) {
       context.read(beforeWordProvider).state = '';
 
+      context.read(displayReplyFlgProvider).state = false;
+
       if (enteredSubject.isEmpty || enteredRelatedWord.isEmpty) {
-        context.read(displayReplyFlgProvider).state = false;
         context.read(selectedQuestionProvider).state = dummyQuestion;
         context.read(askingQuestionsProvider).state = [];
 
@@ -94,27 +96,27 @@ class QuizInputWords extends HookWidget {
     List<Question> askingQuestions,
     bool enModeFlg,
   ) {
-    bool existFlg = false;
-    bool exsistSubjectFlg = false;
+    if (enModeFlg) {
+      bool existFlg = false;
+      bool exsistSubjectFlg = false;
 
-    // 主語リストに存在するか判定
-    for (String targetSubject in allSubjects) {
-      if (targetSubject == subject) {
-        exsistSubjectFlg = true;
-        break;
-      }
-    }
-    // 主語リストに存在した場合、関連語リストに存在するか判定
-    if (exsistSubjectFlg) {
-      for (String targetRelatedWords in allRelatedWords) {
-        if (targetRelatedWords == relatedWord) {
-          existFlg = true;
+      // 主語リストに存在するか判定
+      for (String targetSubject in allSubjects) {
+        if (targetSubject == subject) {
+          exsistSubjectFlg = true;
           break;
         }
       }
-    }
+      // 主語リストに存在した場合、関連語リストに存在するか判定
+      if (exsistSubjectFlg) {
+        for (String targetRelatedWords in allRelatedWords) {
+          if (targetRelatedWords == relatedWord) {
+            existFlg = true;
+            break;
+          }
+        }
+      }
 
-    if (enModeFlg) {
       if (!existFlg) {
         context.read(askingQuestionsProvider).state = [];
       } else {
@@ -130,70 +132,88 @@ class QuizInputWords extends HookWidget {
 
         context.read(askingQuestionsProvider).state = createdQuestions;
       }
-    } else {
-      context.read(askingQuestionsProvider).state = existFlg
-          ? remainingQuestions
+
+      context.read(displayReplyFlgProvider).state = false;
+
+      if (context.read(askingQuestionsProvider).state.isEmpty) {
+        if (!exsistSubjectFlg) {
+          context.read(beforeWordProvider).state = EN_TEXT['subjectNotExist']!;
+        } else if (existFlg) {
+          if (remainingQuestions
               .where((question) =>
-                  question.asking.startsWith(subject) &&
-                  (!question.asking.startsWith(relatedWord) &&
-                      question.asking.contains(relatedWord)))
-              .toList()
-          : [];
-    }
-
-    context.read(displayReplyFlgProvider).state = false;
-
-    if (context.read(askingQuestionsProvider).state.isEmpty) {
-      if (!exsistSubjectFlg) {
-        context.read(beforeWordProvider).state = enModeFlg
-            ? EN_TEXT['subjectNotExist']!
-            : JA_TEXT['subjectNotExist']!;
-      } else if (existFlg) {
-        if (remainingQuestions
-            .where((question) =>
-                question.asking.contains(relatedWord) &&
-                !question.asking.startsWith(relatedWord))
-            .isEmpty) {
-          context.read(beforeWordProvider).state = enModeFlg
-              ? "You can't ask in that related word."
-              : 'その関連語ではもう質問できません。';
+                  question.asking.contains(relatedWord) &&
+                  !question.asking.startsWith(relatedWord))
+              .isEmpty) {
+            context.read(beforeWordProvider).state =
+                "You can't ask in that related word.";
+          } else {
+            context.read(beforeWordProvider).state =
+                'You can ask by changing subject.';
+          }
         } else {
-          context.read(beforeWordProvider).state = enModeFlg
-              ? 'You can ask by changing subject.'
-              : '主語だけ変えれば質問できそう！';
-        }
-      } else {
-        if (enModeFlg) {
           final randomNumber = new Random().nextInt(5);
           if (randomNumber == 0) {
             context.read(beforeWordProvider).state = EN_TEXT['seekHint']!;
           } else {
             context.read(beforeWordProvider).state = EN_TEXT['noQuestions']!;
           }
-        } else {
-          final enableQuestionsCount = remainingQuestions
-              .where((question) => question.asking.startsWith(subject))
-              .toList()
-              .length;
-
-          if (enableQuestionsCount == 0) {
-            context.read(beforeWordProvider).state =
-                JA_TEXT['subjectNotExist']!;
-          } else {
-            final randomNumber = new Random().nextInt(2);
-            if (randomNumber == 0) {
-              context.read(beforeWordProvider).state = JA_TEXT['noQuestions']!;
-            } else {
-              context.read(beforeWordProvider).state =
-                  'その主語を使う質問は' + enableQuestionsCount.toString() + '個あります。';
-            }
-          }
         }
+      } else {
+        context.read(selectedQuestionProvider).state = dummyQuestion;
+        context.read(beforeWordProvider).state = EN_TEXT['selectQuestion']!;
       }
     } else {
-      context.read(selectedQuestionProvider).state = dummyQuestion;
-      context.read(beforeWordProvider).state =
-          enModeFlg ? EN_TEXT['selectQuestion']! : JA_TEXT['selectQuestion']!;
+      // 質問文のうち、関連語が含まれていて、関連語から始まっていない質問を抽出
+      final List<Question> includeRelatedWordQuestions = remainingQuestions
+          .where((question) => question.asking
+              // 主語以外で判定
+              .substring(question.asking.indexOf('は') + 1)
+              .contains(relatedWord))
+          .toList();
+
+      // 対象の関連語では質問が見つからなかった場合
+      // 質問が6個以上見つかった場合
+      // 使用禁止用語を使っていた場合
+      if (includeRelatedWordQuestions.isEmpty ||
+          includeRelatedWordQuestions.length > 6 ||
+          restrictionWords.contains(relatedWord)) {
+        // 選択した主語から始まる質問を抽出
+        final enableQuestionsCount = remainingQuestions
+            .where((question) => question.asking.startsWith(subject))
+            .toList()
+            .length;
+
+        if (enableQuestionsCount == 0) {
+          context.read(beforeWordProvider).state = 'その主語ではもう質問できないようです。';
+        } else {
+          final randomNumber = Random().nextInt(3);
+          if (randomNumber == 0) {
+            context.read(beforeWordProvider).state = '質問が見つかりませんでした。';
+          } else {
+            context.read(beforeWordProvider).state =
+                'その主語を使う質問は' + enableQuestionsCount.toString() + '個あります。';
+          }
+        }
+
+        context.read(askingQuestionsProvider).state = [];
+      } else {
+        // 該当の関連語を使用する質問が見つかった場合
+        // 抽出した質問のうち、選択した主語から始まる質問を抽出
+        final List<Question> includeSubjectQuestions =
+            includeRelatedWordQuestions
+                .where((question) => question.asking.startsWith(subject))
+                .toList();
+
+        // 対象の主語では質問が見つからなかった場合
+        if (includeSubjectQuestions.isEmpty) {
+          context.read(beforeWordProvider).state = '主語だけ変えれば質問できそう！';
+          context.read(askingQuestionsProvider).state = [];
+        } else {
+          context.read(selectedQuestionProvider).state = dummyQuestion;
+          context.read(beforeWordProvider).state = '↓質問を選択';
+          context.read(askingQuestionsProvider).state = includeSubjectQuestions;
+        }
+      }
     }
   }
 
@@ -212,7 +232,6 @@ class QuizInputWords extends HookWidget {
         useProvider(selectedRelatedWordProvider).state;
 
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
-    final bool helperModeFlg = useProvider(helperModeFlgProvider).state;
 
     final subjectData = useState<String>('');
     final relatedWordData = useState<String>('');
@@ -259,29 +278,21 @@ class QuizInputWords extends HookWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             // 主語の入力
-            hint < 1 && !helperModeFlg
-                ? _wordForQuestion(
-                    context,
-                    enModeFlg ? EN_TEXT['subject']! : JA_TEXT['subject']!,
-                    subjectController,
-                    subjectFocusNode,
-                    enModeFlg,
-                  )
-                : _wordSelectForQuestion(
-                    context,
-                    selectedSubject,
-                    selectedSubjectProvider,
-                    enModeFlg ? EN_TEXT['subject']! : JA_TEXT['subject']!,
-                    hint,
-                    quiz.subjects,
-                    subjectController,
-                    remainingQuestions,
-                    selectedQuestion,
-                    askingQuestions,
-                    enModeFlg,
-                    subjectData,
-                    relatedWordData,
-                  ),
+            _wordSelectForQuestion(
+              context,
+              selectedSubject,
+              selectedSubjectProvider,
+              enModeFlg ? EN_TEXT['subject']! : JA_TEXT['subject']!,
+              hint,
+              quiz.subjects,
+              subjectController,
+              remainingQuestions,
+              selectedQuestion,
+              askingQuestions,
+              enModeFlg,
+              subjectData,
+              relatedWordData,
+            ),
             Text(
               enModeFlg ? EN_TEXT['afterSubject']! : JA_TEXT['afterSubject']!,
               style: TextStyle(

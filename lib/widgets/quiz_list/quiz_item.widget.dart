@@ -31,11 +31,13 @@ class QuizItem extends HookWidget {
     }
 
     context.read(replyProvider).state = '';
-    context.read(beforeWordProvider).state = '';
     context.read(displayReplyFlgProvider).state = false;
     context.read(selectedSubjectProvider).state = '';
     context.read(selectedRelatedWordProvider).state = '';
-    context.read(askingQuestionsProvider).state = [];
+    if (context.read(hintProvider).state < 2) {
+      context.read(askingQuestionsProvider).state = [];
+      context.read(beforeWordProvider).state = '';
+    }
 
     Navigator.of(context)
         .pushNamed(QuizDetailTabScreen.routeName, arguments: quiz);

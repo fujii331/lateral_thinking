@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lateral_thinking/widgets/quiz_list/quiz_list_detail_title.widget.dart';
 import 'package:lateral_thinking/widgets/quiz_list/quiz_list_pagination.widget.dart';
-import 'package:awesome_dialog/awesome_dialog.dart';
+// import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import '../widgets/quiz_list/quiz_list_detail.widget.dart';
@@ -12,8 +12,6 @@ import '../providers/quiz.provider.dart';
 import '../widgets/background.widget.dart';
 import '../text.dart';
 import './lecture_tab.screen.dart';
-import '../widgets/settings/mode_modal.widget.dart';
-import '../widgets/settings/input_mode_modal.widget.dart';
 import '../providers/common.provider.dart';
 
 class QuizListScreen extends HookWidget {
@@ -54,81 +52,25 @@ class QuizListScreen extends HookWidget {
         centerTitle: true,
         backgroundColor: Colors.blueGrey.shade900.withOpacity(0.9),
         actions: <Widget>[
-          PopupMenuButton<int>(
-            elevation: 20,
-            shape: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.blueGrey, width: 2)),
-            onSelected: (int result) {
+          IconButton(
+            iconSize: 28,
+            icon: Icon(
+              Icons.help,
+              color: Colors.yellow.shade50,
+              size: 27,
+            ),
+            onPressed: () {
               soundEffect.play(
                 'sounds/tap.mp3',
                 isNotification: true,
                 volume: seVolume,
               );
-              if (result == 1) {
-                Navigator.of(context).pushNamed(
-                  LectureTabScreen.routeName,
-                  arguments: true,
-                );
-              } else if (result == 2) {
-                AwesomeDialog(
-                  context: context,
-                  dialogType: DialogType.NO_HEADER,
-                  headerAnimationLoop: false,
-                  animType: AnimType.SCALE,
-                  width: MediaQuery.of(context).size.width * .86 > 650
-                      ? 650
-                      : null,
-                  body: ModeModal(),
-                )..show();
-              } else if (result == 3) {
-                AwesomeDialog(
-                  context: context,
-                  dialogType: DialogType.NO_HEADER,
-                  headerAnimationLoop: false,
-                  animType: AnimType.SCALE,
-                  width: MediaQuery.of(context).size.width * .86 > 650
-                      ? 650
-                      : null,
-                  body: InputModeModal(),
-                )..show();
-                // } else if (result == 4) {
-                //   AwesomeDialog(
-                //     context: context,
-                //     dialogType: DialogType.NO_HEADER,
-                //     headerAnimationLoop: false,
-                //     animType: AnimType.SCALE,
-                //     width: MediaQuery.of(context).size.width * .86 > 650
-                //         ? 650
-                //         : null,
-                //     body: AnalyticsListModal(),
-                //   )..show();
-              }
+              Navigator.of(context).pushNamed(
+                LectureTabScreen.routeName,
+                arguments: true,
+              );
             },
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
-              PopupMenuItem<int>(
-                value: 1,
-                child: Text(enModeFlg
-                    ? EN_TEXT['playMethodButton']!
-                    : JA_TEXT['playMethodButton']!),
-              ),
-              PopupMenuItem<int>(
-                value: 2,
-                child: Text(enModeFlg
-                    ? EN_TEXT['modeButton']!
-                    : JA_TEXT['modeButton']!),
-              ),
-              PopupMenuItem<int>(
-                value: 3,
-                child: Text(enModeFlg
-                    ? EN_TEXT['inputModeButton']!
-                    : JA_TEXT['inputModeButton']!),
-              ),
-              // PopupMenuItem<int>(
-              //   value: 4,
-              //   child: Text('統計情報'),
-              // ),
-            ],
-          )
+          ),
         ],
       ),
       resizeToAvoidBottomInset: false,

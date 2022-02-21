@@ -26,7 +26,7 @@ class LectureTabScreen extends HookWidget {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
     final double seVolume = useProvider(seVolumeProvider).state;
 
-    final int numOfPages = 10;
+    final int numOfPages = 9;
 
     final List lecturePages = [
       LectureFirst(),
@@ -51,9 +51,6 @@ class LectureTabScreen extends HookWidget {
       enModeFlg
           ? LectureFigure('assets/images/lecture_hint_en.png')
           : LectureFigure('assets/images/lecture_hint.png'),
-      enModeFlg
-          ? LectureFigure('assets/images/lecture7_en.png')
-          : LectureFigure('assets/images/lecture7.png'),
       LectureLast(),
     ];
 

@@ -1,12 +1,13 @@
+// import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:lateral_thinking/widgets/title/another_app_link.widget.dart';
+import 'package:lateral_thinking/widgets/title/next_app_link.widget.dart';
 import 'package:lottie/lottie.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:firebase_database/firebase_database.dart';
 // import 'dart:developer' as developer;
 
 import 'dart:io';
@@ -122,14 +123,6 @@ class TitleScreen extends HookWidget {
     if (alreadyPlayedWarewolf != null) {
       context.read(alreadyPlayedWarewolfFlgProvider).state = true;
     }
-
-    // お助けモードの設定
-    context.read(helperModeFlgProvider).state =
-        prefs.getBool('helperModeFlg') ?? true;
-
-    // 入力時設定
-    context.read(displayInputFlgProvider).state =
-        prefs.getBool('displayInputFlg') ?? false;
 
     // 正解済みの問題を設定
     if (prefs.getStringList('alreadyAnsweredIds') == null) {
@@ -336,20 +329,73 @@ class TitleScreen extends HookWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Text(
-                  enModeFlg ? EN_TEXT['title']! : JA_TEXT['title']!,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    height: 1.2,
-                    fontSize: enModeFlg
-                        ? 38
-                        : height > 610
-                            ? 48
-                            : 41,
-                    fontFamily: 'YuseiMagic',
-                    color: Colors.yellow.shade200,
-                  ),
+                Stack(
+                  children: <Widget>[
+                    Text(
+                      enModeFlg ? EN_TEXT['title']! : JA_TEXT['title']!,
+                      style: TextStyle(
+                        fontFamily: 'YuseiMagic',
+                        fontSize: enModeFlg
+                            ? 0
+                            : height > 610
+                                ? 48
+                                : 41,
+                        foreground: Paint()
+                          ..style = PaintingStyle.stroke
+                          ..strokeWidth = 5
+                          ..color = Colors.blueGrey.shade900,
+                      ),
+                    ),
+                    Text(
+                      enModeFlg ? EN_TEXT['title']! : JA_TEXT['title']!,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: enModeFlg
+                            ? 38
+                            : height > 610
+                                ? 48
+                                : 41,
+                        fontFamily: 'YuseiMagic',
+                        foreground: Paint()
+                          ..shader = LinearGradient(
+                            colors: <Color>[
+                              Colors.yellow.shade400,
+                              Colors.yellow.shade300,
+                              Colors.yellow.shade500,
+                            ],
+                          ).createShader(
+                            const Rect.fromLTWH(
+                              0.0,
+                              100.0,
+                              250.0,
+                              70.0,
+                            ),
+                          ),
+                        shadows: const [
+                          Shadow(
+                            color: Colors.black,
+                            offset: Offset(8.0, 8.0),
+                            blurRadius: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
+                // Text(
+                //   enModeFlg ? EN_TEXT['title']! : JA_TEXT['title']!,
+                //   textAlign: TextAlign.center,
+                //   style: TextStyle(
+                //     height: 1.2,
+                //     fontSize: enModeFlg
+                //         ? 38
+                //         : height > 610
+                //             ? 48
+                //             : 41,
+                //     fontFamily: 'YuseiMagic',
+                //     color: Colors.yellow.shade200,
+                //   ),
+                // ),
                 Text(
                   enModeFlg ? EN_TEXT['subTitle']! : JA_TEXT['subTitle']!,
                   textAlign: TextAlign.center,
@@ -431,7 +477,7 @@ class TitleScreen extends HookWidget {
                             ),
                             _selectButton(
                                 context,
-                                '音量設定',
+                                '　音量設定　　',
                                 Colors.lime.shade700,
                                 Icon(Icons.volume_up),
                                 soundEffect,
@@ -449,11 +495,18 @@ class TitleScreen extends HookWidget {
                   children: [
                     const Spacer(),
                     SizedBox(
-                      height: 100,
+                      height: 80,
                       child: AnotherAppLink(
                         context: context,
                       ),
                     ),
+                    SizedBox(
+                      height: 100,
+                      child: NextAppLink(
+                        context: context,
+                      ),
+                    ),
+                    SizedBox(height: Platform.isAndroid ? 0 : 15),
                   ],
                 )
               : Container(),
@@ -501,6 +554,23 @@ class TitleScreen extends HookWidget {
               }
             } else if (buttonPuttern == 3) {
               toSoundModeModal(context);
+              // // 分析データ作成用
+              // for (int i = 1; i <= 69; i++) {
+              //   DatabaseReference firebaseInstance = FirebaseDatabase.instance
+              //       .reference()
+              //       .child('analytics_second/' + i.toString());
+
+              //   firebaseInstance.set({
+              //     'hint1Count': 0,
+              //     'hint2Count': 0,
+              //     'hint3Count': 0,
+              //     'subHintCount': 0,
+              //     'relatedWordCount': 0,
+              //     'questionCount': 0,
+              //     'userCount': 0,
+              //     'noHintCount': 0,
+              //   });
+              // }
             }
           },
           label: Text(text),

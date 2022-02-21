@@ -55,7 +55,7 @@ class WarewolfSettingScreen extends HookWidget {
             iconSize: 28,
             icon: Icon(
               Icons.help,
-              color: Colors.yellow.shade200,
+              color: Colors.yellow.shade50,
               size: 27,
             ),
             onPressed: () {

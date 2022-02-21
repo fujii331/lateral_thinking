@@ -11,6 +11,7 @@ class QuizListPagination extends HookWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(
+        top: 10,
         bottom: 10,
         right: 10,
         left: 10,

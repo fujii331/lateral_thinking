@@ -11,7 +11,6 @@ final subHintFlgProvider = StateProvider((ref) => false);
 final openingNumberProvider = StateProvider((ref) => 0);
 final openingNumberEnglishProvider = StateProvider((ref) => 0);
 final enModeFlgProvider = StateProvider((ref) => true);
-final helperModeFlgProvider = StateProvider((ref) => false);
 final displayInputFlgProvider = StateProvider((ref) => false);
 final alreadyAnsweredIdsProvider = StateProvider((ref) => <String>[]);
 final alreadyPlayedQuizFlgProvider = StateProvider((ref) => false);
