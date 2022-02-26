@@ -4,10 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
-
-import 'dart:io';
-import 'dart:async';
-import 'dart:math';
+import 'package:lateral_thinking/services/admob/reward_action.service.dart';
 
 import '../../providers/quiz.provider.dart';
 import '../../providers/common.provider.dart';
@@ -16,188 +13,29 @@ import '../reply_modal.widget.dart';
 import './ad_loading_modal.widget.dart';
 
 import '../../models/quiz.model.dart';
-import '../../advertising.dart';
 import '../../text.dart';
 
 class HintModal extends HookWidget {
+  final BuildContext screenContext;
   final Quiz quiz;
   final TextEditingController subjectController;
   final TextEditingController relatedWordController;
   final int workHintValue;
 
-  HintModal(
-    this.quiz,
-    this.subjectController,
-    this.relatedWordController,
-    this.workHintValue,
-  );
-
-  void _createRewardedAd(
-    ValueNotifier<RewardedAd?> rewardedAd,
-    int _numRewardedLoadAttempts,
-  ) {
-    RewardedAd.load(
-      adUnitId: Platform.isAndroid
-          ? ANDROID_HINT_REWQRD_ADVID
-          : IOS_HINT_REWQRD_ADVID,
-      // ? TEST_ANDROID_REWQRD_ADVID
-      // : TEST_IOS_REWQRD_ADVID, //RewardedAd.testAdUnitId,
-      request: AdRequest(),
-      rewardedAdLoadCallback: RewardedAdLoadCallback(
-        onAdLoaded: (RewardedAd ad) {
-          rewardedAd.value = ad;
-          _numRewardedLoadAttempts = 0;
-        },
-        onAdFailedToLoad: (LoadAdError error) {
-          rewardedAd.value = null;
-          _numRewardedLoadAttempts += 1;
-          if (_numRewardedLoadAttempts <= 3) {
-            _createRewardedAd(
-              rewardedAd,
-              _numRewardedLoadAttempts,
-            );
-          }
-        },
-      ),
-    );
-  }
-
-  Future loading(
-    BuildContext context,
-    ValueNotifier<RewardedAd?> rewardedAd,
-    ValueNotifier nowLoading,
-  ) async {
-    int _numRewardedLoadAttempts = 0;
-    nowLoading.value = true;
-    _createRewardedAd(
-      rewardedAd,
-      _numRewardedLoadAttempts,
-    );
-    for (int i = 0; i < 15; i++) {
-      if (rewardedAd.value != null) {
-        break;
-      }
-      await new Future.delayed(new Duration(seconds: 1));
-    }
-    nowLoading.value = false;
-  }
+  const HintModal({
+    Key? key,
+    required this.screenContext,
+    required this.quiz,
+    required this.subjectController,
+    required this.relatedWordController,
+    required this.workHintValue,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
-    final int hint = useProvider(hintProvider).state;
-    final nowLoading = useState(false);
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
     final double seVolume = useProvider(seVolumeProvider).state;
-
-    final List<Question> askedQuestions =
-        useProvider(askedQuestionsProvider).state;
-
-    List<int> currentQuestionIds = askedQuestions.map((askedQuestion) {
-      return askedQuestion.id;
-    }).toList();
-
-    void afterGotReward() => {
-          AwesomeDialog(
-            context: context,
-            dialogType: DialogType.SUCCES,
-            headerAnimationLoop: false,
-            animType: AnimType.SCALE,
-            width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
-            body: ReplyModal(
-              hint == 0
-                  ? enModeFlg
-                      ? EN_TEXT['openedHint1Helper']!
-                      : JA_TEXT['openedHint1Helper']!
-                  : hint == 1
-                      ? enModeFlg
-                          ? EN_TEXT['openedHint2']!
-                          : JA_TEXT['openedHint2']!
-                      : enModeFlg
-                          ? EN_TEXT['openedHint3']!
-                          : JA_TEXT['openedHint3']!,
-              0,
-            ),
-          )..show(),
-          context.read(hintProvider).state++,
-          context.read(selectedQuestionProvider).state = dummyQuestion,
-          context.read(displayReplyFlgProvider).state = false,
-          if (hint >= 1)
-            {
-              context.read(beforeWordProvider).state = enModeFlg
-                  ? EN_TEXT['selectQuestion']!
-                  : JA_TEXT['selectQuestion']!,
-              if (hint == 1)
-                {
-                  context.read(askingQuestionsProvider).state = _shuffle(quiz
-                      .questions
-                      .take(quiz.hintDisplayQuestionId)
-                      .where((question) =>
-                          !currentQuestionIds.contains(question.id))
-                      .toList()) as List<Question>,
-                }
-              else if (hint == 2)
-                {
-                  context.read(askingQuestionsProvider).state = quiz.questions
-                      .where((question) =>
-                          quiz.correctAnswerQuestionIds.contains(question.id) &&
-                          !currentQuestionIds.contains(question.id))
-                      .toList(),
-                },
-              if (context.read(askingQuestionsProvider).state.isEmpty)
-                {
-                  context.read(beforeWordProvider).state = enModeFlg
-                      ? EN_TEXT['notExistQuestion']!
-                      : JA_TEXT['notExistQuestion']!,
-                },
-            }
-          else
-            {
-              subjectController.text = '',
-              relatedWordController.text = '',
-              context.read(beforeWordProvider).state = '',
-              context.read(askingQuestionsProvider).state = [],
-              context.read(selectedSubjectProvider).state = '',
-              context.read(selectedRelatedWordProvider).state = '',
-            },
-        };
-
-    void _showRewardedAd(
-      BuildContext context,
-      RewardedAd? rewardAdValue,
-      bool enModeFlg,
-    ) {
-      if (rewardAdValue == null) {
-        return;
-      }
-      rewardAdValue.fullScreenContentCallback = FullScreenContentCallback(
-        onAdDismissedFullScreenContent: (RewardedAd ad) {
-          ad.dispose();
-        },
-        onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
-          ad.dispose();
-          Navigator.pop(context);
-          AwesomeDialog(
-            context: context,
-            dialogType: DialogType.ERROR,
-            headerAnimationLoop: false,
-            animType: AnimType.SCALE,
-            width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
-            body: ReplyModal(
-              enModeFlg ? EN_TEXT['notGetHint']! : JA_TEXT['notGetHint']!,
-              0,
-            ),
-          )..show();
-        },
-      );
-      rewardAdValue.setImmersiveMode(true);
-      rewardAdValue.show(
-          onUserEarnedReward: (RewardedAd ad, RewardItem reward) {
-        Navigator.pop(context);
-        afterGotReward();
-      });
-      rewardAdValue = null;
-    }
 
     final ValueNotifier<RewardedAd?> rewardedAd = useState(null);
 
@@ -336,67 +174,74 @@ class HintModal extends HookWidget {
                 ),
                 const SizedBox(width: 30),
                 ElevatedButton(
-                  onPressed: () async => workHintValue < 3
+                  onPressed: workHintValue < 3
                       ? quiz.id == 1
-                          ? {
+                          ? () {
                               soundEffect.play(
                                 'sounds/tap.mp3',
                                 isNotification: true,
                                 volume: seVolume,
-                              ),
-                              Navigator.pop(context),
-                              afterGotReward(),
+                              );
+                              Navigator.pop(context);
+                              afterGotHint(
+                                screenContext,
+                                quiz,
+                                subjectController,
+                                relatedWordController,
+                                enModeFlg,
+                              );
                             }
-                          : {
+                          : () async {
                               soundEffect.play(
                                 'sounds/tap.mp3',
                                 isNotification: true,
                                 volume: seVolume,
-                              ),
+                              );
                               showDialog<int>(
                                 context: context,
                                 barrierDismissible: false,
                                 builder: (BuildContext context) {
                                   return AdLoadingModal();
                                 },
-                              ),
-                              await loading(
-                                context,
+                              );
+                              // 広告のロード
+                              await rewardLoading(
                                 rewardedAd,
-                                nowLoading,
-                              ),
-                              if (rewardedAd.value != null)
-                                {
-                                  _showRewardedAd(
-                                    context,
-                                    rewardedAd.value,
-                                    enModeFlg,
+                                2,
+                              );
+                              if (rewardedAd.value != null) {
+                                showHintRewardedAd(
+                                  screenContext,
+                                  rewardedAd,
+                                  quiz,
+                                  subjectController,
+                                  relatedWordController,
+                                  enModeFlg,
+                                );
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              } else {
+                                Navigator.pop(context);
+                                AwesomeDialog(
+                                  context: context,
+                                  dialogType: DialogType.ERROR,
+                                  headerAnimationLoop: false,
+                                  animType: AnimType.SCALE,
+                                  width:
+                                      MediaQuery.of(context).size.width * .86 >
+                                              650
+                                          ? 650
+                                          : null,
+                                  body: ReplyModal(
+                                    enModeFlg
+                                        ? EN_TEXT['failedToLoad']!
+                                        : JA_TEXT['failedToLoad']!,
+                                    0,
                                   ),
-                                  Navigator.pop(context),
-                                }
-                              else
-                                {
-                                  Navigator.pop(context),
-                                  AwesomeDialog(
-                                    context: context,
-                                    dialogType: DialogType.ERROR,
-                                    headerAnimationLoop: false,
-                                    animType: AnimType.SCALE,
-                                    width: MediaQuery.of(context).size.width *
-                                                .86 >
-                                            650
-                                        ? 650
-                                        : null,
-                                    body: ReplyModal(
-                                      enModeFlg
-                                          ? EN_TEXT['failedToLoad']!
-                                          : JA_TEXT['failedToLoad']!,
-                                      0,
-                                    ),
-                                  )..show(),
-                                },
+                                ).show();
+                              }
                             }
-                      : {},
+                      : () {},
                   child: Text(
                     enModeFlg ? EN_TEXT['yesButton']! : JA_TEXT['yesButton']!,
                   ),
@@ -421,15 +266,4 @@ class HintModal extends HookWidget {
       ),
     );
   }
-}
-
-List _shuffle(List items) {
-  var random = new Random();
-  for (var i = items.length - 1; i > 0; i--) {
-    var n = random.nextInt(i + 1);
-    var temp = items[i];
-    items[i] = items[n];
-    items[n] = temp;
-  }
-  return items;
 }

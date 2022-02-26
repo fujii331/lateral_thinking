@@ -4,7 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../providers/common.provider.dart';
-import '../../models/warewolf.model.dart';
+import '../../models/werewolf.model.dart';
 
 class JudgingModal extends HookWidget {
   final List<Player> mostVotedList;

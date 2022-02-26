@@ -26,6 +26,7 @@ class QuizListScreen extends HookWidget {
 
     final int numOfPages = ((openingNumber + 1) / 6).ceil();
     final bool enModeFlg = useProvider(enModeFlgProvider).state;
+    final height = MediaQuery.of(context).size.height;
 
     final List<String> titles = [
       enModeFlg ? EN_TEXT['listPageTitle1']! : JA_TEXT['listPageTitle1']!,
@@ -44,57 +45,76 @@ class QuizListScreen extends HookWidget {
       enModeFlg ? "Children's room" : '子供のお部屋',
     ];
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          enModeFlg ? EN_TEXT['listTitle']! : JA_TEXT['listTitle']!,
+    return Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/background.png'),
+          fit: BoxFit.cover,
         ),
-        centerTitle: true,
-        backgroundColor: Colors.blueGrey.shade900.withOpacity(0.9),
-        actions: <Widget>[
-          IconButton(
-            iconSize: 28,
-            icon: Icon(
-              Icons.help,
-              color: Colors.yellow.shade50,
-              size: 27,
-            ),
-            onPressed: () {
-              soundEffect.play(
-                'sounds/tap.mp3',
-                isNotification: true,
-                volume: seVolume,
-              );
-              Navigator.of(context).pushNamed(
-                LectureTabScreen.routeName,
-                arguments: true,
-              );
-            },
-          ),
-        ],
       ),
-      resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          background(),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              QuizListDetailTitle(
-                titles[screenNo.value],
-              ),
-              QuizListDetail(
-                openingNumber,
-                screenNo,
-                numOfPages,
-              ),
-              QuizListPagination(
-                screenNo,
-                numOfPages,
-              ),
-            ],
+      child: Scaffold(
+        backgroundColor: Colors.black.withOpacity(0.3),
+        appBar: AppBar(
+          title: Text(
+            enModeFlg ? EN_TEXT['listTitle']! : JA_TEXT['listTitle']!,
+            style: const TextStyle(
+              fontFamily: 'KaiseiOpti',
+            ),
           ),
-        ],
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(10),
+              bottomRight: Radius.circular(10),
+            ),
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.blueGrey.shade900.withOpacity(0.8),
+          elevation: 0,
+          actions: <Widget>[
+            IconButton(
+              iconSize: 28,
+              icon: Icon(
+                Icons.help,
+                color: Colors.yellow.shade50,
+                size: 27,
+              ),
+              onPressed: () {
+                soundEffect.play(
+                  'sounds/tap.mp3',
+                  isNotification: true,
+                  volume: seVolume,
+                );
+                Navigator.of(context).pushNamed(
+                  LectureTabScreen.routeName,
+                  arguments: true,
+                );
+              },
+            ),
+          ],
+        ),
+        resizeToAvoidBottomInset: false,
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: height > 550 ? 10 : 5),
+            QuizListDetailTitle(
+              titles[screenNo.value],
+            ),
+            SizedBox(height: height > 550 ? 10 : 5),
+            QuizListDetail(
+              openingNumber,
+              screenNo,
+              numOfPages,
+            ),
+            const Spacer(),
+            SizedBox(height: height > 550 ? 10 : 0),
+            QuizListPagination(
+              screenNo,
+              numOfPages,
+            ),
+            SizedBox(height: height > 550 ? 10 : 0),
+          ],
+        ),
       ),
     );
   }

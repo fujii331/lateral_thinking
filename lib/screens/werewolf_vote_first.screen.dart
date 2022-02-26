@@ -6,10 +6,10 @@ import 'package:audioplayers/audioplayers.dart';
 import '../providers/common.provider.dart';
 
 import '../widgets/background.widget.dart';
-import './warewolf_vote.screen.dart';
+import './werewolf_vote.screen.dart';
 
-class WarewolfVoteFirstScreen extends HookWidget {
-  static const routeName = '/warewolf-vote-first';
+class WerewolfVoteFirstScreen extends HookWidget {
+  static const routeName = '/werewolf-vote-first';
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +70,7 @@ class WarewolfVoteFirstScreen extends HookWidget {
                               volume: seVolume,
                             );
                             Navigator.of(context).pushReplacementNamed(
-                              WarewolfVoteScreen.routeName,
+                              WerewolfVoteScreen.routeName,
                               arguments: 1,
                             );
                           },

@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -8,23 +9,24 @@ import './screens/title.screen.dart';
 import './screens/lecture_tab.screen.dart';
 import './screens/quiz_list.screen.dart';
 import './screens/quiz_detail_tab.screen.dart';
-import './screens/warewolf_setting.screen.dart';
-import './screens/warewolf_preparation.screen.dart';
-import './screens/warewolf_preparation_first.screen.dart';
-import './screens/warewolf_playing.screen.dart';
-import './screens/warewolf_vote.screen.dart';
-import './screens/warewolf_vote_first.screen.dart';
-import './screens/warewolf_discussion.screen.dart';
-import './screens/warewolf_voted_confirm.screen.dart';
-import './screens/warewolf_result.screen.dart';
-import './screens/warewolf_summary_result.screen.dart';
-import './screens/warewolf_lecture.screen.dart';
+import './screens/werewolf_setting.screen.dart';
+import './screens/werewolf_preparation.screen.dart';
+import './screens/werewolf_preparation_first.screen.dart';
+import './screens/werewolf_playing.screen.dart';
+import './screens/werewolf_vote.screen.dart';
+import './screens/werewolf_vote_first.screen.dart';
+import './screens/werewolf_discussion.screen.dart';
+import './screens/werewolf_voted_confirm.screen.dart';
+import './screens/werewolf_result.screen.dart';
+import './screens/werewolf_summary_result.screen.dart';
+import './screens/werewolf_lecture.screen.dart';
 
 import './providers/common.provider.dart';
-import './providers/warewolf.provider.dart';
+import './providers/werewolf.provider.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   MobileAds.instance.initialize();
 
   runApp(
@@ -162,28 +164,28 @@ class MyApp extends HookWidget {
         QuizListScreen.routeName: (BuildContext context) => QuizListScreen(),
         QuizDetailTabScreen.routeName: (BuildContext context) =>
             QuizDetailTabScreen(),
-        WarewolfSettingScreen.routeName: (BuildContext context) =>
-            WarewolfSettingScreen(),
-        WarewolfPreparationFirstScreen.routeName: (BuildContext context) =>
-            WarewolfPreparationFirstScreen(),
-        WarewolfPreparationScreen.routeName: (BuildContext context) =>
-            WarewolfPreparationScreen(),
-        WarewolfPlayingScreen.routeName: (BuildContext context) =>
-            WarewolfPlayingScreen(),
-        WarewolfVoteFirstScreen.routeName: (BuildContext context) =>
-            WarewolfVoteFirstScreen(),
-        WarewolfVoteScreen.routeName: (BuildContext context) =>
-            WarewolfVoteScreen(),
-        WarewolfDiscussionScreen.routeName: (BuildContext context) =>
-            WarewolfDiscussionScreen(),
-        WarewolfVotedConfirmScreen.routeName: (BuildContext context) =>
-            WarewolfVotedConfirmScreen(),
-        WarewolfResultScreen.routeName: (BuildContext context) =>
-            WarewolfResultScreen(),
-        WarewolfSummaryResultScreen.routeName: (BuildContext context) =>
-            WarewolfSummaryResultScreen(),
-        WarewolfLectureScreen.routeName: (BuildContext context) =>
-            WarewolfLectureScreen(),
+        WerewolfSettingScreen.routeName: (BuildContext context) =>
+            WerewolfSettingScreen(),
+        WerewolfPreparationFirstScreen.routeName: (BuildContext context) =>
+            WerewolfPreparationFirstScreen(),
+        WerewolfPreparationScreen.routeName: (BuildContext context) =>
+            WerewolfPreparationScreen(),
+        WerewolfPlayingScreen.routeName: (BuildContext context) =>
+            WerewolfPlayingScreen(),
+        WerewolfVoteFirstScreen.routeName: (BuildContext context) =>
+            WerewolfVoteFirstScreen(),
+        WerewolfVoteScreen.routeName: (BuildContext context) =>
+            WerewolfVoteScreen(),
+        WerewolfDiscussionScreen.routeName: (BuildContext context) =>
+            WerewolfDiscussionScreen(),
+        WerewolfVotedConfirmScreen.routeName: (BuildContext context) =>
+            WerewolfVotedConfirmScreen(),
+        WerewolfResultScreen.routeName: (BuildContext context) =>
+            WerewolfResultScreen(),
+        WerewolfSummaryResultScreen.routeName: (BuildContext context) =>
+            WerewolfSummaryResultScreen(),
+        WerewolfLectureScreen.routeName: (BuildContext context) =>
+            WerewolfLectureScreen(),
       },
       onUnknownRoute: (settings) {
         return MaterialPageRoute(

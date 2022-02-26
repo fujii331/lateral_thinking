@@ -4,15 +4,15 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import '../../providers/common.provider.dart';
-import '../../screens/warewolf_vote_first.screen.dart';
+import '../../screens/werewolf_vote_first.screen.dart';
 
-class ConfirmDiscussionedModal extends HookWidget {
+class ConfirmDiscussedModal extends HookWidget {
   final bool timeLimitedFlg;
   final ValueNotifier<bool> timeStopFlg;
   final ValueNotifier<DateTime> time;
   final ValueNotifier<bool> finishFlg;
 
-  ConfirmDiscussionedModal(
+  ConfirmDiscussedModal(
     this.timeLimitedFlg,
     this.timeStopFlg,
     this.time,
@@ -102,7 +102,7 @@ class ConfirmDiscussionedModal extends HookWidget {
                     finishFlg.value = true;
                     context.read(bgmProvider).state.stop();
                     Navigator.of(context).pushReplacementNamed(
-                      WarewolfVoteFirstScreen.routeName,
+                      WerewolfVoteFirstScreen.routeName,
                     );
                   },
                   child: Text('進む'),

@@ -5,12 +5,12 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 
 import '../providers/common.provider.dart';
-import '../providers/warewolf.provider.dart';
+import '../providers/werewolf.provider.dart';
 import '../widgets/background.widget.dart';
-import '../widgets/warewolf/confirm_vote_modal.widget.dart';
+import '../widgets/werewolf/confirm_vote_modal.widget.dart';
 
-class WarewolfVoteScreen extends HookWidget {
-  static const routeName = '/warewolf-vote';
+class WerewolfVoteScreen extends HookWidget {
+  static const routeName = '/werewolf-vote';
 
   @override
   Widget build(BuildContext context) {

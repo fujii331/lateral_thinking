@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:lateral_thinking/services/quiz_detail_tab/execute_question.service.dart';
 
 import '../../providers/quiz.provider.dart';
 import '../../providers/common.provider.dart';
@@ -12,27 +13,14 @@ import '../../text.dart';
 class QuestionInput extends HookWidget {
   final Question selectedQuestion;
   final List<Question> askingQuestions;
+  final Quiz quiz;
 
-  QuestionInput(this.selectedQuestion, this.askingQuestions);
-
-  void _executeQuestion(BuildContext context, List<Question> askingQuestions,
-      Question selectedQuestion) {
-    context.read(questionCountProvider).state++;
-    context.read(replyProvider).state = selectedQuestion.reply;
-    context.read(displayReplyFlgProvider).state = true;
-    context.read(askedQuestionsProvider).state.add(selectedQuestion);
-    context.read(remainingQuestionsProvider).state = context
-        .read(remainingQuestionsProvider)
-        .state
-        .where((question) => question.id != selectedQuestion.id)
-        .toList();
-
-    context.read(askingQuestionsProvider).state = askingQuestions
-        .where((question) => question.id != selectedQuestion.id)
-        .toList();
-    context.read(beforeWordProvider).state = selectedQuestion.asking;
-    context.read(selectedQuestionProvider).state = dummyQuestion;
-  }
+  const QuestionInput({
+    Key? key,
+    required this.selectedQuestion,
+    required this.askingQuestions,
+    required this.quiz,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -96,20 +84,18 @@ class QuestionInput extends HookWidget {
               ),
             ),
             ElevatedButton(
-              onPressed: () => selectedQuestion.id != 0
-                  ? {
-                      _executeQuestion(
+              onPressed: selectedQuestion.id != 0
+                  ? () {
+                      executeQuestion(
                         context,
                         askingQuestions,
                         selectedQuestion,
-                      ),
-                      soundEffect.play(
-                        'sounds/quiz_button.mp3',
-                        isNotification: true,
-                        volume: seVolume,
-                      ),
+                        soundEffect,
+                        seVolume,
+                        quiz,
+                      );
                     }
-                  : {},
+                  : () {},
               child: Text(
                 enModeFlg ? EN_TEXT['ask']! : JA_TEXT['ask']!,
               ),

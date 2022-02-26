@@ -39,9 +39,9 @@ class QuizListDetail extends HookWidget {
     return Container(
       height: height > 610
           ? 420
-          : height > 480
+          : height > 540
               ? 338
-              : height * 0.65,
+              : height - 220,
       margin: EdgeInsets.symmetric(
         vertical: 5,
         horizontal: 15,
@@ -49,6 +49,9 @@ class QuizListDetail extends HookWidget {
       child: Stack(
         children: [
           ListView.builder(
+            padding: EdgeInsets.only(
+              top: 0,
+            ),
             itemBuilder: (ctx, index) {
               int quizNumber = index + 6 * (screenNo.value);
               return quizNumber < openingNumber
@@ -96,7 +99,10 @@ class QuizListDetail extends HookWidget {
                           width: MediaQuery.of(context).size.width * .86 > 650
                               ? 650
                               : null,
-                          body: AdvertisingModal(openingNumber),
+                          body: AdvertisingModal(
+                            quizId: openingNumber,
+                            screenContext: context,
+                          ),
                         )..show(),
                       },
                       child: Container(

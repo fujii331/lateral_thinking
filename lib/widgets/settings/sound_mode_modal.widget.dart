@@ -66,10 +66,11 @@ class SoundModeModal extends HookWidget {
               max: 100,
               divisions: 10,
               onChanged: (double value) async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
+                SharedPreferences preference =
+                    await SharedPreferences.getInstance();
                 context.read(bgmProvider).state.setVolume(value * 0.01);
                 context.read(bgmVolumeProvider).state = value * 0.01;
-                prefs.setDouble('bgmVolume', value * 0.01);
+                preference.setDouble('bgmVolume', value * 0.01);
               },
             ),
           ),
@@ -100,9 +101,10 @@ class SoundModeModal extends HookWidget {
               max: 100,
               divisions: 10,
               onChanged: (double value) async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
+                SharedPreferences preference =
+                    await SharedPreferences.getInstance();
                 context.read(seVolumeProvider).state = value * 0.01;
-                prefs.setDouble('seVolume', value * 0.01);
+                preference.setDouble('seVolume', value * 0.01);
               },
             ),
           ),

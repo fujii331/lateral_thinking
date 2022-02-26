@@ -11,12 +11,13 @@ final subHintFlgProvider = StateProvider((ref) => false);
 final openingNumberProvider = StateProvider((ref) => 0);
 final openingNumberEnglishProvider = StateProvider((ref) => 0);
 final enModeFlgProvider = StateProvider((ref) => true);
-final displayInputFlgProvider = StateProvider((ref) => false);
 final alreadyAnsweredIdsProvider = StateProvider((ref) => <String>[]);
 final alreadyPlayedQuizFlgProvider = StateProvider((ref) => false);
 final playingQuizIdProvider = StateProvider((ref) => 0);
 final relatedWordCountProvider = StateProvider((ref) => 0);
 final questionCountProvider = StateProvider((ref) => 0);
+final readyForAnswersProvider = StateProvider((ref) => <Answer>[]);
+final importantQuestionedIdsProvider = StateProvider((ref) => <int>[]);
 
 // detail画面用
 final selectedQuestionProvider = StateProvider((ref) => dummyQuestion);

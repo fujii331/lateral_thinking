@@ -4,14 +4,14 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import '../providers/common.provider.dart';
-import '../providers/warewolf.provider.dart';
+import '../providers/werewolf.provider.dart';
 
 import '../widgets/background.widget.dart';
-import './warewolf_setting.screen.dart';
-import '../../models/warewolf.model.dart';
+import './werewolf_setting.screen.dart';
+import '../../models/werewolf.model.dart';
 
-class WarewolfSummaryResultScreen extends HookWidget {
-  static const routeName = '/warewolf-summary-result';
+class WerewolfSummaryResultScreen extends HookWidget {
+  static const routeName = '/werewolf-summary-result';
 
   @override
   Widget build(BuildContext context) {
@@ -70,39 +70,6 @@ class WarewolfSummaryResultScreen extends HookWidget {
         mostHighestPointIdList = [6];
       }
     }
-
-    // final BannerAd myBanner = BannerAd(
-    //   adUnitId: Platform.isAndroid
-    //       // ? ANDROID_SUMMARY_RESULT_BANNER_ADVID
-    //       // : IOS_SUMMARY_RESULT_BANNER_ADVID,
-    //       ? TEST_ANDROID_BANNER_ADVID
-    //       : TEST_IOS_BANNER_ADVID,
-    //   size: AdSize.banner,
-    //   request: AdRequest(),
-    //   listener: AdListener(
-    //     // 広告が正常にロードされたときに呼ばれます。
-    //     onAdLoaded: (Ad ad) {
-    //       // print('バナー広告がロードされました。');
-    //       loadedFlg.value = true;
-    //     },
-    //     // 広告のロードが失敗した際に呼ばれます。
-    //     onAdFailedToLoad: (Ad ad, LoadAdError error) {
-    //       // print('バナー広告のロードに失敗しました。: $error');
-    //       ad.dispose();
-    //     },
-    //     // 広告が開かれたときに呼ばれます。
-    //     // onAdOpened: (Ad ad) => print('バナー広告が開かれました。'),
-    //     // 広告が閉じられたときに呼ばれます。
-    //     onAdClosed: (Ad ad) {
-    //       ad.dispose();
-    //       // print('バナー広告が閉じられました。');
-    //     },
-    //     // ユーザーがアプリを閉じるときに呼ばれます。
-    //     onApplicationExit: (Ad ad) => print('ユーザーがアプリを離れました。'),
-    //   ),
-    // );
-
-    // myBanner.load();
 
     return WillPopScope(
       onWillPop: () async => false,
@@ -194,7 +161,7 @@ class WarewolfSummaryResultScreen extends HookWidget {
                               Navigator.popUntil(
                                   context,
                                   ModalRoute.withName(
-                                      WarewolfSettingScreen.routeName));
+                                      WerewolfSettingScreen.routeName));
                             },
                             child: Text(
                               '設定画面に戻る',

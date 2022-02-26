@@ -4,14 +4,14 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import '../providers/common.provider.dart';
-import '../providers/warewolf.provider.dart';
+import '../providers/werewolf.provider.dart';
 
 import '../widgets/background.widget.dart';
-import './warewolf_summary_result.screen.dart';
-import '../../models/warewolf.model.dart';
+import './werewolf_summary_result.screen.dart';
+import '../../models/werewolf.model.dart';
 
-class WarewolfResultScreen extends HookWidget {
-  static const routeName = '/warewolf-result';
+class WerewolfResultScreen extends HookWidget {
+  static const routeName = '/werewolf-result';
 
   @override
   Widget build(BuildContext context) {
@@ -263,7 +263,7 @@ class WarewolfResultScreen extends HookWidget {
                                 volume: seVolume,
                               );
                               Navigator.of(context).pushReplacementNamed(
-                                WarewolfSummaryResultScreen.routeName,
+                                WerewolfSummaryResultScreen.routeName,
                               );
                             },
                             child: Text(

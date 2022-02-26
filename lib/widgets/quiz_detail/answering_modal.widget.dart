@@ -23,7 +23,6 @@ class AnsweringModal extends HookWidget {
     final displayFlg1 = useState<bool>(false);
     final displayFlg2 = useState<bool>(false);
     final displayFlg3 = useState<bool>(false);
-    final displayFlg4 = useState<bool>(false);
 
     useEffect(() {
       WidgetsBinding.instance!.addPostFrameCallback((_) async {
@@ -43,13 +42,6 @@ class AnsweringModal extends HookWidget {
         );
         displayFlg2.value = false;
         displayFlg3.value = true;
-        if (correctFlg) {
-          await new Future.delayed(
-            new Duration(seconds: 1),
-          );
-          displayFlg3.value = false;
-          displayFlg4.value = true;
-        }
       });
       return null;
     }, const []);
@@ -87,11 +79,6 @@ class AnsweringModal extends HookWidget {
                             randomNumber3.toString() +
                             '.png'),
                   ),
-                  AnimatedOpacity(
-                    duration: const Duration(milliseconds: 500),
-                    opacity: displayFlg4.value ? 1 : 0,
-                    child: Image.asset('assets/images/true_4_1.png'),
-                  )
                 ],
               ),
             ),

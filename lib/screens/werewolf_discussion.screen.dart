@@ -6,14 +6,14 @@ import 'package:intl/intl.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'dart:async';
 
-import '../providers/warewolf.provider.dart';
+import '../providers/werewolf.provider.dart';
 import '../widgets/background.widget.dart';
-import '../widgets/warewolf/confirm_discussioned_modal.widget.dart';
-import '../widgets/warewolf/ready_modal.widget.dart';
+import '../widgets/werewolf/confirm_discussed_modal.widget.dart';
+import '../widgets/werewolf/ready_modal.widget.dart';
 import '../providers/common.provider.dart';
 
-class WarewolfDiscussionScreen extends HookWidget {
-  static const routeName = '/warewolf-discussion';
+class WerewolfDiscussionScreen extends HookWidget {
+  static const routeName = '/werewolf-discussion';
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +69,7 @@ class WarewolfDiscussionScreen extends HookWidget {
                 animType: AnimType.SCALE,
                 width:
                     MediaQuery.of(context).size.width * .86 > 500 ? 500 : null,
-                body: ConfirmDiscussionedModal(
+                body: ConfirmDiscussedModal(
                   true,
                   timeStopFlg,
                   time,
@@ -229,7 +229,7 @@ class WarewolfDiscussionScreen extends HookWidget {
                                             500
                                         ? 500
                                         : null,
-                                    body: ConfirmDiscussionedModal(
+                                    body: ConfirmDiscussedModal(
                                       false,
                                       timeStopFlg,
                                       time,

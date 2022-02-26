@@ -54,8 +54,9 @@ class QuizDetail extends HookWidget {
                   relatedWordController,
                 ),
                 QuestionInput(
-                  selectedQuestion,
-                  askingQuestions,
+                  selectedQuestion: selectedQuestion,
+                  askingQuestions: askingQuestions,
+                  quiz: quiz,
                 ),
                 QuestionReply(
                   displayReplyFlg,

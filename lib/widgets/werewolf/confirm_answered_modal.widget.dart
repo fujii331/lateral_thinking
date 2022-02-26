@@ -4,12 +4,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import '../../providers/common.provider.dart';
-import '../../providers/warewolf.provider.dart';
+import '../../providers/werewolf.provider.dart';
 
-import '../../models/warewolf.model.dart';
-import '../../screens/warewolf_vote_first.screen.dart';
-import '../../screens/warewolf_discussion.screen.dart';
-import '../../screens/warewolf_result.screen.dart';
+import '../../models/werewolf.model.dart';
+import '../../screens/werewolf_vote_first.screen.dart';
+import '../../screens/werewolf_discussion.screen.dart';
+import '../../screens/werewolf_result.screen.dart';
 
 class ConfirmAnsweredModal extends HookWidget {
   final bool timeLimitedFlg;
@@ -167,7 +167,7 @@ class ConfirmAnsweredModal extends HookWidget {
                                     isNotification: true,
                                   );
                                   Navigator.of(context).pushReplacementNamed(
-                                    WarewolfResultScreen.routeName,
+                                    WerewolfResultScreen.routeName,
                                     arguments: [
                                       [
                                         Player(
@@ -505,13 +505,13 @@ class ConfirmAnsweredModal extends HookWidget {
                                         context.read(bgmProvider).state.stop();
                                         Navigator.of(context)
                                             .pushReplacementNamed(
-                                          WarewolfVoteFirstScreen.routeName,
+                                          WerewolfVoteFirstScreen.routeName,
                                         );
                                       } else {
                                         context.read(bgmProvider).state.stop();
                                         Navigator.of(context)
                                             .pushReplacementNamed(
-                                          WarewolfDiscussionScreen.routeName,
+                                          WerewolfDiscussionScreen.routeName,
                                         );
                                       }
                                     },

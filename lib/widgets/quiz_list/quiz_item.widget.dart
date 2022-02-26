@@ -28,6 +28,8 @@ class QuizItem extends HookWidget {
       context.read(playingQuizIdProvider).state = quiz.id;
       context.read(relatedWordCountProvider).state = 0;
       context.read(questionCountProvider).state = 0;
+      context.read(readyForAnswersProvider).state = [];
+      context.read(importantQuestionedIdsProvider).state = [];
     }
 
     context.read(replyProvider).state = '';
@@ -51,11 +53,12 @@ class QuizItem extends HookWidget {
     final double seVolume = useProvider(seVolumeProvider).state;
     final List<String> alreadyAnsweredIds =
         useProvider(alreadyAnsweredIdsProvider).state;
+    final bool heightOk = height > 620;
 
     return Stack(
       children: [
         Container(
-          height: height > 620 ? 52 : 45,
+          height: heightOk ? 52 : 45,
           alignment: Alignment.center,
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -84,75 +87,75 @@ class QuizItem extends HookWidget {
             ),
           ),
           margin: EdgeInsets.symmetric(
-            vertical: height > 620 ? 8 : 6,
+            vertical: heightOk ? 8 : 6,
             horizontal: 5,
           ),
           child: ListTile(
             leading: Container(
               padding: EdgeInsets.only(
-                  top: height > 620 ? 5 : 0,
-                  bottom: height > 620 ? 10 : 15,
-                  left: 5,
-                  right: 5),
+                top: heightOk ? 5 : 1,
+                bottom: heightOk ? 10 : 15,
+                left: 5,
+                right: 5,
+              ),
               child: Text(
                 enModeFlg
                     ? EN_TEXT['listPrefix']! + quiz.id.toString()
                     : JA_TEXT['listPrefix']! + quiz.id.toString(),
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 20,
+                  fontSize: heightOk ? 20 : 18,
                   color: Colors.purple.shade500,
                 ),
               ),
             ),
             title: Container(
               padding: EdgeInsets.only(
-                  top: height > 620 ? 5 : 0,
-                  bottom: height > 620 ? 10 : 15,
-                  right: 5),
+                  top: heightOk ? 5 : 1, bottom: heightOk ? 10 : 15, right: 5),
               child: Text(
                 quiz.title,
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: heightOk ? 20 : 17,
                 ),
               ),
             ),
             trailing: Container(
               padding: EdgeInsets.only(
-                bottom: height > 620
+                bottom: heightOk
                     ? 6
                     : quiz.id == 1
                         ? 14
                         : 12,
               ),
-              width: 70,
+              width: heightOk ? 70 : 60,
               child: quiz.difficulty == 0
                   ? Text(
                       enModeFlg ? 'Trial' : '練習用',
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: heightOk ? 18 : 16,
                         color: Colors.orange.shade900,
                         fontWeight: FontWeight.bold,
+                        fontFamily: 'KaiseiOpti',
                       ),
                     )
                   : Row(
                       children: [
                         Icon(
                           Icons.star,
-                          size: 22,
+                          size: heightOk ? 22 : 20,
                           color: Colors.yellow.shade400,
                         ),
                         quiz.difficulty > 1
                             ? Icon(
                                 Icons.star,
-                                size: 22,
+                                size: heightOk ? 22 : 20,
                                 color: Colors.yellow.shade500,
                               )
                             : Container(),
                         quiz.difficulty > 2
                             ? Icon(
                                 Icons.star,
-                                size: 22,
+                                size: heightOk ? 22 : 20,
                                 color: Colors.yellow.shade600,
                               )
                             : Container(),
@@ -172,7 +175,7 @@ class QuizItem extends HookWidget {
         !enModeFlg && alreadyAnsweredIds.contains(quiz.id.toString())
             ? Container(
                 padding: EdgeInsets.only(
-                  top: height > 620 ? 7 : 4,
+                  top: heightOk ? 7 : 4,
                   left: 10,
                 ),
                 child: Text(

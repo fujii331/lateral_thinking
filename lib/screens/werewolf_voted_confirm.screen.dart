@@ -3,69 +3,18 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-
-import 'dart:io';
+import 'package:lateral_thinking/services/admob/interstitial_action.service.dart';
 
 import '../providers/common.provider.dart';
-import '../providers/warewolf.provider.dart';
-import '../../models/warewolf.model.dart';
-import '../../advertising.dart';
+import '../providers/werewolf.provider.dart';
+import '../../models/werewolf.model.dart';
 
 import '../widgets/background.widget.dart';
-import './warewolf_result.screen.dart';
-import '../widgets/warewolf/judging_modal.widget.dart';
+import './werewolf_result.screen.dart';
+import '../widgets/werewolf/judging_modal.widget.dart';
 
-class WarewolfVotedConfirmScreen extends HookWidget {
-  static const routeName = '/warewolf-voted-confirm';
-
-  void _createInterstitialAd(
-    ValueNotifier<InterstitialAd?> myInterstitial,
-    ValueNotifier<int> numInterstitialLoadAttempts,
-  ) {
-    InterstitialAd.load(
-      adUnitId: Platform.isAndroid
-          ? ANDROID_WAREWOLF_INTERSTITIAL_ADVID
-          : IOS_WAREWOLF_INTERSTITIAL_ADVID,
-      // ? TEST_ANDROID_INTERSTITIAL_ADVID
-      // : TEST_IOS_INTERSTITIAL_ADVID, //InterstitialAd.testAdUnitId
-      request: AdRequest(),
-      adLoadCallback: InterstitialAdLoadCallback(
-        onAdLoaded: (InterstitialAd ad) {
-          myInterstitial.value = ad;
-          numInterstitialLoadAttempts.value = 0;
-          myInterstitial.value!.setImmersiveMode(true);
-        },
-        onAdFailedToLoad: (LoadAdError error) {
-          numInterstitialLoadAttempts.value += 1;
-          myInterstitial.value = null;
-          if (numInterstitialLoadAttempts.value <= 3) {
-            _createInterstitialAd(
-              myInterstitial,
-              numInterstitialLoadAttempts,
-            );
-          }
-        },
-      ),
-    );
-  }
-
-  void _showInterstitialAd(
-    InterstitialAd? myInterstitialValue,
-  ) {
-    if (myInterstitialValue == null) {
-      return;
-    }
-    myInterstitialValue.fullScreenContentCallback = FullScreenContentCallback(
-      onAdDismissedFullScreenContent: (InterstitialAd ad) {
-        ad.dispose();
-      },
-      onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
-        ad.dispose();
-      },
-    );
-    myInterstitialValue.show();
-    myInterstitialValue = null;
-  }
+class WerewolfVotedConfirmScreen extends HookWidget {
+  static const routeName = '/werewolf-voted-confirm';
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +24,6 @@ class WarewolfVotedConfirmScreen extends HookWidget {
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
     final double seVolume = useProvider(seVolumeProvider).state;
     final answeredPlayerId = useProvider(answeredPlayerIdProvider).state;
-    final double bgmVolume = useProvider(bgmVolumeProvider).state;
     final Vote votingDestination = useProvider(votingDestinationProvider).state;
 
     final player1 = useProvider(player1Provider).state;
@@ -85,12 +33,21 @@ class WarewolfVotedConfirmScreen extends HookWidget {
     final player5 = useProvider(player5Provider).state;
     final player6 = useProvider(player6Provider).state;
 
-    final numInterstitialLoadAttempts = useState(0);
-
-    final ValueNotifier<InterstitialAd?> myInterstitial = useState(null);
-
     int mostVotedPoint = vote.player1;
     List<Player> mostVotedList = [player1];
+
+    final ValueNotifier<InterstitialAd?> interstitialAd = useState(null);
+
+    useEffect(() {
+      WidgetsBinding.instance!.addPostFrameCallback((_) async {
+        // 広告読み込み
+        interstitialLoading(
+          interstitialAd,
+          2,
+        );
+      });
+      return null;
+    }, const []);
 
     if (vote.player2 >= mostVotedPoint) {
       if (vote.player2 == mostVotedPoint) {
@@ -172,10 +129,6 @@ class WarewolfVotedConfirmScreen extends HookWidget {
                       child: ElevatedButton(
                         onPressed: confirmFlg.value
                             ? () async {
-                                _createInterstitialAd(
-                                  myInterstitial,
-                                  numInterstitialLoadAttempts,
-                                );
                                 soundEffect.play(
                                   'sounds/tap.mp3',
                                   isNotification: true,
@@ -355,8 +308,11 @@ class WarewolfVotedConfirmScreen extends HookWidget {
                                   isNotification: true,
                                 );
 
-                                if (myInterstitial.value != null) {
-                                  _showInterstitialAd(myInterstitial.value);
+                                if (interstitialAd.value != null) {
+                                  showInterstitialAd(
+                                    context,
+                                    interstitialAd,
+                                  );
                                 }
 
                                 await new Future.delayed(
@@ -368,7 +324,7 @@ class WarewolfVotedConfirmScreen extends HookWidget {
 
                                 // 結果画面に移行
                                 Navigator.of(context).pushReplacementNamed(
-                                  WarewolfResultScreen.routeName,
+                                  WerewolfResultScreen.routeName,
                                   arguments: [
                                     mostVotedList,
                                     wolfVotedFlg,

@@ -91,6 +91,7 @@ class QuizItemAd extends HookWidget {
                     fontSize: 18,
                     color: Colors.orange.shade900,
                     fontWeight: FontWeight.bold,
+                    fontFamily: 'KaiseiOpti',
                   ),
                 )
               : Row(

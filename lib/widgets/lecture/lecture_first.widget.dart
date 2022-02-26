@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../background.widget.dart';
 import '../../providers/quiz.provider.dart';
 import '../../text.dart';
 
@@ -13,7 +12,6 @@ class LectureFirst extends HookWidget {
 
     return Stack(
       children: <Widget>[
-        background(),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -30,7 +28,7 @@ class LectureFirst extends HookWidget {
               enModeFlg ? EN_TEXT['boyaName']! : JA_TEXT['boyaName']!,
               style: TextStyle(
                 fontSize: 26.0,
-                color: Colors.white,
+                color: Colors.grey.shade500,
                 fontFamily: 'YuseiMagic',
               ),
             ),

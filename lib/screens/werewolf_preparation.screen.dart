@@ -3,14 +3,14 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-import '../providers/warewolf.provider.dart';
+import '../providers/werewolf.provider.dart';
 import '../providers/common.provider.dart';
 
 import '../widgets/background.widget.dart';
-import './warewolf_playing.screen.dart';
+import './werewolf_playing.screen.dart';
 
-class WarewolfPreparationScreen extends HookWidget {
-  static const routeName = '/warewolf-preparation';
+class WerewolfPreparationScreen extends HookWidget {
+  static const routeName = '/werewolf-preparation';
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +65,7 @@ class WarewolfPreparationScreen extends HookWidget {
                   opacity: 0.8,
                   child: Image.asset(
                     wolfFlg
-                        ? 'assets/images/warewolf.png'
+                        ? 'assets/images/werewolf.png'
                         : 'assets/images/citizen.png',
                     width: MediaQuery.of(context).size.width * .6,
                   ),
@@ -263,7 +263,7 @@ class WarewolfPreparationScreen extends HookWidget {
                                                     .stop();
                                                 Navigator.of(context)
                                                     .pushReplacementNamed(
-                                                  WarewolfPlayingScreen
+                                                  WerewolfPlayingScreen
                                                       .routeName,
                                                   arguments: [
                                                     sentence,
@@ -273,7 +273,7 @@ class WarewolfPreparationScreen extends HookWidget {
                                               } else {
                                                 Navigator.of(context)
                                                     .pushReplacementNamed(
-                                                  WarewolfPreparationScreen
+                                                  WerewolfPreparationScreen
                                                       .routeName,
                                                   arguments: [
                                                     sentence,

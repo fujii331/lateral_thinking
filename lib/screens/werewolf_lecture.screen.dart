@@ -5,52 +5,40 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../providers/common.provider.dart';
-import '../widgets/lecture/lecture_first.widget.dart';
+import '../widgets/werewolf/lecture/werewolf_lecture_first.widget.dart';
+import '../widgets/werewolf/lecture/werewolf_lecture_setting.widget.dart';
 import '../widgets/lecture/lecture_figure.widget.dart';
-import '../widgets/lecture/lecture_last.widget.dart';
-import '../providers/quiz.provider.dart';
-import '../text.dart';
-import './quiz_list.screen.dart';
-import '../../widgets/lecture/lecture_pagination.widget.dart';
+import '../widgets/werewolf/lecture/werewolf_lecture_last.widget.dart';
+import '../providers/werewolf.provider.dart';
+import '../widgets/background.widget.dart';
+import '../widgets/werewolf/lecture/werewolf_lecture_pagination.widget.dart';
+import './werewolf_setting.screen.dart';
 
-class LectureTabScreen extends HookWidget {
-  static const routeName = '/lecture-tab';
+class WerewolfLectureScreen extends HookWidget {
+  static const routeName = '/werewolf-lecture';
 
   @override
   Widget build(BuildContext context) {
     final bool alreadyPlayedFlg =
         ModalRoute.of(context)?.settings.arguments as bool;
     final screenNo = useState<int>(0);
-    final bool enModeFlg = useProvider(enModeFlgProvider).state;
     final AudioCache soundEffect = useProvider(soundEffectProvider).state;
     final double seVolume = useProvider(seVolumeProvider).state;
 
-    final int numOfPages = 9;
+    final int numOfPages = 11;
 
     final List lecturePages = [
-      LectureFirst(),
-      enModeFlg
-          ? LectureFigure('assets/images/lecture1_en.png')
-          : LectureFigure('assets/images/lecture1.png'),
-      enModeFlg
-          ? LectureFigure('assets/images/lecture2_en.png')
-          : LectureFigure('assets/images/lecture2.png'),
-      enModeFlg
-          ? LectureFigure('assets/images/lecture3_en.png')
-          : LectureFigure('assets/images/lecture3.png'),
-      enModeFlg
-          ? LectureFigure('assets/images/lecture4_en.png')
-          : LectureFigure('assets/images/lecture4.png'),
-      enModeFlg
-          ? LectureFigure('assets/images/lecture5_en.png')
-          : LectureFigure('assets/images/lecture5.png'),
-      enModeFlg
-          ? LectureFigure('assets/images/lecture6_en.png')
-          : LectureFigure('assets/images/lecture6.png'),
-      enModeFlg
-          ? LectureFigure('assets/images/lecture_hint_en.png')
-          : LectureFigure('assets/images/lecture_hint.png'),
-      LectureLast(),
+      WerewolfLectureFirst(),
+      WerewolfLectureSetting(),
+      LectureFigure('assets/images/werewolf_lecture1.png'), // 市民だったときの画面
+      LectureFigure('assets/images/werewolf_lecture2.png'), // 人狼だったときの画面
+      LectureFigure('assets/images/werewolf_lecture3.png'), // 回答前の画面
+      LectureFigure('assets/images/werewolf_lecture4.png'), // 回答中の画面
+      LectureFigure('assets/images/werewolf_lecture5.png'), // 正解者確認画面
+      LectureFigure('assets/images/werewolf_lecture6.png'), // 議論画面
+      LectureFigure('assets/images/werewolf_lecture7.png'), // 投票画面
+      LectureFigure('assets/images/werewolf_lecture8.png'), // 投票確認画面
+      WerewolfLectureLast(),
     ];
 
     return Container(
@@ -64,9 +52,7 @@ class LectureTabScreen extends HookWidget {
         backgroundColor: Colors.black.withOpacity(0.5),
         appBar: AppBar(
           title: Text(
-            enModeFlg
-                ? EN_TEXT['playMethodButton']!
-                : JA_TEXT['playMethodButton']!,
+            '遊び方',
             style: const TextStyle(
               fontFamily: 'KaiseiOpti',
             ),
@@ -77,9 +63,9 @@ class LectureTabScreen extends HookWidget {
               bottomRight: Radius.circular(10),
             ),
           ),
-          elevation: 0,
           centerTitle: true,
-          backgroundColor: Colors.blueGrey.shade900.withOpacity(0.8),
+          elevation: 0,
+          backgroundColor: Colors.grey.shade800.withOpacity(0.7),
           actions: <Widget>[
             alreadyPlayedFlg
                 ? Container()
@@ -92,10 +78,11 @@ class LectureTabScreen extends HookWidget {
                         isNotification: true,
                         volume: seVolume,
                       );
-                      context.read(alreadyPlayedQuizFlgProvider).state = true;
-                      preference.setBool('alreadyPlayedQuiz', true);
+                      context.read(alreadyPlayedWerewolfFlgProvider).state =
+                          true;
+                      preference.setBool('alreadyPlayedWerewolf', true);
                       Navigator.of(context).pushReplacementNamed(
-                        QuizListScreen.routeName,
+                        WerewolfSettingScreen.routeName,
                       );
                     },
                     child: Text(
@@ -110,11 +97,12 @@ class LectureTabScreen extends HookWidget {
           children: [
             const SizedBox(height: 10),
             Container(
-                height: MediaQuery.of(context).size.height * 0.85 - 70,
-                child: lecturePages[screenNo.value]),
+              height: MediaQuery.of(context).size.height * 0.85 - 70,
+              child: lecturePages[screenNo.value],
+            ),
             Container(
               height: 60,
-              child: LecturePagination(
+              child: WerewolfLecturePagination(
                 screenNo,
                 numOfPages,
                 alreadyPlayedFlg,

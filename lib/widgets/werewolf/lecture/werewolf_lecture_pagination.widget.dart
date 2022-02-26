@@ -4,16 +4,16 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-import '../../../screens/warewolf_setting.screen.dart';
+import '../../../screens/werewolf_setting.screen.dart';
 import '../../../providers/common.provider.dart';
-import '../../../providers/warewolf.provider.dart';
+import '../../../providers/werewolf.provider.dart';
 
-class WarewolfLecturePagination extends HookWidget {
+class WerewolfLecturePagination extends HookWidget {
   final ValueNotifier<int> screenNo;
   final int numOfPages;
   final bool alreadyPlayedFlg;
 
-  WarewolfLecturePagination(
+  WerewolfLecturePagination(
       this.screenNo, this.numOfPages, this.alreadyPlayedFlg);
 
   @override
@@ -59,18 +59,18 @@ class WarewolfLecturePagination extends HookWidget {
                 : Container(
                     child: ElevatedButton(
                       onPressed: () async {
-                        SharedPreferences prefs =
+                        SharedPreferences preference =
                             await SharedPreferences.getInstance();
                         soundEffect.play(
                           'sounds/tap.mp3',
                           isNotification: true,
                           volume: seVolume,
                         );
-                        context.read(alreadyPlayedWarewolfFlgProvider).state =
+                        context.read(alreadyPlayedWerewolfFlgProvider).state =
                             true;
-                        prefs.setBool('alreadyPlayedWarewolf', true);
+                        preference.setBool('alreadyPlayedWerewolf', true);
                         Navigator.of(context).pushReplacementNamed(
-                          WarewolfSettingScreen.routeName,
+                          WerewolfSettingScreen.routeName,
                         );
                       },
                       child: Text(

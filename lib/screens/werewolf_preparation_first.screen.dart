@@ -4,14 +4,14 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'dart:math';
 
-import '../providers/warewolf.provider.dart';
+import '../providers/werewolf.provider.dart';
 import '../providers/common.provider.dart';
 
 import '../widgets/background.widget.dart';
-import './warewolf_preparation.screen.dart';
+import './werewolf_preparation.screen.dart';
 
-class WarewolfPreparationFirstScreen extends HookWidget {
-  static const routeName = '/warewolf-preparation-first';
+class WerewolfPreparationFirstScreen extends HookWidget {
+  static const routeName = '/werewolf-preparation-first';
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +94,7 @@ class WarewolfPreparationFirstScreen extends HookWidget {
                                 : Random().nextInt(int.parse(numOfPlayers)) + 1;
 
                             Navigator.of(context).pushReplacementNamed(
-                              WarewolfPreparationScreen.routeName,
+                              WerewolfPreparationScreen.routeName,
                               arguments: [
                                 sentence,
                                 correctAnswer,

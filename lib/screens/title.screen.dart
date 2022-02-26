@@ -14,16 +14,16 @@ import 'dart:io';
 
 import './quiz_list.screen.dart';
 import './lecture_tab.screen.dart';
-import './warewolf_setting.screen.dart';
+import './werewolf_setting.screen.dart';
 import '../providers/quiz.provider.dart';
 import '../providers/common.provider.dart';
-import '../providers/warewolf.provider.dart';
+import '../providers/werewolf.provider.dart';
 
 import '../text.dart';
 import '../widgets/settings/sound_mode_modal.widget.dart';
 import '../should_update.service.dart';
 import '../widgets/update_version_modal.widget.dart';
-import './warewolf_lecture.screen.dart';
+import './werewolf_lecture.screen.dart';
 // import '../models/analytics.model.dart';
 
 class TitleScreen extends HookWidget {
@@ -51,44 +51,44 @@ class TitleScreen extends HookWidget {
     )..show();
   }
 
-  void toWarewolfSettingTab(BuildContext ctx) {
+  void toWerewolfSettingTab(BuildContext ctx) {
     Navigator.of(ctx).pushNamed(
-      WarewolfSettingScreen.routeName,
+      WerewolfSettingScreen.routeName,
     );
   }
 
-  void toWarewolfLectureTab(BuildContext ctx) {
+  void toWerewolfLectureTab(BuildContext ctx) {
     Navigator.of(ctx).pushNamed(
-      WarewolfLectureScreen.routeName,
+      WerewolfLectureScreen.routeName,
       arguments: false,
     );
   }
 
   void _firstSetting(BuildContext context, bool enModeFlg) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences preference = await SharedPreferences.getInstance();
 
     if (enModeFlg) {
       context.read(openingNumberProvider).state =
-          prefs.getInt('openingNumberEn') ?? 9;
+          preference.getInt('openingNumberEn') ?? 9;
     } else {
       context.read(openingNumberProvider).state =
-          prefs.getInt('openingNumber') ?? 9;
+          preference.getInt('openingNumber') ?? 9;
     }
 
     // 音量設定
-    final double? bgmVolume = prefs.getDouble('bgmVolume');
-    final double? seVolume = prefs.getDouble('seVolume');
-    final bool alreadyPlayeFlg = prefs.getInt('openingNumber') != null;
+    final double? bgmVolume = preference.getDouble('bgmVolume');
+    final double? seVolume = preference.getDouble('seVolume');
+    final bool alreadyPlayedFlg = preference.getInt('openingNumber') != null;
 
     if (bgmVolume != null) {
       context.read(bgmVolumeProvider).state = bgmVolume;
     } else {
-      prefs.setDouble('bgmVolume', 0.2);
+      preference.setDouble('bgmVolume', 0.2);
     }
     if (seVolume != null) {
       context.read(seVolumeProvider).state = seVolume;
     } else {
-      prefs.setDouble('seVolume', 0.5);
+      preference.setDouble('seVolume', 0.5);
     }
 
     context
@@ -106,6 +106,7 @@ class TitleScreen extends HookWidget {
       'sounds/fault.mp3',
       'sounds/finish.mp3',
       'sounds/funny.mp3',
+      'sounds/nice_question.mp3',
       'sounds/push.mp3',
       'sounds/ready.mp3',
       'sounds/start.mp3',
@@ -114,22 +115,23 @@ class TitleScreen extends HookWidget {
     ]);
 
     // 遊び方に誘導するかの判定
-    final bool? alreadyPlayedQuiz = prefs.getBool('alreadyPlayedQuiz');
-    final bool? alreadyPlayedWarewolf = prefs.getBool('alreadyPlayedWarewolf');
+    final bool? alreadyPlayedQuiz = preference.getBool('alreadyPlayedQuiz');
+    final bool? alreadyPlayedWerewolf =
+        preference.getBool('alreadyPlayedWerewolf');
 
-    if (alreadyPlayedQuiz != null || alreadyPlayeFlg) {
+    if (alreadyPlayedQuiz != null || alreadyPlayedFlg) {
       context.read(alreadyPlayedQuizFlgProvider).state = true;
     }
-    if (alreadyPlayedWarewolf != null) {
-      context.read(alreadyPlayedWarewolfFlgProvider).state = true;
+    if (alreadyPlayedWerewolf != null) {
+      context.read(alreadyPlayedWerewolfFlgProvider).state = true;
     }
 
     // 正解済みの問題を設定
-    if (prefs.getStringList('alreadyAnsweredIds') == null) {
-      prefs.setStringList('alreadyAnsweredIds', []);
+    if (preference.getStringList('alreadyAnsweredIds') == null) {
+      preference.setStringList('alreadyAnsweredIds', []);
     }
     context.read(alreadyAnsweredIdsProvider).state =
-        prefs.getStringList('alreadyAnsweredIds')!;
+        preference.getStringList('alreadyAnsweredIds')!;
   }
 
   @override
@@ -141,8 +143,8 @@ class TitleScreen extends HookWidget {
 
     final bool alreadyPlayedQuizFlg =
         useProvider(alreadyPlayedQuizFlgProvider).state;
-    final bool alreadyPlayedWarewolfFlg =
-        useProvider(alreadyPlayedWarewolfFlgProvider).state;
+    final bool alreadyPlayedWerewolfFlg =
+        useProvider(alreadyPlayedWerewolfFlgProvider).state;
 
     useEffect(() {
       WidgetsBinding.instance!.addPostFrameCallback((_) async {
@@ -473,7 +475,7 @@ class TitleScreen extends HookWidget {
                               soundEffect,
                               2,
                               seVolume,
-                              alreadyPlayedWarewolfFlg,
+                              alreadyPlayedWerewolfFlg,
                             ),
                             _selectButton(
                                 context,
@@ -548,9 +550,9 @@ class TitleScreen extends HookWidget {
               }
             } else if (buttonPuttern == 2) {
               if (alreadyPlayedFlg) {
-                toWarewolfSettingTab(context);
+                toWerewolfSettingTab(context);
               } else {
-                toWarewolfLectureTab(context);
+                toWerewolfLectureTab(context);
               }
             } else if (buttonPuttern == 3) {
               toSoundModeModal(context);

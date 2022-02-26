@@ -22,6 +22,7 @@ class QuizListDetailTitle extends StatelessWidget {
                 fontSize: height > 610 ? 28 : 22,
                 fontWeight: FontWeight.bold,
                 color: Colors.yellow.shade100,
+                fontFamily: 'KaiseiOpti',
               ),
             ),
           )

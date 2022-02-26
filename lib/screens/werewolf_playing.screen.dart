@@ -7,15 +7,15 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'dart:async';
 import 'dart:math';
 
-import '../providers/warewolf.provider.dart';
+import '../providers/werewolf.provider.dart';
 import '../providers/common.provider.dart';
 
-import '../models/warewolf.model.dart';
+import '../models/werewolf.model.dart';
 import '../widgets/background.widget.dart';
-import '../widgets/warewolf/confirm_answered_modal.widget.dart';
+import '../widgets/werewolf/confirm_answered_modal.widget.dart';
 
-class WarewolfPlayingScreen extends HookWidget {
-  static const routeName = '/warewolf-playing';
+class WerewolfPlayingScreen extends HookWidget {
+  static const routeName = '/werewolf-playing';
 
   void timeStart(
     BuildContext context,

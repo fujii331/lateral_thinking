@@ -11,9 +11,10 @@ import '../../text.dart';
 class OpenedSubHintModal extends HookWidget {
   final List<String> subHints;
 
-  OpenedSubHintModal(
-    this.subHints,
-  );
+  const OpenedSubHintModal({
+    Key? key,
+    required this.subHints,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

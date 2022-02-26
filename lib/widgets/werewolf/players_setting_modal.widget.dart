@@ -4,10 +4,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
 
-import '../../providers/warewolf.provider.dart';
+import '../../providers/werewolf.provider.dart';
 import '../../providers/common.provider.dart';
 
-import '../../models/warewolf.model.dart';
+import '../../models/werewolf.model.dart';
 
 import '../../text.dart';
 

@@ -1,10 +1,10 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../models/warewolf.model.dart';
+import '../models/werewolf.model.dart';
 
 final timerCancelFlgProvider = StateProvider((ref) => false);
 final wolfIdProvider = StateProvider((ref) => 0);
 final answeredPlayerIdProvider = StateProvider((ref) => 0);
-final alreadyPlayedWarewolfFlgProvider = StateProvider((ref) => false);
+final alreadyPlayedWerewolfFlgProvider = StateProvider((ref) => false);
 final subTimeStopFlgProvider = StateProvider((ref) => false);
 
 final modeProvider = StateProvider((ref) => '謎解きの王様');

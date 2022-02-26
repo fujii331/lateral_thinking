@@ -4,131 +4,25 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'dart:io';
-import 'dart:async';
-
-import '../../providers/quiz.provider.dart';
+import 'package:lateral_thinking/services/admob/reward_action.service.dart';
 import '../../providers/common.provider.dart';
 
 import '../../models/quiz.model.dart';
 
-import '../../screens/warewolf_preparation_first.screen.dart';
-
 import '../reply_modal.widget.dart';
 import '../hint/ad_loading_modal.widget.dart';
 
-import '../../advertising.dart';
 import '../../text.dart';
 
 class RewardForPlayingModal extends HookWidget {
+  final BuildContext screenContext;
   final Quiz quiz;
 
-  RewardForPlayingModal(
-    this.quiz,
-  );
-
-  void _createRewardedAd(
-    ValueNotifier<RewardedAd?> rewardedAd,
-    int _numRewardedLoadAttempts,
-  ) {
-    RewardedAd.load(
-      adUnitId: Platform.isAndroid
-          ? ANDROID_PLAYING_WAREWOLF_REWQRD_ADVID
-          : IOS_PLAYING_WAREWOLF_REWQRD_ADVID,
-      // ? TEST_ANDROID_REWQRD_ADVID
-      // : TEST_IOS_REWQRD_ADVID, //RewardedAd.testAdUnitId,
-      request: AdRequest(),
-      rewardedAdLoadCallback: RewardedAdLoadCallback(
-        onAdLoaded: (RewardedAd ad) {
-          rewardedAd.value = ad;
-          _numRewardedLoadAttempts = 0;
-        },
-        onAdFailedToLoad: (LoadAdError error) {
-          rewardedAd.value = null;
-          _numRewardedLoadAttempts += 1;
-          if (_numRewardedLoadAttempts <= 3) {
-            _createRewardedAd(
-              rewardedAd,
-              _numRewardedLoadAttempts,
-            );
-          }
-        },
-      ),
-    );
-  }
-
-  Future loading(
-    BuildContext context,
-    ValueNotifier<RewardedAd?> rewardedAd,
-    ValueNotifier nowLoading,
-  ) async {
-    int _numRewardedLoadAttempts = 0;
-    nowLoading.value = true;
-    _createRewardedAd(
-      rewardedAd,
-      _numRewardedLoadAttempts,
-    );
-    for (int i = 0; i < 15; i++) {
-      if (rewardedAd.value != null) {
-        break;
-      }
-      await new Future.delayed(new Duration(seconds: 1));
-    }
-    nowLoading.value = false;
-  }
-
-  void afterGotReward(BuildContext context) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    context.read(alreadyAnsweredIdsProvider).state.add(quiz.id.toString());
-    prefs.setStringList(
-        'alreadyAnsweredIds', context.read(alreadyAnsweredIdsProvider).state);
-
-    Navigator.of(context).pushNamed(
-      WarewolfPreparationFirstScreen.routeName,
-      arguments: [
-        quiz.sentence,
-        quiz.answers[0].comment,
-      ],
-    );
-  }
-
-  void _showRewardedAd(
-    BuildContext context,
-    RewardedAd? rewardAdValue,
-  ) {
-    if (rewardAdValue == null) {
-      return;
-    }
-    rewardAdValue.fullScreenContentCallback = FullScreenContentCallback(
-      onAdDismissedFullScreenContent: (RewardedAd ad) {
-        ad.dispose();
-      },
-      onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
-        ad.dispose();
-        Navigator.pop(context);
-        AwesomeDialog(
-          context: context,
-          dialogType: DialogType.ERROR,
-          headerAnimationLoop: false,
-          animType: AnimType.SCALE,
-          width: MediaQuery.of(context).size.width * .86 > 650 ? 650 : null,
-          body: ReplyModal(
-            '動画が正常に終了しませんでした。',
-            0,
-          ),
-        )..show();
-      },
-    );
-
-    rewardAdValue.setImmersiveMode(true);
-    rewardAdValue.show(onUserEarnedReward: (RewardedAd ad, RewardItem reward) {
-      Navigator.pop(context);
-      afterGotReward(context);
-    });
-    rewardAdValue = null;
-  }
+  const RewardForPlayingModal({
+    Key? key,
+    required this.screenContext,
+    required this.quiz,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -215,49 +109,48 @@ class RewardForPlayingModal extends HookWidget {
                 ),
                 const SizedBox(width: 30),
                 ElevatedButton(
-                  onPressed: () async => {
+                  onPressed: () async {
                     soundEffect.play(
                       'sounds/tap.mp3',
                       isNotification: true,
                       volume: seVolume,
-                    ),
+                    );
                     showDialog<int>(
                       context: context,
                       barrierDismissible: false,
                       builder: (BuildContext context) {
                         return AdLoadingModal();
                       },
-                    ),
-                    await loading(
-                      context,
+                    );
+                    // 広告のロード
+                    await rewardLoading(
                       rewardedAd,
-                      nowLoading,
-                    ),
-                    if (rewardedAd.value != null)
-                      {
-                        _showRewardedAd(
-                          context,
-                          rewardedAd.value,
+                      3,
+                    );
+                    if (rewardedAd.value != null) {
+                      showPlayingWerewolfRewardedAd(
+                        screenContext,
+                        rewardedAd,
+                        quiz,
+                      );
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    } else {
+                      Navigator.pop(context);
+                      AwesomeDialog(
+                        context: context,
+                        dialogType: DialogType.ERROR,
+                        headerAnimationLoop: false,
+                        animType: AnimType.SCALE,
+                        width: MediaQuery.of(context).size.width * .86 > 650
+                            ? 650
+                            : null,
+                        body: ReplyModal(
+                          JA_TEXT['failedToLoad']!,
+                          0,
                         ),
-                        Navigator.pop(context),
-                      }
-                    else
-                      {
-                        Navigator.pop(context),
-                        AwesomeDialog(
-                          context: context,
-                          dialogType: DialogType.ERROR,
-                          headerAnimationLoop: false,
-                          animType: AnimType.SCALE,
-                          width: MediaQuery.of(context).size.width * .86 > 650
-                              ? 650
-                              : null,
-                          body: ReplyModal(
-                            JA_TEXT['failedToLoad']!,
-                            0,
-                          ),
-                        )..show(),
-                      },
+                      ).show();
+                    }
                   },
                   child: Text(
                     JA_TEXT['yesButton']!,

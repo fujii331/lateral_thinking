@@ -9,24 +9,19 @@ class LectureFigure extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        background(),
-        Center(
+    return Center(
+      child: Container(
+        child: Container(
+          margin: EdgeInsets.all(5),
           child: Container(
-            child: Container(
-              margin: EdgeInsets.all(5),
-              child: Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(imagePath),
-                  ),
-                ),
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(imagePath),
               ),
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 }

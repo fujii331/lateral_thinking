@@ -63,7 +63,7 @@ class LecturePagination extends HookWidget {
                     width: enModeFlg ? 73 : null,
                     child: ElevatedButton(
                       onPressed: () async {
-                        SharedPreferences prefs =
+                        SharedPreferences preference =
                             await SharedPreferences.getInstance();
                         soundEffect.play(
                           'sounds/tap.mp3',
@@ -71,7 +71,7 @@ class LecturePagination extends HookWidget {
                           volume: seVolume,
                         );
                         context.read(alreadyPlayedQuizFlgProvider).state = true;
-                        prefs.setBool('alreadyPlayedQuiz', true);
+                        preference.setBool('alreadyPlayedQuiz', true);
                         Navigator.of(context).pushReplacementNamed(
                           QuizListScreen.routeName,
                           arguments: false,

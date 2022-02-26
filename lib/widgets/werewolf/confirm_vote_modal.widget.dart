@@ -4,11 +4,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import '../../providers/common.provider.dart';
-import '../../providers/warewolf.provider.dart';
+import '../../providers/werewolf.provider.dart';
 
-import '../../models/warewolf.model.dart';
-import '../../screens/warewolf_vote.screen.dart';
-import '../../screens/warewolf_voted_confirm.screen.dart';
+import '../../models/werewolf.model.dart';
+import '../../screens/werewolf_vote.screen.dart';
+import '../../screens/werewolf_voted_confirm.screen.dart';
 
 class ConfirmVoteModal extends HookWidget {
   final int playerId;
@@ -161,11 +161,11 @@ class ConfirmVoteModal extends HookWidget {
 
                     if (playerId.toString() == numOfPlayers) {
                       Navigator.of(context).pushReplacementNamed(
-                        WarewolfVotedConfirmScreen.routeName,
+                        WerewolfVotedConfirmScreen.routeName,
                       );
                     } else {
                       Navigator.of(context).pushReplacementNamed(
-                        WarewolfVoteScreen.routeName,
+                        WerewolfVoteScreen.routeName,
                         arguments: playerId + 1,
                       );
                     }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:lateral_thinking/services/admob/interstitial_action.service.dart';
 
 import '../widgets/quiz_detail/quiz_detail.widget.dart';
 import '../widgets/quiz_detail/questioned.widget.dart';
@@ -31,11 +33,27 @@ class QuizDetailTabScreen extends HookWidget {
     final bool subHintFlg = useProvider(subHintFlgProvider).state;
     final int hint = useProvider(hintProvider).state;
     final double seVolume = useProvider(seVolumeProvider).state;
+    final List<Answer> readyForAnswers =
+        useProvider(readyForAnswersProvider).state;
+    final bool enableAnswer = readyForAnswers.length > 0;
 
     final workHint = useState<int>(0);
 
     final subjectController = useTextEditingController();
     final relatedWordController = useTextEditingController();
+
+    final ValueNotifier<InterstitialAd?> interstitialAd = useState(null);
+
+    useEffect(() {
+      WidgetsBinding.instance!.addPostFrameCallback((_) async {
+        // 広告読み込み
+        interstitialLoading(
+          interstitialAd,
+          1,
+        );
+      });
+      return null;
+    }, const []);
 
     return Container(
       decoration: const BoxDecoration(
@@ -45,11 +63,23 @@ class QuizDetailTabScreen extends HookWidget {
         ),
       ),
       child: Scaffold(
-        backgroundColor: const Color(0x15555555),
+        backgroundColor: Colors.black.withOpacity(0.3),
         appBar: AppBar(
-          title: Text(quiz.title),
+          title: Text(
+            quiz.title,
+            style: const TextStyle(
+              fontFamily: 'KaiseiOpti',
+            ),
+          ),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(10),
+              bottomRight: Radius.circular(10),
+            ),
+          ),
+          elevation: 0,
           centerTitle: true,
-          backgroundColor: Colors.blueGrey.shade800.withOpacity(0.9),
+          backgroundColor: Colors.blueGrey.shade900.withOpacity(0.8),
           actions: <Widget>[
             IconButton(
                 iconSize: 22,
@@ -76,7 +106,7 @@ class QuizDetailTabScreen extends HookWidget {
                                       ? 650
                                       : null,
                               body: OpenedSubHintModal(
-                                quiz.subHints,
+                                subHints: quiz.subHints,
                               ),
                             )..show();
                           }
@@ -96,8 +126,9 @@ class QuizDetailTabScreen extends HookWidget {
                                       ? 650
                                       : null,
                               body: SubHintModal(
-                                quiz.subHints,
-                                quiz.id,
+                                screenContext: context,
+                                subHints: quiz.subHints,
+                                quizId: quiz.id,
                               ),
                             )..show();
                           }),
@@ -124,38 +155,46 @@ class QuizDetailTabScreen extends HookWidget {
                             ? 650
                             : null,
                         body: HintModal(
-                          quiz,
-                          subjectController,
-                          relatedWordController,
-                          workHint.value,
+                          screenContext: context,
+                          quiz: quiz,
+                          subjectController: subjectController,
+                          relatedWordController: relatedWordController,
+                          workHintValue: workHint.value,
                         ),
-                      )..show();
+                      ).show();
                     },
             ),
           ],
         ),
+        // extendBodyBehindAppBar: true,
         resizeToAvoidBottomInset: true,
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.shifting,
-          selectedItemColor: Colors.blue,
-          unselectedItemColor: Colors.grey,
+          selectedItemColor: Colors.blue.shade200,
+          unselectedItemColor: Colors.grey.shade200,
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.school),
               label:
                   enModeFlg ? EN_TEXT['bottomQuiz']! : JA_TEXT['bottomQuiz']!,
+              backgroundColor: Colors.blueGrey.shade600.withOpacity(0.4),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.check_box),
               label: enModeFlg
                   ? EN_TEXT['bottomQuestioned']!
                   : JA_TEXT['bottomQuestioned']!,
+              backgroundColor: Colors.blueGrey.shade600.withOpacity(0.4),
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.comment),
+              icon: Icon(
+                Icons.comment,
+                color: enableAnswer ? Colors.cyan.shade300 : null,
+              ),
               label: enModeFlg
                   ? EN_TEXT['bottomAnswer']!
                   : JA_TEXT['bottomAnswer']!,
+              backgroundColor: Colors.blueGrey.shade600.withOpacity(0.4),
             ),
           ],
           onTap: (int selectIndex) {
@@ -178,7 +217,10 @@ class QuizDetailTabScreen extends HookWidget {
               relatedWordController,
             ),
             Questioned(),
-            QuizAnswer(quiz.id),
+            QuizAnswer(
+              quizId: quiz.id,
+              interstitialAd: interstitialAd,
+            ),
           ],
         ),
       ),

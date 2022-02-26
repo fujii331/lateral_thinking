@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 
 import '../../providers/common.provider.dart';
 
-import '../../screens/warewolf_preparation_first.screen.dart';
+import '../../screens/werewolf_preparation_first.screen.dart';
 
 class QuizSettingModal extends HookWidget {
   @override
@@ -79,7 +79,7 @@ class QuizSettingModal extends HookWidget {
                     );
 
                     Navigator.of(context).pushNamed(
-                      WarewolfPreparationFirstScreen.routeName,
+                      WerewolfPreparationFirstScreen.routeName,
                       arguments: [
                         sentenceController.text,
                         correctAnswerController.text,
