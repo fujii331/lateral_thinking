@@ -105,11 +105,14 @@ class WerewolfLecturePagination extends HookWidget {
       onPressed: () => {
         screenNo.value = toScreenNo,
       },
-      child: Text(
-        icon,
-        style: TextStyle(
-          fontSize: 18.0,
-          color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 2),
+        child: Text(
+          icon,
+          style: TextStyle(
+            fontSize: 18.0,
+            color: Colors.white,
+          ),
         ),
       ),
       style: ElevatedButton.styleFrom(

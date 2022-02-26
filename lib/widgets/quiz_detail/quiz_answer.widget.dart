@@ -351,11 +351,6 @@ class QuizAnswer extends HookWidget {
                                 );
                               }
 
-                              // Navigator.pop(context)を実行させる前に坊やくんの表示を完了させるため
-                              await new Future.delayed(
-                                new Duration(milliseconds: 1000),
-                              );
-
                               Navigator.pop(context);
 
                               String correctComment =

@@ -31,10 +31,6 @@ class LecturePagination extends HookWidget {
       enModeFlg ? EN_TEXT['playMethodBottom6']! : JA_TEXT['playMethodBottom6']!,
       enModeFlg ? EN_TEXT['playMethodBottom7']! : JA_TEXT['playMethodBottom7']!,
       enModeFlg ? EN_TEXT['playMethodBottom8']! : JA_TEXT['playMethodBottom8']!,
-      enModeFlg ? EN_TEXT['playMethodBottom9']! : JA_TEXT['playMethodBottom9']!,
-      enModeFlg
-          ? EN_TEXT['playMethodBottom10']!
-          : JA_TEXT['playMethodBottom10']!,
     ];
 
     return Row(
@@ -110,11 +106,14 @@ class LecturePagination extends HookWidget {
       onPressed: () => {
         screenNo.value = toScreenNo,
       },
-      child: Text(
-        icon,
-        style: TextStyle(
-          fontSize: 18.0,
-          color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 2),
+        child: Text(
+          icon,
+          style: TextStyle(
+            fontSize: 18.0,
+            color: Colors.white,
+          ),
         ),
       ),
       style: ElevatedButton.styleFrom(

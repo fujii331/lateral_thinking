@@ -9,7 +9,6 @@ import 'package:audioplayers/audioplayers.dart';
 import '../widgets/quiz_list/quiz_list_detail.widget.dart';
 // import '../widgets/quiz_list/analytics_list_modal.widget.dart';
 import '../providers/quiz.provider.dart';
-import '../widgets/background.widget.dart';
 import '../text.dart';
 import './lecture_tab.screen.dart';
 import '../providers/common.provider.dart';
@@ -97,6 +96,7 @@ class QuizListScreen extends HookWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(height: height > 550 ? 10 : 5),
+            const Spacer(),
             QuizListDetailTitle(
               titles[screenNo.value],
             ),
