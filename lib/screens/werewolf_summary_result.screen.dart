@@ -26,7 +26,7 @@ class WerewolfSummaryResultScreen extends HookWidget {
     final player5 = useProvider(player5Provider).state;
     final player6 = useProvider(player6Provider).state;
 
-    final loadedFlg = useState<bool>(false);
+    // final loadedFlg = useState<bool>(false);
 
     int mostHighestPoint = player1.point;
     List<int> mostHighestPointIdList = [1];

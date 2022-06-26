@@ -147,7 +147,7 @@ class TitleScreen extends HookWidget {
         useProvider(alreadyPlayedWerewolfFlgProvider).state;
 
     useEffect(() {
-      WidgetsBinding.instance!.addPostFrameCallback((_) async {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
         if (Localizations.localeOf(context).toString() == 'ja') {
           context.read(enModeFlgProvider).state = false;
         }
@@ -221,19 +221,19 @@ class TitleScreen extends HookWidget {
                           context.read(enModeFlgProvider).state = !enModeFlg;
                           context.read(playingQuizIdProvider).state = 0;
 
-                          // List<Analytics> dataList = [];
+                          // List dataList = [];
 
                           // for (int i = 1; i < 70; i++) {
                           //   DatabaseReference firebaseInstance =
                           //       FirebaseDatabase.instance
                           //           .reference()
-                          //           .child('analytics/' + i.toString());
+                          //           .child('analytics_second/' + i.toString());
 
                           //   await firebaseInstance
                           //       .get()
                           //       .then((DataSnapshot? snapshot) {
                           //     if (snapshot != null) {
-                          //       final firebaseData = snapshot.value;
+                          //       final Map firebaseData = snapshot.value as Map;
 
                           //       final hint1Count =
                           //           firebaseData['hint1Count'] as int;
@@ -254,24 +254,24 @@ class TitleScreen extends HookWidget {
                           //       final noHintCount =
                           //           firebaseData['noHintCount'] as int;
 
-                          //       dataList.add(Analytics(
-                          //         id: i,
-                          //         hint1:
+                          //       dataList.add({
+                          //         'id': i,
+                          //         'hint1':
                           //             (100 * (hint1Count / userCount)).round(),
-                          //         hint2:
+                          //         'hint2':
                           //             (100 * (hint2Count / userCount)).round(),
-                          //         noHint:
+                          //         'noHint':
                           //             (100 * (noHintCount / userCount)).round(),
-                          //         subHint: (100 * (subHintCount / userCount))
+                          //         'subHint': (100 * (subHintCount / userCount))
                           //             .round(),
-                          //         relatedWordCountAll: noHintCount == 0
+                          //         'relatedWordCountAll': noHintCount == 0
                           //             ? 0
                           //             : (relatedWordCount / noHintCount)
                           //                 .round(),
-                          //         questionCountAll: noHintCount == 0
+                          //         'questionCountAll': noHintCount == 0
                           //             ? 0
                           //             : (questionCount / noHintCount).round(),
-                          //       ));
+                          //       });
                           //     }
                           //   });
                           // }

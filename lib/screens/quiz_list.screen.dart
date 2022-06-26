@@ -95,24 +95,24 @@ class QuizListScreen extends HookWidget {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: height > 550 ? 10 : 5),
+            SizedBox(height: height > 650 ? 10 : 0),
             const Spacer(),
             QuizListDetailTitle(
               titles[screenNo.value],
             ),
-            SizedBox(height: height > 550 ? 10 : 5),
+            SizedBox(height: height > 650 ? 10 : 0),
             QuizListDetail(
               openingNumber,
               screenNo,
               numOfPages,
             ),
             const Spacer(),
-            SizedBox(height: height > 550 ? 10 : 0),
+            SizedBox(height: height > 650 ? 10 : 0),
             QuizListPagination(
               screenNo,
               numOfPages,
             ),
-            SizedBox(height: height > 550 ? 10 : 0),
+            SizedBox(height: height > 650 ? 10 : 0),
           ],
         ),
       ),
