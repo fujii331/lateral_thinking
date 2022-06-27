@@ -56,3 +56,5 @@ lib/text.dart
 assets
 web
 ios
+android/app/google-services.json
+flutter_01.png
